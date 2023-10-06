@@ -13,7 +13,7 @@ For example:
 foo@bar:~$ cd /Your_Dir/OpenMindat/
 foo@bar:OpenMindat$ pip install .
 ```
-3. `Import` the package
+3. `Import` the package in Python
 
 ```python
 import openmindat as om
