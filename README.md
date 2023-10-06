@@ -1,6 +1,24 @@
 # OpenMindat
 A test version for OpenMindat Python package.
 
+# Get Start
+
+1. Download or clone this repository to your DIR
+For example:
+```console
+/Your_Dir/
+```
+2. Install the package in your terminal
+```console
+cd /Your_Dir/OpenMindat/
+pip install .
+```
+3. Import the package
+
+```python
+import openmindat
+```
+
 # Use Cases
 
 1. Get the IMA minerals
