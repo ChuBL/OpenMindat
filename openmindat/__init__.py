@@ -19,7 +19,10 @@ def get_geomaterials(PARAMS_DICT = {'page_size': '1500', 'format': 'json'},\
     ma = MindatApi()
     ma.get_geomaterials(params, filename)
 
-
+def search_geomaterials(KEYWORDS, FILENAME = 'geomaterials_search'):
+    keywords = KEYWORDS
+    ma = MindatApi()
+    ma.get_geomaterials_search(keywords, FILENAME)
 
 class MindatApiTester:
     '''test if api key is valid
@@ -135,6 +138,31 @@ class MindatApi:
             json.dump(json_data, f, indent=4)
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path))
     
+    def get_geomaterials_search(self, KEYWORDS, FILENAME = 'geomaterials_search'):
+        keywords = KEYWORDS
+        filter_dict = {'q': keywords, # input what you about to search same as the home page
+          'format': 'json',
+        }
+
+        filename = FILENAME
+        date = self.get_datetime()
+        print("Retrieving geomaterial data. This may take a while... ")
+        file_path = Path(self.data_dir, filename + '_' + date + '.json')
+
+        with open(file_path, 'w') as f:
+            params = filter_dict
+
+            response = requests.get(self.MINDAT_API_URL+"/geomaterials_search/",
+                            params=params,
+                            headers=self._headers)
+
+            result_data = response.json()
+            json_data = {"results": result_data}
+
+            json.dump(json_data, f, indent=4)
+        print("Successfully saved " + str(len(json_data["results"])) + " entries to " + str(file_path))
+
+
     # def get_items(self, PARAMS_DICT = {}, FILENAME = 'mindat_items'):
     #     if {} == PARAMS_DICT:
     #         params = self.params
@@ -290,10 +318,12 @@ if __name__ == "__main__":
     # get_ima_minerals()
     # get_geomaterials()
 
-    fields_str = 'id,name,mindat_formula'
-    params = {
-            'fields': fields_str, # put your selected fields here
-            'format': 'json'
-        }
-    get_geomaterials(params)
+    # fields_str = 'id,name,mindat_formula'
+    # params = {
+    #         'fields': fields_str, # put your selected fields here
+    #         'format': 'json'
+    #     }
+    # get_geomaterials(params)
+
+    search_geomaterials('quartz and ruby')
     # assert(ma._test_api_key('194b8286f1eceab9c9591ba748df6652') == True)

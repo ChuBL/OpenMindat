@@ -54,3 +54,10 @@ params = {
     }
 om.get_geomaterials(params)
 ```
+
+3. Fuzzy Search 
+
+```python
+keywords = 'Quartz and Ruby'
+search_geomaterials(keywords)
+```
