@@ -8,17 +8,17 @@ import requests
 from datetime import datetime
 
 
-def set_api_key(API_KEY):
-    '''set api key and save it to a file'''
-    mat = MindatApiTester()
+def get_ima_minerals():
+    ma = MindatApi()
+    ma.get_ima_minerals()
 
-    if mat.is_api_key_avail(API_KEY):
-        mat.api_key = API_KEY
-        with open('cached_api_key', 'w') as f:
-            f.write(API_KEY)
-        print("API key is saved. ")
-    else:
-        print("API key is invalid. Please check your API key. ")
+def get_geomaterials(PARAMS_DICT = {'page_size': '1500', 'format': 'json'},\
+                      FILENAME = 'geomaterials'):
+    params = PARAMS_DICT
+    filename = FILENAME
+    ma = MindatApi()
+    ma.get_geomaterials(params, filename)
+
 
 
 class MindatApiTester:
@@ -39,7 +39,7 @@ class MindatApiTester:
                 print("Cached API key is invalid.")
                 return False
         except FileNotFoundError:
-            print("API key not set.")
+            print("API key not saved.")
             return False
             
 
@@ -62,11 +62,12 @@ class MindatApi:
     '''The main class for openmindat API'''
     def __init__(self):
         mat = MindatApiTester()
-        if False == mat.has_api_key():
-            print("Please set your API key using this function: \nset_api_key('Your_API_Key'). ")
-            return
-        else:
-            self._api_key = self.load_api_key()
+
+        while False == mat.has_api_key():
+            input_api_key = input("Please input your API key: ")
+            self.set_api_key(input_api_key)
+        
+        self._api_key = self.load_api_key()
         
         self.MINDAT_API_URL = "https://api.mindat.org"
         self._headers = {'Authorization': 'Token '+ self._api_key}
@@ -80,7 +81,17 @@ class MindatApi:
             api_key = f.read()
         return api_key
     
+    def set_api_key(self, API_KEY):
+        '''set api key and save it to a file'''
+        mat = MindatApiTester()
 
+        if mat.is_api_key_avail(API_KEY):
+            mat.api_key = API_KEY
+            with open('cached_api_key', 'w') as f:
+                f.write(API_KEY)
+            print("API key is saved. ")
+        else:
+            print("API key is invalid. Please check your API key. ")
 
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT
@@ -93,6 +104,36 @@ class MindatApi:
 
     def get_headers(self):
         return self._headers
+    
+    def get_geomaterials(self, PARAMS_DICT = {}, FILENAME = 'geomaterials'):
+        params = PARAMS_DICT
+        filename = FILENAME
+        date = self.get_datetime()
+        print("Retrieving geomaterial data. This may take a while... ")
+        file_path = Path(self.data_dir, filename + '_' + date + '.json')
+
+        with open(file_path, 'w') as f:
+            response = requests.get(self.MINDAT_API_URL+"/geomaterials/",
+                            params=params,
+                            headers=self._headers)
+
+            result_data = response.json()["results"]
+            json_data = {"results": result_data}
+
+            # Commented out the following code to grab all the pages of results
+            # while True:
+            #     try:
+            #         next_url = response.json()["next"]
+            #         response = requests.get(next_url, headers=self._headers)
+            #         json_data["results"] += response.json()['results']
+
+            #     except requests.exceptions.MissingSchema as e:
+            #         # This error indicates the `next_url` is none
+            #         # i.e., we've reached the end of the results
+            #         break
+
+            json.dump(json_data, f, indent=4)
+        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path))
     
     # def get_items(self, PARAMS_DICT = {}, FILENAME = 'mindat_items'):
     #     if {} == PARAMS_DICT:
@@ -244,5 +285,15 @@ class MindatApi:
 
 
 if __name__ == "__main__":
-    ma = MindatApi()
+    # ma = MindatApi()
+    # ma.get_ima_minerals()
+    # get_ima_minerals()
+    # get_geomaterials()
+
+    fields_str = 'id,name,mindat_formula'
+    params = {
+            'fields': fields_str, # put your selected fields here
+            'format': 'json'
+        }
+    get_geomaterials(params)
     # assert(ma._test_api_key('194b8286f1eceab9c9591ba748df6652') == True)
