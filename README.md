@@ -8,13 +8,13 @@ A test version for OpenMindat Python package.
 For example:
 
 ```console
-/Your_Dir/
+/Users/JohnDoe/Desktop/
 ```
 
 2. `Install` the package in your terminal
 
 ```console
-foo@bar:~$ cd /Your_Dir/OpenMindat/
+foo@bar:~$ cd /Users/JohnDoe/Desktop/OpenMindat/
 foo@bar:OpenMindat$ pip install .
 ```
 
@@ -32,6 +32,8 @@ import openmindat as om
 import openmindat as om
 
 om.get_ima_minerals()
+
+# You should find the downloaded json file in ./OpenMindat/mindat_data/
 ```
 
 2. Get arbitrary geomaterials
