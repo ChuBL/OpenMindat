@@ -3,17 +3,17 @@ A test version for OpenMindat Python package.
 
 # Get Started
 
-1. Download or clone this repository to your DIR
+1. `Download` or `Clone` this repository to your DIR
 For example:
 ```console
 /Your_Dir/
 ```
-2. Install the package in your terminal
+2. `Install` the package in your terminal
 ```console
 foo@bar:~$ cd /Your_Dir/OpenMindat/
 foo@bar:OpenMindat$ pip install .
 ```
-3. Import the package
+3. `Import` the package
 
 ```python
 import openmindat as om
