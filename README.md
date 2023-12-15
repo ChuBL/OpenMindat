@@ -6,13 +6,15 @@ GitHub Reposity: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat
 
 ## Get Started
 
-### 1. Install via Pip
+### Install via Pip
 
 ```console
 foo@bar:~$ pip install openmindat
 ```
 
-### 2. Download or Clone the Repository
+### Or Install via GitHub Repository
+
+1. Download or Clone the Repository
 
 To clone, use the following commands in your terminal:
 
@@ -23,7 +25,7 @@ foo@bar:~$ git clone https://github.com/ChuBL/OpenMindat.git
 
 Alternatively, you can download and unzip the repository to your desired directory.
 
-### 2. Install the Package
+2. Install the Package
 
 Navigate to your directory in the terminal:
 
@@ -37,7 +39,7 @@ Then install the OpenMindat Python package:
 foo@bar:OpenMindat$ pip install .
 ```
 
-### 3. Import the Package in Python
+3. Import the Package in Python
 
 ```python
 import openmindat
@@ -89,12 +91,11 @@ lr.save()
 
 ## Documentation
 
-- **GitHub Wiki**: Check the documentation on our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki) page.
-
+- **GitHub Wiki**: For comprehensive documentation, visit our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki).
 
 - **Built-in Help**:
 
-For detailed information about the functionality and usage of each class in the OpenMindat package, please refer to the docstrings within the code. You can access these directly in a Python environment using the `help()` function. For example:
+To explore detailed class and method documentation within the OpenMindat package, use Python's built-in `help()` function. This provides direct access to docstrings, showcasing usage examples and parameter details. Example:
 
 ```python
 from openmindat import GeomaterialRetriever
@@ -102,9 +103,7 @@ from openmindat import GeomaterialRetriever
 help(GeomaterialRetriever)
 ```
 
-This will display the documentation for the `GeomaterialRetriever` class, including its methods, parameters, and example usage. 
-
-You can press `q` to quit the help page.
+Press `q` to exit the help interface.
 
 
 ### Contact Us
@@ -123,8 +122,8 @@ Jiyin Zhang
 ## Acknowledgments
 
 <p float="left">
-        <img src="./Logo/mindat2017.png"  width="25%">
-        <img src="./Logo/NSF_Official_logo_High_Res_1200ppi.png"  width="10%">
+        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/mindat2017.png"  width="25%">
+        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/NSF_Official_logo_High_Res_1200ppi.png"  width="10%">
 </p>
 
 - This work is supported by NSF, Award #2126315.
