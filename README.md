@@ -89,6 +89,9 @@ lr.save()
 
 ## Documentation
 
+- **GitHub Wiki**: Check the documentation on our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki) page.
+
+
 - **Built-in Help**:
 
 For detailed information about the functionality and usage of each class in the OpenMindat package, please refer to the docstrings within the code. You can access these directly in a Python environment using the `help()` function. For example:
@@ -103,7 +106,6 @@ This will display the documentation for the `GeomaterialRetriever` class, includ
 
 You can press `q` to quit the help page.
 
-- **GitHub Wiki**: Check the documentation on our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki) page.
 
 ### Contact Us
 
@@ -121,7 +123,7 @@ Jiyin Zhang
 ## Acknowledgments
 
 <p float="left">
-        <img src="./Logo/Mindat2017.png"  width="25%">
+        <img src="./Logo/mindat2017.png"  width="25%">
         <img src="./Logo/NSF_Official_logo_High_Res_1200ppi.png"  width="10%">
 </p>
 
