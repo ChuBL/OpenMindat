@@ -1,10 +1,7 @@
 import requests
 from pathlib import Path
-# import os
 import sys
 import json
-# import re
-# import pprint
 from datetime import datetime
 
 
@@ -17,7 +14,7 @@ class MindatApiTester:
     def test_api_key_status(self):
         # check if api key is set
         try:
-            with open('cached_api_key', 'r') as f:
+            with open('.api_key', 'r') as f:
                 api_key = f.read()
             
             status_code = self.is_api_key_avail(api_key)
@@ -52,13 +49,13 @@ class MindatApi:
         if 500 == status_code:
             raise Exception("Server Error (500), please try again later.") 
         
-        while 200 != mat.test_api_key_status():
-            print("API key is invalid. ")
-            input_api_key = input("Please input your API key: ")
+        while 200 != mat.is_api_key_avail(self.load_api_key()):
+            print('Please input a valid API key. ')
+            input_api_key = input("Your API key: ")
             self.set_api_key(input_api_key)
         
         self._api_key = self.load_api_key()
-        
+
         self.MINDAT_API_URL = "https://api.mindat.org"
         self._headers = {'Authorization': 'Token '+ self._api_key}
         self.params = {'format': 'json'}
@@ -67,22 +64,19 @@ class MindatApi:
         Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
     def load_api_key(self):
-        with open('cached_api_key', 'r') as f:
-            api_key = f.read()
-        return api_key
+        try:
+            with open('.api_key', 'r') as f:
+                api_key = f.read()
+            return api_key
+        except FileNotFoundError:
+            return ''
     
     def set_api_key(self, API_KEY):
-        '''set api key and save it to a file'''
-        mat = MindatApiTester()
+        '''set api key by saving it to a file'''
 
-        if mat.is_api_key_avail(API_KEY):
-            mat.api_key = API_KEY
-            with open('cached_api_key', 'w') as f:
+        with open('.api_key', 'w') as f:
                 f.write(API_KEY)
-            print("API key is saved. ")
-        else:
-            print("API key is invalid. Please check your API key. ")
-
+    
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT
 
@@ -184,4 +178,6 @@ class MindatApi:
             json.dump(json_data, f, indent=4)
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
-
+if __name__ == '__main__':
+    # test if api key is valid
+    ma = MindatApi()

@@ -166,3 +166,4 @@ cython_debug/
 cached_api_key
 mindat_data/
 test/
+.api_key
