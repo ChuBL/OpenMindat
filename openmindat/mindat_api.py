@@ -1,0 +1,187 @@
+import requests
+from pathlib import Path
+# import os
+import sys
+import json
+# import re
+# import pprint
+from datetime import datetime
+
+
+class MindatApiTester:
+    '''test if api key is valid
+    if valid, save it to a file'''
+    def __init__(self) -> None:
+        pass
+    
+    def test_api_key_status(self):
+        # check if api key is set
+        try:
+            with open('cached_api_key', 'r') as f:
+                api_key = f.read()
+            
+            status_code = self.is_api_key_avail(api_key)
+            if 200 == status_code:
+                self.api_key = api_key
+            return status_code
+        except FileNotFoundError:
+            print("API key not saved.")
+            return False
+            
+
+    def is_api_key_avail(self, API_KEY):
+        # test if api key is valid
+        test_api_key = API_KEY
+        MINDAT_API_URL = "https://api.mindat.org"
+        test_headers = {'Authorization': 'Token '+ test_api_key}
+        test_params = {'format': 'json'}
+        test_response = requests.get(MINDAT_API_URL+"/geomaterials/",
+                                params=test_params,
+                                headers=test_headers)
+        
+        return test_response.status_code
+
+
+class MindatApi:
+    '''The main class for openmindat API'''
+    def __init__(self):
+        mat = MindatApiTester()
+
+        status_code = mat.test_api_key_status()
+
+        if 500 == status_code:
+            raise Exception("Server Error (500), please try again later.") 
+        
+        while 200 != mat.test_api_key_status():
+            print("API key is invalid. ")
+            input_api_key = input("Please input your API key: ")
+            self.set_api_key(input_api_key)
+        
+        self._api_key = self.load_api_key()
+        
+        self.MINDAT_API_URL = "https://api.mindat.org"
+        self._headers = {'Authorization': 'Token '+ self._api_key}
+        self.params = {'format': 'json'}
+        # self.endpoint = "/items/"
+        self.data_dir = './mindat_data/'
+        Path(self.data_dir).mkdir(parents=True, exist_ok=True)
+
+    def load_api_key(self):
+        with open('cached_api_key', 'r') as f:
+            api_key = f.read()
+        return api_key
+    
+    def set_api_key(self, API_KEY):
+        '''set api key and save it to a file'''
+        mat = MindatApiTester()
+
+        if mat.is_api_key_avail(API_KEY):
+            mat.api_key = API_KEY
+            with open('cached_api_key', 'w') as f:
+                f.write(API_KEY)
+            print("API key is saved. ")
+        else:
+            print("API key is invalid. Please check your API key. ")
+
+    def set_params(self, PARAMS_DICT):
+        self.params = PARAMS_DICT
+
+    def set_endpoint(self, ENDPOINT):
+        self.endpoint = ENDPOINT
+        
+    def get_params(self):
+        return self.params
+
+    def get_headers(self):
+        return self._headers
+    
+    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+        params = QUERY_DICT
+    
+        end_point = END_POINT
+
+        if '' == OUTDIR:
+            file_path = Path(self.data_dir, end_point + '.json')
+        else:
+            file_path = Path(OUTDIR, end_point + '.json')
+
+        with open(file_path, 'w') as f:
+
+            params = QUERY_DICT
+
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            try:
+                result_data = response.json()
+            except:
+                print("Error: " + str(response.json()))
+                return
+
+            json_data = {"results": result_data}
+
+            json.dump(json_data, f, indent=4)
+
+        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+
+
+    def print_the_result(self, JSONFILE, FILENAME):
+        print("Successfully retrieved", len(JSONFILE['results']), "items in", FILENAME, '. ')
+
+
+    def get_datetime(self):
+        # use datetime to get current date and time
+        now = datetime.now()
+        dt_string = now.strftime("%m%d%Y%H%M%S")
+        return dt_string
+
+    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+        '''
+            get all items in a list
+            Since this API has a limit of 1500 items per page,
+            we need to loop through all pages and save them to a single json file
+        ''' 
+        end_point = END_POINT
+
+        if '' == OUTDIR:
+            file_path = Path(self.data_dir, end_point + '.json')
+        else:
+            file_path = Path(OUTDIR, end_point + '.json')
+
+        with open(file_path, 'w') as f:
+
+            params = QUERY_DICT
+
+            if len(params) <= 2 and 'format' in params and 'page_size' in params:
+                confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+                if confirm.lower() != 'y':
+                    sys.exit("Query not confirmed. Exiting...")
+
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            try:
+                result_data = response.json()["results"]
+            except:
+                print("Error: " + str(response.json()))
+                return
+            
+            json_data = {"results": result_data}
+
+            while True:
+                try:
+                    next_url = response.json()["next"]
+                    response = requests.get(next_url, headers=self._headers)
+                    json_data["results"] += response.json()['results']
+
+                except requests.exceptions.MissingSchema as e:
+                    # This error indicates the `next_url` is none
+                    # i.e., we've reached the end of the results
+                    break
+
+            json.dump(json_data, f, indent=4)
+        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        
+
