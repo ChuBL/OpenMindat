@@ -12,34 +12,7 @@ GitHub Reposity: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat
 foo@bar:~$ pip install openmindat
 ```
 
-### Or Install via GitHub Repository
-
-1. Download or Clone the Repository
-
-To clone, use the following commands in your terminal:
-
-```console
-foo@bar:~$ cd /Users/JohnDoe/Desktop/
-foo@bar:~$ git clone https://github.com/ChuBL/OpenMindat.git
-```
-
-Alternatively, you can download and unzip the repository to your desired directory.
-
-2. Install the Package
-
-Navigate to your directory in the terminal:
-
-```console
-foo@bar:~$ cd /Users/JohnDoe/Desktop/OpenMindat/
-```
-
-Then install the OpenMindat Python package:
-
-```console
-foo@bar:OpenMindat$ pip install .
-```
-
-3. Import the Package in Python
+### Import the Package in Python
 
 ```python
 import openmindat
