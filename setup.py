@@ -5,14 +5,15 @@ def readme():
         return f.read()
 
 setup(name='openmindat',
-      version='0.1',
-      description='A test version for OpenMindat package',
-      long_description=readme(),
+      version='0.0.1',
+      description='An alpha version for OpenMindat package',
+      long_description=open('README.md').read(),
+      long_description_content_type='text/markdown',
       classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: Apache Software License',
         "Programming Language :: Python :: 3",
-        'Programming Language :: Python :: 3.10.13',
+        'Programming Language :: Python :: 3.10',
         "Topic :: Software Development :: Libraries :: Python Modules",
     	"Topic :: Scientific/Engineering :: Information Analysis",
       ],

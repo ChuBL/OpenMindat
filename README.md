@@ -122,8 +122,8 @@ Jiyin Zhang
 ## Acknowledgments
 
 <p float="left">
-        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/mindat2017.png"  width="25%">
-        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/NSF_Official_logo_High_Res_1200ppi.png"  width="10%">
+        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/mindat2017.png?raw=true"  width="25%">
+        <img src="https://github.com/ChuBL/OpenMindat/blob/main/Logo/NSF_Official_logo_High_Res_1200ppi.png?raw=true"  width="10%">
 </p>
 
 - This work is supported by NSF, Award #2126315.
