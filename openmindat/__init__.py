@@ -40,6 +40,7 @@ from . import mindat_api
 from .minerals_ima import MineralsIMARetriever
 from .geomaterials_search import GeomaterialSearchRetriever
 from .geomaterials import GeomaterialRetriever
+from .localities import LocalityRetriever
 
 if __name__ == "__main__":
     # --------------------------------------------
