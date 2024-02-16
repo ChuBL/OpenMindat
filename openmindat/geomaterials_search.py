@@ -36,7 +36,7 @@ class GeomaterialSearchRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.geomaterials_search("quartz, green, hexagonal")
             >>> gr.save()
-'''
+        '''
         keywords = KEYWORDS
         self._params.update({'q': keywords})
         return self

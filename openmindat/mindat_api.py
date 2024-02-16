@@ -137,7 +137,7 @@ class MindatApi:
             we need to loop through all pages and save them to a single json file
         ''' 
         end_point = END_POINT
-
+        
         if '' == OUTDIR:
             file_path = Path(self.data_dir, end_point + '.json')
         else:
@@ -156,6 +156,7 @@ class MindatApi:
                             params=params,
                             headers=self._headers)
             
+        
             try:
                 result_data = response.json()["results"]
             except:
@@ -164,7 +165,7 @@ class MindatApi:
             
             json_data = {"results": result_data}
 
-            while True:
+            while not 'page' in params:
                 try:
                     next_url = response.json()["next"]
                     response = requests.get(next_url, headers=self._headers)
@@ -177,6 +178,45 @@ class MindatApi:
 
             json.dump(json_data, f, indent=4)
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        
+    def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+        
+        end_point = END_POINT
+        
+        #When end_point has a value with .../# this method can't save to path correctly
+        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
+        x = end_point.find('/') #returns -1 if there is no /
+        x = x if x != -1 else len(end_point)
+ 
+        if '' == OUTDIR:
+            file_path = Path(self.data_dir, end_point[0:x] + '.json')
+        else:
+            file_path = Path(OUTDIR, end_point[0:x] + '.json')
+
+        with open(file_path, 'w') as f:
+
+            params = QUERY_DICT
+
+            if len(params) <= 2 and 'format' in params and 'page_size' in params:
+                confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+                if confirm.lower() != 'y':
+                    sys.exit("Query not confirmed. Exiting...")
+
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            try:
+                result_data = response.json()
+            except:
+                print("Error: " + str(response.json()))
+                return
+            
+            json_data = {"results": result_data}
+
+            json.dump(json_data, f, indent=4)
+        print("Successfully saved item to " + str(file_path.resolve()))
+         
         
 if __name__ == '__main__':
     # test if api key is valid
