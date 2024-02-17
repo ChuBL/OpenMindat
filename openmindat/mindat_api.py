@@ -165,7 +165,7 @@ class MindatApi:
             
             json_data = {"results": result_data}
 
-            while not 'page' in params:
+            while True:
                 try:
                     next_url = response.json()["next"]
                     response = requests.get(next_url, headers=self._headers)
@@ -180,7 +180,9 @@ class MindatApi:
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
     def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = ''):
-        
+        '''
+            return one item.
+        ''' 
         end_point = END_POINT
         
         #When end_point has a value with .../# this method can't save to path correctly

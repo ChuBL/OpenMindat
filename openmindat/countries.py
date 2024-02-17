@@ -98,14 +98,7 @@ class CountriesRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        
-        # Checks to see if an id is present, if so, returns only one item instead of a list.
-        if '/' in end_point:
-            print("working")
-            ma.get_mindat_item(params, end_point, outdir)
-        else: 
-            ma.get_mindat_list(params, end_point, outdir)    
-        
+        ma.get_mindat_item(params, end_point, outdir)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
