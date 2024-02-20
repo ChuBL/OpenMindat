@@ -63,6 +63,16 @@ lr.country("France").txt("mine")
 lr.save()
 ```
 
+### 5. Retrieve Countries
+
+```python
+from openmindat import CountriesRetriever
+
+cr = CountriesRetriever()
+cr.id(5)
+cr.save()
+```
+
 
 ## Documentation
 
