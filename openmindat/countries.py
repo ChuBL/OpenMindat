@@ -49,7 +49,6 @@ class CountriesRetriever:
         
         self.end_point = (self.end_point + '/' + id)
         
-        print(self.end_point)
         return self
     
     def page(self, PAGE):

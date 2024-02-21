@@ -42,6 +42,7 @@ from .geomaterials_search import GeomaterialSearchRetriever
 from .geomaterials import GeomaterialRetriever
 from .localities import LocalitiesRetriever
 from .countries import CountriesRetriever
+from .dana8 import DanaRetriever
 
 if __name__ == "__main__":
     # --------------------------------------------

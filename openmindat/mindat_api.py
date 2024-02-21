@@ -136,12 +136,16 @@ class MindatApi:
             Since this API has a limit of 1500 items per page,
             we need to loop through all pages and save them to a single json file
         ''' 
+        #When end_point has a value with .../# this method can't save to path correctly
+        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
         end_point = END_POINT
-        
+        x = end_point.find('/') #returns -1 if there is no /
+        x = x if x != -1 else len(end_point)
+ 
         if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point + '.json')
+            file_path = Path(self.data_dir, end_point[0:x] + '.json')
         else:
-            file_path = Path(OUTDIR, end_point + '.json')
+            file_path = Path(OUTDIR, end_point[0:x] + '.json')
 
         with open(file_path, 'w') as f:
 
