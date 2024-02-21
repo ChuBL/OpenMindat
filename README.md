@@ -73,6 +73,15 @@ cr.id(5)
 cr.save()
 ```
 
+### 6. Dana-8 Retriever
+
+```python
+from openmindat import DanaRetriever
+
+dr = DanaRetriever()
+dr.groups()
+dr.save()
+```
 
 ## Documentation
 
