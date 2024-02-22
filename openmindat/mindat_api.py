@@ -129,23 +129,30 @@ class MindatApi:
         now = datetime.now()
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string
+    
+    def get_file_path(self, OUTDIR, END_POINT):
+        #When end_point has a value with .../# this method can't save to path correctly
+        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
+        end_point = END_POINT
+        file_path_size = end_point.find('/') #returns -1 if there is no /
+        file_path_size = file_path_size if file_path_size != -1 else len(end_point)
+        
+        if '' == OUTDIR:
+            return Path(self.data_dir, end_point[0:file_path_size] + '.json')
+        else:
+            return Path(OUTDIR, end_point[0:file_path_size] + '.json')
+        
 
     def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = ''):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
             we need to loop through all pages and save them to a single json file
-        ''' 
-        #When end_point has a value with .../# this method can't save to path correctly
-        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
+        '''
+
         end_point = END_POINT
-        x = end_point.find('/') #returns -1 if there is no /
-        x = x if x != -1 else len(end_point)
- 
-        if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point[0:x] + '.json')
-        else:
-            file_path = Path(OUTDIR, end_point[0:x] + '.json')
+        
+        file_path = self.get_file_path(OUTDIR, END_POINT)
 
         with open(file_path, 'w') as f:
 
@@ -186,19 +193,12 @@ class MindatApi:
     def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = ''):
         '''
             return one item.
-        ''' 
+        '''
+        
         end_point = END_POINT
         
-        #When end_point has a value with .../# this method can't save to path correctly
-        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
-        x = end_point.find('/') #returns -1 if there is no /
-        x = x if x != -1 else len(end_point)
- 
-        if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point[0:x] + '.json')
-        else:
-            file_path = Path(OUTDIR, end_point[0:x] + '.json')
-
+        file_path = self.get_file_path(OUTDIR, END_POINT)
+        
         with open(file_path, 'w') as f:
 
             params = QUERY_DICT
