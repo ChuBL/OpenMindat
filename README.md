@@ -83,6 +83,16 @@ dr.groups()
 dr.save()
 ```
 
+### 7. Nickel-Strunz-10 Retriever
+
+```python
+from openmindat import StrunzRetriever
+
+sr = StrunzRetriever()
+sr.classes()
+sr.save()
+```
+
 ## Documentation
 
 - **GitHub Wiki**: For comprehensive documentation, visit our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki).
