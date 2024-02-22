@@ -15,7 +15,7 @@ class DanaRetriever:
         subgroups: returns subgroup information
 
     Usage:
-        >>> dr = Dana8_Retriever()
+        >>> dr = DanaRetriever()
         >>> dr.groups().save()
 
     Press q to quit.
@@ -108,10 +108,10 @@ class DanaRetriever:
     
     def saveto(self, OUTDIR=''):
         '''
-            Executes the query to retrieve the countries with keywords and saves the results to a specified directory.
+            Executes the query to retrieve the dana-8 data with keywords and saves the results to a specified directory.
 
             Args:
-                OUTDIR (str): The directory path where the retrieved countries will be saved. If not provided, the current directory will be used.
+                OUTDIR (str): The directory path where the retrieved dana-8 data will be saved. If not provided, the current directory will be used.
 
             Returns:
                 None
@@ -135,14 +135,14 @@ class DanaRetriever:
     
     def save(self):
         '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+            Executes the query to retrieve the list of dana-8 data and saves the results to the current directory.
 
             Returns:
                 None
 
             Example:
-                >>> cr = contriesRetriever()
-                >>> cr.save()
+                >>> dr = DanaRetriever()
+                >>> dr.save()
         '''
         self.saveto()
 

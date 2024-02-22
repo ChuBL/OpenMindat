@@ -43,6 +43,7 @@ from .geomaterials import GeomaterialRetriever
 from .localities import LocalitiesRetriever
 from .countries import CountriesRetriever
 from .dana8 import DanaRetriever
+from .nickel_strunz import StrunzRetriever
 
 if __name__ == "__main__":
     # --------------------------------------------

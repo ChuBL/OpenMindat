@@ -104,7 +104,7 @@ class CountriesRetriever:
     
     def save(self):
         '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+            Executes the query to retrieve the list of country data and saves the results to the current directory.
 
             Returns:
                 None
