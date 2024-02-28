@@ -38,9 +38,13 @@ Press q to quit.
 """
 from . import mindat_api
 from .minerals_ima import MineralsIMARetriever
+from .minerals_ima import MineralsIdRetriever
 from .geomaterials_search import GeomaterialSearchRetriever
 from .geomaterials import GeomaterialRetriever
+from .geomaterials import GeomaterialIdRetriever
+from .geomaterials import GeomaterialDictRetriever
 from .localities import LocalitiesRetriever
+from .localities import LocalitiesIdRetriever
 from .countries import CountriesRetriever
 from .dana8 import DanaRetriever
 from .nickel_strunz import StrunzRetriever

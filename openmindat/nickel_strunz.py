@@ -4,12 +4,12 @@ from . import mindat_api
 
 class StrunzRetriever:
     """
-    A class to facilitate the retrieval of nickel strunz 10 data from the Mindat API filtering with type of groups or subgroups.
+    A class to facilitate the retrieval of nickel strunz 10 data from the Mindat API filtering with type of classes or subclasses.
     
     This class allows for method chaining but if more than one method is used it will only return data for the last method used.
 
     Methods:
-        retrieve: N/A
+        retrieve: N/A what is happening
         id: N/A
         families: returns family information
         classes: returns classes information
@@ -17,13 +17,13 @@ class StrunzRetriever:
 
     Usage:
         >>> sr = StrunzRetriever()
-        >>> sr.groups().save()
+        >>> sr.classes().save()
 
     Press q to quit.
     """
     
     def __init__(self):
-       self.path = '' 
+       self.sub_endpoint = '' 
         
        self._params = {}
        self._init_params()
@@ -46,7 +46,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
         
-        self.path = ''
+        self.sub_endpoint = ''
         
         return self        
         
@@ -69,7 +69,7 @@ class StrunzRetriever:
         
         id = str(ID)
         
-        self.path = '/' + id
+        self.sub_endpoint = '/' + id
         
         return self
     
@@ -86,7 +86,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
         
-        self.path = '/classes'
+        self.sub_endpoint = '/classes'
         
         return self
     
@@ -103,7 +103,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
 
-        self.path = '/subclasses'
+        self.sub_endpoint = '/subclasses'
         
         return self
     
@@ -120,16 +120,17 @@ class StrunzRetriever:
             >>> sr.save()
         '''
 
-        self.path = '/families'
+        self.sub_endpoint = '/families'
         
         return self
     
-    def saveto(self, OUTDIR=''):
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the nickel strunz data with keywords and saves the results to a specified directory.
 
             Args:
                 OUTDIR (str): The directory path where the retrieved nickel strunz data will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
@@ -143,21 +144,25 @@ class StrunzRetriever:
 
         params = self._params
         outdir = OUTDIR
-        end_point = 'nickel-strunz-10' + self.path
+        end_point = 'nickel-strunz-10' + self.sub_endpoint
+        file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
         
-        if '/classes' in self.path:
-            ma.get_mindat_item(params, end_point, outdir)
+        if '/classes' in self.sub_endpoint:
+            ma.get_mindat_item(params, end_point, outdir, file_name)
         else:
-            ma.get_mindat_list(params, end_point, outdir)
+            ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
     
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
             Executes the query to retrieve the list of nickel strunz data and saves the results to the current directory.
+            
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
@@ -166,9 +171,11 @@ class StrunzRetriever:
                 >>> sr = StrunzRetriever()
                 >>> sr.save()
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 
 if __name__ == '__main__':
     sr = StrunzRetriever()
-    sr.groups().save()
+    sr.classes().save()

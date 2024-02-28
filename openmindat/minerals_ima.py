@@ -249,12 +249,13 @@ class MineralsIMARetriever:
 
         return self
     
-    def saveto(self, OUTDIR=''):
+    def saveto(self, OUTDIR='', FILE_NAME = ''):
         '''
             Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
 
             Args:
                 OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
@@ -269,17 +270,21 @@ class MineralsIMARetriever:
         params = self._params
         end_point = 'minerals_ima'
         outdir = OUTDIR
+        file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir)
+        ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
     
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
             Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+                
             Returns:
                 None
 
@@ -287,7 +292,101 @@ class MineralsIMARetriever:
                 >>> mir = MineralsIMARetriever()
                 >>> mir.save()
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
+        
+        
+class MineralsIdRetriever:
+    """
+    This module provides the MineralsIdRetriever class for returning Minerals by id
+
+    Usage:
+        >>> midr = MineralsIdRetriever()
+        >>> midr.id(5)
+
+    Attributes:
+        _id (int): An int to store id parameter.
+    """
+    
+    def __init__(self):
+        self.sub_endpoint = '0'
+        
+        self._params = {}
+        self._init_params()
+
+    def _init_params(self):
+        self._params.clear()
+        self._params = {'format': 'json'}
+
+    def id(self, ID :int):
+        '''
+        Returns locality with matching id
+
+        Args:
+            id (INT): The locality id.
+
+        Returns:
+            self: The MineralsIdRetriever() object.
+
+        Example:
+            >>> midr = MineralsIdRetriever()
+            >>> midr.id(2)
+            >>> midr.save()
+        '''
+        
+        id = str(ID)
+        
+        self.sub_endpoint = id
+        
+        return self
+    
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the Minerals with keywords and saves the results to a specified directory.
+
+            Args:
+                OUTDIR (str): The directory path where the retrieved Minerals will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+            Returns:
+                None
+
+            Example:
+                >>> midr = MineralsIdRetriever()
+                >>> midr.saveto("/path/to/directory", "Mineral_ima_id")
+        '''
+
+        print("Retrieving Minerals. This may take a while... ")
+
+        params = self._params
+        end_point = '/'.join(['minerals_ima', self.sub_endpoint])
+        outdir = OUTDIR
+        file_name = FILE_NAME
+
+        ma = mindat_api.MindatApi()
+        ma.get_mindat_item(params, end_point, outdir, file_name)
+
+        # reset the query parameters in case the user wants to make another query
+        self._init_params()
+    
+    def save(self, FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the list of minerals and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            
+            Returns:
+                None
+
+            Example:
+                >>> midr = MineralsIdRetriever()
+                >>> midr.save()
+        '''
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 
 if __name__ == '__main__':

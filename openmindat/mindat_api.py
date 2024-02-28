@@ -1,3 +1,4 @@
+import re
 import requests
 from pathlib import Path
 import sys
@@ -89,15 +90,27 @@ class MindatApi:
     def get_headers(self):
         return self._headers
     
-    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+    def get_file_path(self, OUTDIR, FILE_NAME):
+        '''
+            Reads an End_point
+        '''
+        file_name = str(FILE_NAME)
+        
+        #input sanitization
+        clean_name = re.sub(r"[\\?%*:|\"<>\x7F\x00-\x1F]", "-", file_name)
+        
+        if '' == OUTDIR:
+            return Path(self.data_dir, clean_name.split('/')[0] + '.json')
+        else:
+            return Path(OUTDIR, clean_name.split('/')[0] + '.json')
+    
+    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         params = QUERY_DICT
     
         end_point = END_POINT
-
-        if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point + '.json')
-        else:
-            file_path = Path(OUTDIR, end_point + '.json')
+        file_name = FILE_NAME if FILE_NAME else END_POINT        
+        
+        file_path = self.get_file_path(OUTDIR, file_name)
 
         with open(file_path, 'w') as f:
 
@@ -128,22 +141,9 @@ class MindatApi:
         # use datetime to get current date and time
         now = datetime.now()
         dt_string = now.strftime("%m%d%Y%H%M%S")
-        return dt_string
-    
-    def get_file_path(self, OUTDIR, END_POINT):
-        #When end_point has a value with .../# this method can't save to path correctly
-        #so this statement reads up untill the '/' or else it just puts the entire string in --Cory
-        end_point = END_POINT
-        file_path_size = end_point.find('/') #returns -1 if there is no /
-        file_path_size = file_path_size if file_path_size != -1 else len(end_point)
-        
-        if '' == OUTDIR:
-            return Path(self.data_dir, end_point[0:file_path_size] + '.json')
-        else:
-            return Path(OUTDIR, end_point[0:file_path_size] + '.json')
-        
+        return dt_string        
 
-    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
@@ -151,8 +151,9 @@ class MindatApi:
         '''
 
         end_point = END_POINT
+        file_name = FILE_NAME if FILE_NAME else END_POINT        
         
-        file_path = self.get_file_path(OUTDIR, END_POINT)
+        file_path = self.get_file_path(OUTDIR, file_name)
 
         with open(file_path, 'w') as f:
 
@@ -190,14 +191,15 @@ class MindatApi:
             json.dump(json_data, f, indent=4)
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
-    def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+    def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         '''
             return one item.
         '''
         
         end_point = END_POINT
+        file_name = FILE_NAME if FILE_NAME else END_POINT  
         
-        file_path = self.get_file_path(OUTDIR, END_POINT)
+        file_path = self.get_file_path(OUTDIR, file_name)
         
         with open(file_path, 'w') as f:
 

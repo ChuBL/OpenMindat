@@ -22,7 +22,7 @@ class DanaRetriever:
     """
     
     def __init__(self):
-       self.path = '' 
+       self.sub_endpoint = '' 
         
        self._params = {}
        self._init_params()
@@ -45,7 +45,7 @@ class DanaRetriever:
             >>> dr.save()
         '''
         
-        self.path = ''
+        self.sub_endpoint = ''
         
         return self        
         
@@ -68,7 +68,7 @@ class DanaRetriever:
         
         id = str(ID)
         
-        self.path = '/' + id
+        self.sub_endpoint = '/' + id
         
         return self
     
@@ -85,7 +85,7 @@ class DanaRetriever:
             >>> dr.save()
         '''
         
-        self.path = '/groups'
+        self.sub_endpoint = '/groups'
         
         return self
     
@@ -102,16 +102,17 @@ class DanaRetriever:
             >>> dr.save()
         '''
 
-        self.path = '/subgroups'
+        self.sub_endpoint = '/subgroups'
         
         return self
     
-    def saveto(self, OUTDIR=''):
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the dana-8 data with keywords and saves the results to a specified directory.
 
             Args:
                 OUTDIR (str): The directory path where the retrieved dana-8 data will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
@@ -125,17 +126,24 @@ class DanaRetriever:
 
         params = self._params
         outdir = OUTDIR
-        end_point = 'dana-8' + self.path
+        file_name = FILE_NAME
+        end_point = 'dana-8'
+        
+        if self.sub_endpoint != '':
+            end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir)
+        ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
     
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
             Executes the query to retrieve the list of dana-8 data and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
@@ -144,7 +152,9 @@ class DanaRetriever:
                 >>> dr = DanaRetriever()
                 >>> dr.save()
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 
 if __name__ == '__main__':
