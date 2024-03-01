@@ -45,7 +45,10 @@ from .geomaterials import GeomaterialIdRetriever
 from .geomaterials import GeomaterialDictRetriever
 from .localities import LocalitiesRetriever
 from .localities import LocalitiesIdRetriever
+from .localities_age import LocalitiesAgeRetriever
+from .localities_age import LocalitiesAgeIdRetriever
 from .countries import CountriesRetriever
+from .countries import CountriesIdRetriever
 from .dana8 import DanaRetriever
 from .nickel_strunz import StrunzRetriever
 

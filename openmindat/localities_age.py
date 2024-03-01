@@ -1,26 +1,24 @@
 from . import mindat_api
 
 
-class CountriesRetriever:
+class LocalitiesAgeRetriever:
     """
-    A class to facilitate the retrieval of country data from the Mindat API using an id or by page.
+    A class to facilitate the retrieval of lacality data from the Mindat API filtered by page.
 
     Methods:
-        id(INT): returns the country with the matching id.
-        page(INT): returns a page of countries.
-        saveto(OUTDIR, FILENAME): Executes the search query and saves the data to a specified directory.
-        save(FILENAME): Executes the search query and saves the data to the current directory.
+        page(INT): returns a page of localities.
+        saveto(OUTDIR): Executes the search query and saves the data to a specified directory.
+        save(): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> cr = CountriesRetriever()
-        >>> cr.id(5).save()
-        >>> cr.page(2).save()
+        >>> lar = LocalitiesAgeRetriever()
+        >>> lar.page(2).save()
 
     Press q to quit.
     """
     
     def __init__(self):
-       self.end_point = 'countries' 
+       self.end_point = 'locality_age' 
         
        self._params = {}
        self._init_params()
@@ -29,42 +27,20 @@ class CountriesRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
     
-    def id(self, ID :int):
-        '''
-        Returns a country with the matching ID
-
-        Args:
-            id (INT): The country id.
-
-        Returns:
-            self: The CountriesRetriver object.
-
-        Example:
-            >>> cr = CountriesRetriever()
-            >>> cr.id(2)
-            >>> cr.save()
-        '''
-        
-        id = str(ID)
-        
-        self.end_point = (self.end_point + '/' + id)
-        
-        return self
-    
     def page(self, PAGE):
         '''
-        Returns a page of country data.
+        Returns a page of locality data.
 
         Args:
             page (INT): The page number.
 
         Returns:
-            self: The CountriesRetriver object.
+            self: The LocalitiesAgeRetriver object.
 
         Example:
-            >>> cr = CountriesRetriever()
-            >>> cr.page(2)
-            >>> cr.save()
+            >>> lar = LocalitiesAgeRetriever()
+            >>> lar.page(2)
+            >>> lar.save()
         '''
         
         page = PAGE
@@ -77,21 +53,21 @@ class CountriesRetriever:
     
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
-            Executes the query to retrieve the countries with keywords and saves the results to a specified directory.
+            Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
 
             Args:
-                OUTDIR (str): The directory path where the retrieved countries will be saved. If not provided, the current directory will be used.
+                OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.saveto("/path/to/directory")
+                >>> lar = LocalityAgeRetriever()
+                >>> lar.saveto("/path/to/directory")
         '''
         
-        print("Retrieving Countries. This may take a while... ")
+        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -106,7 +82,7 @@ class CountriesRetriever:
     
     def save(self, FILE_NAME = ''):
         '''
-            Executes the query to retrieve the list of country data and saves the results to the current directory.
+            Executes the query to retrieve the list of locality data and saves the results to the current directory.
 
             Args:
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
@@ -115,32 +91,32 @@ class CountriesRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.save()
+                >>> lar = LocalitiesAgeRetriever()
+                >>> lar.save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
         
-
-class CountriesIdRetriever:
+        
+class LocalitiesAgeIdRetriever:
     """
-    A class to facilitate the retrieval of country data from the Mindat API using an id or by page.
+    A class to facilitate the retrieval of lacality data from the Mindat API filtered by id.
 
     Methods:
         id(INT): returns the country with the matching id.
-        saveto(OUTDIR, FILENAME): Executes the search query and saves the data to a specified directory.
-        save(FILENAME): Executes the search query and saves the data to the current directory.
+        saveto(OUTDIR): Executes the search query and saves the data to a specified directory.
+        save(): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> cir = CountriesIdRetriever()
-        >>> cir.id(5).save()
+        >>> lair = LocalitiesAgeIdRetriever()
+        >>> lair.id(5).save()
 
     Press q to quit.
     """
     
     def __init__(self):
-       self.end_point = 'countries' 
+       self.end_point = 'locality_age' 
         
        self._params = {}
        self._init_params()
@@ -157,12 +133,12 @@ class CountriesIdRetriever:
             id (INT): The country id.
 
         Returns:
-            self: The CountriesRetriver object.
+            self: The LocalitiesAgeIdRetriver object.
 
         Example:
-            >>> cr = CountriesRetriever()
-            >>> cr.id(2)
-            >>> cr.save()
+            >>> lair = LocalitiesAgeIdRetriever()
+            >>> lair.id(2)
+            >>> lair.save()
         '''
         
         id = str(ID)
@@ -173,21 +149,21 @@ class CountriesIdRetriever:
     
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
-            Executes the query to retrieve the countries with keywords and saves the results to a specified directory.
+            Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
 
             Args:
-                OUTDIR (str): The directory path where the retrieved countries will be saved. If not provided, the current directory will be used.
+                OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
 
             Example:
-                >>> cir = CountriesIdRetriever()
-                >>> cir.saveto("/path/to/directory")
+                >>> lair = LocalitiesAgeIdRetriever()
+                >>> lair.saveto("/path/to/directory")
         '''
         
-        print("Retrieving Countries. This may take a while... ")
+        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -202,7 +178,7 @@ class CountriesIdRetriever:
     
     def save(self, FILE_NAME = ''):
         '''
-            Executes the query to retrieve the list of country data and saves the results to the current directory.
+            Executes the query to retrieve the list of locality data and saves the results to the current directory.
 
             Args:
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
@@ -211,13 +187,13 @@ class CountriesIdRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.save()
+                >>> lair = localitiesAgeIdRetriever()
+                >>> lair.save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
 
 if __name__ == '__main__':
-    cr = CountriesRetriever()
-    cr.id(2).save()
+    lair = LocalitiesAgeIdRetriever()
+    lair.id(2).save()
