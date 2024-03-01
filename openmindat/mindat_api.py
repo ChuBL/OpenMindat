@@ -95,14 +95,17 @@ class MindatApi:
             Reads an End_point
         '''
         file_name = str(FILE_NAME)
+        invalid_symbols = re.findall(r"[\\?%*:|\"<>\x7F\x00-\x1F]", file_name)
         
-        #input sanitization
-        clean_name = re.sub(r"[\\?%*:|\"<>\x7F\x00-\x1F]", "-", file_name)
+        #input sanitization test
+        if invalid_symbols:
+            raise ValueError(f"Invalid characters in file name: {invalid_symbols}")  
         
+        #creating filepath
         if '' == OUTDIR:
-            return Path(self.data_dir, clean_name.split('/')[0] + '.json')
+            return Path(self.data_dir, file_name.replace('/', '_') + '.json')
         else:
-            return Path(OUTDIR, clean_name.split('/')[0] + '.json')
+            return Path(OUTDIR, file_name.replace('/', '_') + '.json')
     
     def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         params = QUERY_DICT

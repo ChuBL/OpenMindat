@@ -9,7 +9,7 @@ class StrunzRetriever:
     This class allows for method chaining but if more than one method is used it will only return data for the last method used.
 
     Methods:
-        retrieve: N/A what is happening
+        retrieve: N/A
         id: N/A
         families: returns family information
         classes: returns classes information

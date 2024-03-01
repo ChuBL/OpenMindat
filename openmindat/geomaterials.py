@@ -1318,13 +1318,13 @@ class GeomaterialIdRetriever:
         self._params = {'format': 'json'}
 
     #ask about if this option of addint variety to this endpoint is a good idea
-    def id(self, ID :int, VARIETIES :Optional[int] = None):
+    def id(self, ID :int, VARIETIES = None):
         '''
         Returns locality with matching id
 
         Args:
             id (INT): The locality id.
-            variety (INT): toggles returning variety
+            variety: optional toggle returning varieties with 'y', leave empty if varieties aren't wanted
 
         Returns:
             self: The GeomaterialIdRetriever() object.
@@ -1338,8 +1338,10 @@ class GeomaterialIdRetriever:
         id = str(ID)
         varieties = VARIETIES
         
-        if varieties == 1:
+        if varieties == 'y':
             self.sub_endpoint = '/'.join([id, 'varieties'])
+        elif varieties != None:
+            raise ValueError(f"Invalid input for 'varieties': {varieties}")
         else:
             self.sub_endpoint = id
         
