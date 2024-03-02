@@ -1,7 +1,7 @@
 from . import mindat_api
 
 
-class LocalitiesAgeRetriever:
+class LocalitiesTypeRetriever:
     """
     A class to facilitate the retrieval of lacality data from the Mindat API filtered by page.
 
@@ -11,14 +11,14 @@ class LocalitiesAgeRetriever:
         save(FILENAME): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> lar = LocalitiesAgeRetriever()
-        >>> lar.page(2).save()
+        >>> ltr = LocalitiesTypeRetriever()
+        >>> ltr.page(2).save()
 
     Press q to quit.
     """
     
     def __init__(self):
-       self.end_point = 'locality_age' 
+       self.end_point = 'locality_type' 
         
        self._params = {}
        self._init_params()
@@ -36,12 +36,12 @@ class LocalitiesAgeRetriever:
             PAGE_SIZE (int): The number of results per page.
 
         Returns:
-            self: The LocalitiesAgeRetriever object.
+            self: The LocalitiesRetriever object.
             
         Example:
-            >>> lar = LocalitiesAgeRetriever()
-            >>> lar.page_size(50)
-            >>> lar.saveto()
+            >>> ltr = LocalitiesTypeRetriever()
+            >>> ltr.page_size(50)
+            >>> ltr.saveto()
         '''
         self._params.update({
             'page_size': PAGE_SIZE
@@ -57,12 +57,12 @@ class LocalitiesAgeRetriever:
             page (INT): The page number.
 
         Returns:
-            self: The LocalitiesAgeRetriver object.
+            self: The LocalitiesTypeRetriver object.
 
         Example:
-            >>> lar = LocalitiesAgeRetriever()
-            >>> lar.page(2)
-            >>> lar.save()
+            >>> ltr = LocalitiesTypeRetriever()
+            >>> ltr.page(2)
+            >>> ltr.save()
         '''
         
         page = PAGE
@@ -85,8 +85,8 @@ class LocalitiesAgeRetriever:
                 None
 
             Example:
-                >>> lar = LocalityAgeRetriever()
-                >>> lar.saveto("/path/to/directory")
+                >>> ltr = LocalityTypeRetriever()
+                >>> ltr.saveto("/path/to/directory")
         '''
         
         print("Retrieving localities. This may take a while... ")
@@ -118,15 +118,15 @@ class LocalitiesAgeRetriever:
                 None
 
             Example:
-                >>> lar = LocalitiesAgeRetriever()
-                >>> lar.save()
+                >>> ltr = LocalitiesTypeRetriever()
+                >>> ltr.save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
         
         
-class LocalitiesAgeIdRetriever:
+class LocalitiesTypeIdRetriever:
     """
     A class to facilitate the retrieval of lacality data from the Mindat API filtered by id.
 
@@ -136,14 +136,14 @@ class LocalitiesAgeIdRetriever:
         save(): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> lair = LocalitiesAgeIdRetriever()
-        >>> lair.id(5).save()
+        >>> ltir = LocalitiesTypeIdRetriever()
+        >>> ltir.id(5).save()
 
     Press q to quit.
     """
     
     def __init__(self):
-       self.end_point = 'locality_age' 
+       self.end_point = 'locality_type' 
         
        self._params = {}
        self._init_params()
@@ -160,12 +160,12 @@ class LocalitiesAgeIdRetriever:
             id (INT): The country id.
 
         Returns:
-            self: The LocalitiesAgeIdRetriver object.
+            self: The LocalitiesTypeIdRetriver object.
 
         Example:
-            >>> lair = LocalitiesAgeIdRetriever()
-            >>> lair.id(2)
-            >>> lair.save()
+            >>> ltir = LocalitiesTypeIdRetriever()
+            >>> ltir.id(2)
+            >>> ltir.save()
         '''
         
         id = str(ID)
@@ -186,8 +186,8 @@ class LocalitiesAgeIdRetriever:
                 None
 
             Example:
-                >>> lair = LocalitiesAgeIdRetriever()
-                >>> lair.saveto("/path/to/directory")
+                >>> ltir = LocalitiesTypeIdRetriever()
+                >>> ltir.saveto("/path/to/directory")
         '''
         
         print("Retrieving localities. This may take a while... ")
@@ -214,13 +214,13 @@ class LocalitiesAgeIdRetriever:
                 None
 
             Example:
-                >>> lair = localitiesAgeIdRetriever()
-                >>> lair.save()
+                >>> ltir = localitiesTypeIdRetriever()
+                >>> ltir.save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
 
 if __name__ == '__main__':
-    lair = LocalitiesAgeIdRetriever()
-    lair.id(2).save()
+    ltir = LocalitiesTypeIdRetriever()
+    ltir.id(2).save()

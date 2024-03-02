@@ -97,7 +97,7 @@ class MindatApi:
         file_name = str(FILE_NAME)
         invalid_symbols = re.findall(r"[\\?%*:|\"<>\x7F\x00-\x1F]", file_name)
         
-        #input sanitization test
+        #input sanitization
         if invalid_symbols:
             raise ValueError(f"Invalid characters in file name: {invalid_symbols}")  
         
