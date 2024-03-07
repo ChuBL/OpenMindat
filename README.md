@@ -129,7 +129,7 @@ For further assistance or feedback, feel free to contact the development team at
 
 ## Author
 
-Jiyin Zhang 
+Jiyin Zhang， Clairmont Cory
 
 ## Acknowledgments
 
