@@ -5,6 +5,7 @@ from . import mindat_api
 class DanaRetriever:
     """
     A class to facilitate the retrieval of dana-8 data from the Mindat API filtering with type of groups or subgroups.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/dana-8/operation/dana_8_retrieve
     
     This class allows for method chaining but if more than one method is used it will only return data for the last method used.
 
@@ -49,7 +50,7 @@ class DanaRetriever:
         
         return self        
         
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns dana-8 classification with matching id
         Not yet working
@@ -65,10 +66,14 @@ class DanaRetriever:
             >>> dr.id(2)
             >>> dr.save()
         '''
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
         
-        self.sub_endpoint = '/' + id
+        self.sub_endpoint = id
         
         return self
     
@@ -85,7 +90,7 @@ class DanaRetriever:
             >>> dr.save()
         '''
         
-        self.sub_endpoint = '/groups'
+        self.sub_endpoint = 'groups'
         
         return self
     
@@ -102,7 +107,7 @@ class DanaRetriever:
             >>> dr.save()
         '''
 
-        self.sub_endpoint = '/subgroups'
+        self.sub_endpoint = 'subgroups'
         
         return self
     

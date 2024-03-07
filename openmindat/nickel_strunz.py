@@ -5,6 +5,7 @@ from . import mindat_api
 class StrunzRetriever:
     """
     A class to facilitate the retrieval of nickel strunz 10 data from the Mindat API filtering with type of classes or subclasses.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/nickel-strunz-10
     
     This class allows for method chaining but if more than one method is used it will only return data for the last method used.
 
@@ -50,7 +51,7 @@ class StrunzRetriever:
         
         return self        
         
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns Nickel Strunz classification with matching id
         Not yet working
@@ -67,9 +68,14 @@ class StrunzRetriever:
             >>> sr.save()
         '''
         
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
+        
         id = str(ID)
         
-        self.sub_endpoint = '/' + id
+        self.sub_endpoint = id
         
         return self
     
@@ -86,7 +92,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
         
-        self.sub_endpoint = '/classes'
+        self.sub_endpoint = 'classes'
         
         return self
     
@@ -103,7 +109,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
 
-        self.sub_endpoint = '/subclasses'
+        self.sub_endpoint = 'subclasses'
         
         return self
     
@@ -120,7 +126,7 @@ class StrunzRetriever:
             >>> sr.save()
         '''
 
-        self.sub_endpoint = '/families'
+        self.sub_endpoint = 'families'
         
         return self
     
@@ -144,7 +150,7 @@ class StrunzRetriever:
 
         params = self._params
         outdir = OUTDIR
-        end_point = 'nickel-strunz-10' + self.sub_endpoint
+        end_point = '/'.join(['nickel-strunz-10', self.sub_endpoint])
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()

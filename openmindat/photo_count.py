@@ -3,6 +3,7 @@ from . import mindat_api
 class PhotoCountRetriever:
     """
     A class to facilitate the retrieval of photo count data from the Mindat API.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/photocount
     
     Methods:
         saveto(OUTDIR): Executes the search query and saves the data to a specified directory.

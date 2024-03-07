@@ -52,6 +52,7 @@ from .localities_status import LocalitiesStatusIdRetriever
 from .localities_type import LocalitiesTypeRetriever
 from .localities_type import LocalitiesTypeIdRetriever
 from .locgeoregion2 import GeoRegionRetriever
+from .locobject import LocobjectRetriever
 from .countries import CountriesRetriever
 from .countries import CountriesIdRetriever
 from .dana8 import DanaRetriever

@@ -3,6 +3,7 @@ from . import mindat_api
 class GeomaterialSearchRetriever:
     """
     A class to facilitate the retrieval of geomaterial data from the Mindat API using search keywords. It enables users to construct queries based on specific keywords and offers functionality to save the retrieved data.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials_search
 
     Methods:
         geomaterials_search(KEYWORDS): Updates the search query with specified keywords.

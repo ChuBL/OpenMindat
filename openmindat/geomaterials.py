@@ -1,10 +1,10 @@
-from typing import Optional
 from . import mindat_api
 from datetime import datetime
 
 class GeomaterialRetriever:
     """
     This module provides the GeomaterialRetriever class for retrieving geomaterial data from the Mindat API. This class offers various methods to specify query parameters for filtering and retrieving detailed information about geomaterials, such as minerals and rocks.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials
 
     The class allows for setting parameters like birifrigence, cleavage type, color, crystal system, density, diaphaneity, chemical elements inclusion or exclusion, entry types, optical properties, and more. It provides flexibility through method chaining and supports saving the query results either to a specified directory or to the current directory.
 
@@ -1298,13 +1298,14 @@ class GeomaterialRetriever:
 class GeomaterialIdRetriever:
     """
     This module provides the GeomaterialIdRetriever class for returning geomaterial by id
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_retrieve
 
     Usage:
         >>> gir = GeomaterialIdRetriever()
         >>> gir.id(5).save
 
     Attributes:
-        _id (int): An int to store id parameter.
+        id (int): An int to store id parameter.
     """
     
     def __init__(self):
@@ -1318,7 +1319,7 @@ class GeomaterialIdRetriever:
         self._params = {'format': 'json'}
 
     #ask about if this option of addint variety to this endpoint is a good idea
-    def id(self, ID :int, VARIETIES = None):
+    def id(self, ID, VARIETIES = None):
         '''
         Returns locality with matching id
 
@@ -1334,6 +1335,11 @@ class GeomaterialIdRetriever:
             >>> gir.id(2)
             >>> gir.save()
         '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
         varieties = VARIETIES
@@ -1399,14 +1405,15 @@ class GeomaterialIdRetriever:
 class GeomaterialDictRetriever:
     """
     This module provides the GeomaterialDictRetriever class for returning geomaterial Dictionaries
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_dict_retrieve
 
     Usage:
         >>> gdr = GeomaterialDictRetriever()
         >>> gdr.id(5)
 
     Attributes:
-        _id (int): An int to store id parameter.
-    """
+        id (int): An int to store id parameter.
+    """ 
     
     def __init__(self):
         self.sub_endpoint = '0'

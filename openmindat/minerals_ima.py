@@ -4,6 +4,7 @@ from datetime import datetime
 class MineralsIMARetriever:
     '''
     A class for querying mineral data from the Mindat API. It supports various query parameters such as mineral IDs, IMA status, fields selection, and pagination. The class enables method chaining for building complex queries and provides functionalities to save the queried data either to a specified directory or the current directory.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/minerals_ima
 
     Usage:
         >>> mir = MineralsIMARetriever()
@@ -300,13 +301,14 @@ class MineralsIMARetriever:
 class MineralsIdRetriever:
     """
     This module provides the MineralsIdRetriever class for returning Minerals by id
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/minerals_ima/operation/minerals_ima_retrieve
 
     Usage:
         >>> midr = MineralsIdRetriever()
         >>> midr.id(5)
 
     Attributes:
-        _id (int): An int to store id parameter.
+        id (int): An int to store id parameter.
     """
     
     def __init__(self):
@@ -319,7 +321,7 @@ class MineralsIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
 
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns locality with matching id
 
@@ -334,6 +336,11 @@ class MineralsIdRetriever:
             >>> midr.id(2)
             >>> midr.save()
         '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
         

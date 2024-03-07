@@ -4,6 +4,7 @@ from datetime import datetime
 class LocalitiesRetriever:
     """
     This module provides the LocalitiesRetriever class for querying locality data from the Mindat API. The class enables users to construct queries based on various parameters such as country, description, included/excluded elements, and more. It supports method chaining for the flexible combination of query parameters and offers functionality to save the queried data either to a specified directory or the current directory.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/localities
 
     Usage:
         >>> lr = LocalitiesRetriever()
@@ -382,13 +383,14 @@ class LocalitiesRetriever:
 class LocalitiesIdRetriever:
     """
     This module provides the LocalitiesIdRetriever class for returning localities by id
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/localities/operation/localities_retrieve
 
     Usage:
         >>> lir = LocalitiesIdRetriever()
         >>> lir.id(5)
 
     Attributes:
-        _id (int): An int to store id parameter.
+        id (int): An int to store id parameter.
     """
     
     def __init__(self):
@@ -401,7 +403,7 @@ class LocalitiesIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
 
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns locality with matching id
 
@@ -416,6 +418,11 @@ class LocalitiesIdRetriever:
             >>> lir.id(2)
             >>> lir.save()
         '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
         

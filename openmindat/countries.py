@@ -3,17 +3,16 @@ from . import mindat_api
 
 class CountriesRetriever:
     """
-    A class to facilitate the retrieval of country data from the Mindat API using an id or by page.
+    A class to facilitate the retrieval of country data from the Mindat API using by page.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/countries/operation/countries_list
 
     Methods:
-        id(INT): returns the country with the matching id.
         page(INT): returns a page of countries.
         saveto(OUTDIR, FILENAME): Executes the search query and saves the data to a specified directory.
         save(FILENAME): Executes the search query and saves the data to the current directory.
 
     Usage:
         >>> cr = CountriesRetriever()
-        >>> cr.id(5).save()
         >>> cr.page(2).save()
 
     Press q to quit.
@@ -28,28 +27,6 @@ class CountriesRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
-    
-    def id(self, ID :int):
-        '''
-        Returns a country with the matching ID
-
-        Args:
-            id (INT): The country id.
-
-        Returns:
-            self: The CountriesRetriver object.
-
-        Example:
-            >>> cr = CountriesRetriever()
-            >>> cr.id(2)
-            >>> cr.save()
-        '''
-        
-        id = str(ID)
-        
-        self.end_point = (self.end_point + '/' + id)
-        
-        return self
     
     def page(self, PAGE):
         '''
@@ -125,7 +102,8 @@ class CountriesRetriever:
 
 class CountriesIdRetriever:
     """
-    A class to facilitate the retrieval of country data from the Mindat API using an id or by page.
+    A class to facilitate the retrieval of country data from the Mindat API using an id.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/countries/operation/countries_retrieve
 
     Methods:
         id(INT): returns the country with the matching id.
@@ -133,8 +111,8 @@ class CountriesIdRetriever:
         save(FILENAME): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> cir = CountriesIdRetriever()
-        >>> cir.id(5).save()
+        >>> cidr = CountriesIdRetriever()
+        >>> cidr.id(5).save()
 
     Press q to quit.
     """
@@ -149,7 +127,7 @@ class CountriesIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
     
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns a country with the matching ID
 
@@ -157,17 +135,22 @@ class CountriesIdRetriever:
             id (INT): The country id.
 
         Returns:
-            self: The CountriesRetriver object.
+            self: The CountriesIdRetriver object.
 
         Example:
-            >>> cr = CountriesRetriever()
-            >>> cr.id(2)
-            >>> cr.save()
+            >>> cidr = CountriesIdRetriever()
+            >>> cidr.id(2)
+            >>> cidr.save()
         '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
         
-        self.end_point = (self.end_point + '/' + id)
+        self.end_point = '/'.join([self.end_point, id])
         
         return self
     
@@ -183,8 +166,8 @@ class CountriesIdRetriever:
                 None
 
             Example:
-                >>> cir = CountriesIdRetriever()
-                >>> cir.saveto("/path/to/directory")
+                >>> cidr = CountriesIdRetriever()
+                >>> cidr.saveto("/path/to/directory")
         '''
         
         print("Retrieving Countries. This may take a while... ")
@@ -211,13 +194,13 @@ class CountriesIdRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.save()
+                >>> cidr = countriesIdRetriever()
+                >>> cidr.save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
 
 if __name__ == '__main__':
-    cr = CountriesRetriever()
-    cr.id(2).save()
+    cidr = CountriesIdRetriever()
+    cidr.id(2).save()

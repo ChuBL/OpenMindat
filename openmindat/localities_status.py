@@ -3,7 +3,8 @@ from . import mindat_api
 
 class LocalitiesStatusRetriever:
     """
-    A class to facilitate the retrieval of lacality data from the Mindat API filtered by page.
+    A class to facilitate the retrieval of locality data from the Mindat API filtered by page.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/locality_status
 
     Methods:
         page(INT): returns a page of localities.
@@ -128,7 +129,8 @@ class LocalitiesStatusRetriever:
         
 class LocalitiesStatusIdRetriever:
     """
-    A class to facilitate the retrieval of lacality data from the Mindat API filtered by id.
+    A class to facilitate the retrieval of locality data from the Mindat API filtered by id.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/locality_status/operation/locality_status_retrieve
 
     Methods:
         id(INT): returns the country with the matching id.
@@ -152,7 +154,7 @@ class LocalitiesStatusIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
     
-    def id(self, ID :int):
+    def id(self, ID):
         '''
         Returns a country with the matching ID
 
@@ -168,9 +170,14 @@ class LocalitiesStatusIdRetriever:
             >>> lsir.save()
         '''
         
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
+        
         id = str(ID)
         
-        self.end_point = (self.end_point + '/' + id)
+        self.end_point = '/'.join([self.end_point, id])
         
         return self
     

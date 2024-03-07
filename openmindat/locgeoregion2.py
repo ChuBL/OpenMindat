@@ -4,6 +4,7 @@ from . import mindat_api
 class GeoRegionRetriever:
     """
     A class to facilitate the retrieval of locality geoRegion data from the Mindat API filtered by page.
+    for more information visit: https://api.mindat.org/schema/redoc/#tag/locgeoregion2
 
     Methods:
         page(INT): returns a page of localities.
