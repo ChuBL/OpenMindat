@@ -3,6 +3,7 @@ from . import mindat_api
 class GeomaterialSearchRetriever:
     """
     A class to facilitate the retrieval of geomaterial data from the Mindat API using search keywords. It enables users to construct queries based on specific keywords and offers functionality to save the retrieved data.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials_search
 
     Methods:
         geomaterials_search(KEYWORDS): Updates the search query with specified keywords.
@@ -36,42 +37,48 @@ class GeomaterialSearchRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.geomaterials_search("quartz, green, hexagonal")
             >>> gr.save()
-'''
+        '''
         keywords = KEYWORDS
         self._params.update({'q': keywords})
         return self
     
-    def saveto(self, OUTDIR = ''):
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
 
             Args:
                 OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
         '''
-
         print("Retrieving geomaterials. This may take a while... ")
         
         params = self._params
         end_point = 'geomaterials_search'
         outdir = OUTDIR
+        file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_search(params, end_point, outdir)
+        ma.get_mindat_search(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
 
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
             Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from datetime import datetime
 class LocalitiesRetriever:
     """
     This module provides the LocalitiesRetriever class for querying locality data from the Mindat API. The class enables users to construct queries based on various parameters such as country, description, included/excluded elements, and more. It supports method chaining for the flexible combination of query parameters and offers functionality to save the queried data either to a specified directory or the current directory.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/localities
 
     Usage:
         >>> lr = LocalitiesRetriever()
@@ -331,19 +332,20 @@ class LocalitiesRetriever:
 
         return self
     
-    def saveto(self, OUTDIR=''):
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
-            Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
+            Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
 
             Args:
-                OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
+                OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
             Returns:
                 None
 
             Example:
                 >>> lr = LocalitiesRetriever()
-                >>> lr.saveto("/path/to/directory")
+                >>> lr.saveto("/path/to/directory", "france")
         '''
 
         print("Retrieving localities. This may take a while... ")
@@ -351,17 +353,21 @@ class LocalitiesRetriever:
         params = self._params
         end_point = 'localities'
         outdir = OUTDIR
+        file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir)
+        ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
     
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+            Executes the query to retrieve the list of localities and saves the results to the current directory.
 
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            
             Returns:
                 None
 
@@ -369,8 +375,107 @@ class LocalitiesRetriever:
                 >>> lr = LocalitiesRetriever()
                 >>> lr.save()
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
+        
+        
+class LocalitiesIdRetriever:
+    """
+    This module provides the LocalitiesIdRetriever class for returning localities by id
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/localities/operation/localities_retrieve
 
+    Usage:
+        >>> lir = LocalitiesIdRetriever()
+        >>> lir.id(5)
+
+    Attributes:
+        id (int): An int to store id parameter.
+    """
+    
+    def __init__(self):
+        self.sub_endpoint = '0'
+        
+        self._params = {}
+        self._init_params()
+
+    def _init_params(self):
+        self._params.clear()
+        self._params = {'format': 'json'}
+
+    def id(self, ID):
+        '''
+        Returns locality with matching id
+
+        Args:
+            id (INT): The locality id.
+
+        Returns:
+            self: The LocalitiesIdRetriever() object.
+
+        Example:
+            >>> lir = LocalitiesIdRetriever()
+            >>> lir.id(2)
+            >>> lir.save()
+        '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
+        
+        id = str(ID)
+        
+        self.sub_endpoint = id
+        
+        return self
+    
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
+
+            Args:
+                OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+            Returns:
+                None
+
+            Example:
+                >>> lir = LocalitiesIdRetriever()
+                >>> lir.saveto("/path/to/directory", "france")
+        '''
+
+        print("Retrieving localities. This may take a while... ")
+
+        params = self._params
+        end_point = '/'.join(['localities', self.sub_endpoint])
+        outdir = OUTDIR
+        file_name = FILE_NAME
+
+        ma = mindat_api.MindatApi()
+        ma.get_mindat_item(params, end_point, outdir, file_name)
+
+        # reset the query parameters in case the user wants to make another query
+        self._init_params()
+    
+    def save(self, FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the list of localities and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            
+            Returns:
+                None
+
+            Example:
+                >>> lir = LocalitiesIdRetriever()
+                >>> lir.save()
+        '''
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()

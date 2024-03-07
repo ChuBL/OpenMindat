@@ -63,6 +63,35 @@ lr.country("France").txt("mine")
 lr.save()
 ```
 
+### 5. Retrieve Countries
+
+```python
+from openmindat import CountriesRetriever
+
+cr = CountriesRetriever()
+cr.id(5)
+cr.save()
+```
+
+### 6. Dana-8 Retriever
+
+```python
+from openmindat import DanaRetriever
+
+dr = DanaRetriever()
+dr.groups()
+dr.save()
+```
+
+### 7. Nickel-Strunz-10 Retriever
+
+```python
+from openmindat import StrunzRetriever
+
+sr = StrunzRetriever()
+sr.classes()
+sr.save()
+```
 
 ## Documentation
 

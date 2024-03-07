@@ -4,6 +4,7 @@ from datetime import datetime
 class GeomaterialRetriever:
     """
     This module provides the GeomaterialRetriever class for retrieving geomaterial data from the Mindat API. This class offers various methods to specify query parameters for filtering and retrieving detailed information about geomaterials, such as minerals and rocks.
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials
 
     The class allows for setting parameters like birifrigence, cleavage type, color, crystal system, density, diaphaneity, chemical elements inclusion or exclusion, entry types, optical properties, and more. It provides flexibility through method chaining and supports saving the query results either to a specified directory or to the current directory.
 
@@ -1244,12 +1245,13 @@ class GeomaterialRetriever:
 
         return self
 
-    def saveto(self, OUTDIR = ''):
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
         Executes the query to retrieve the list of geomaterials and saves the results to a specified directory.
 
         Args:
             OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
         Returns:
             None
@@ -1265,16 +1267,20 @@ class GeomaterialRetriever:
         params = self._params
         end_point = 'geomaterials'
         outdir = OUTDIR
+        file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir)
+        ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
 
-    def save(self):
+    def save(self, FILE_NAME = ''):
         '''
         Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+
+        Args:
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
         Returns:
             None
@@ -1284,8 +1290,187 @@ class GeomaterialRetriever:
             >>> gr.save()
 
         '''
-        self.saveto()
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
+
+class GeomaterialIdRetriever:
+    """
+    This module provides the GeomaterialIdRetriever class for returning geomaterial by id
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_retrieve
+
+    Usage:
+        >>> gir = GeomaterialIdRetriever()
+        >>> gir.id(5).save
+
+    Attributes:
+        id (int): An int to store id parameter.
+    """
+    
+    def __init__(self):
+        self.sub_endpoint = '0'
+        
+        self._params = {}
+        self._init_params()
+
+    def _init_params(self):
+        self._params.clear()
+        self._params = {'format': 'json'}
+
+    #ask about if this option of addint variety to this endpoint is a good idea
+    def id(self, ID, VARIETIES = None):
+        '''
+        Returns locality with matching id
+
+        Args:
+            id (INT): The locality id.
+            variety: optional toggle returning varieties with 'y', leave empty if varieties aren't wanted
+
+        Returns:
+            self: The GeomaterialIdRetriever() object.
+
+        Example:
+            >>> gir = GeomaterialIdRetriever()
+            >>> gir.id(2)
+            >>> gir.save()
+        '''
+        
+        try:
+            ID = int(ID)
+        except ValueError:
+            raise ValueError("Invalid input. ID must be a valid integer.")
+        
+        id = str(ID)
+        varieties = VARIETIES
+        
+        if varieties == 'y':
+            self.sub_endpoint = '/'.join([id, 'varieties'])
+        elif varieties != None:
+            raise ValueError(f"Invalid input for 'varieties': {varieties}")
+        else:
+            self.sub_endpoint = id
+        
+        return self
+    
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
+
+            Args:
+                OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+            Returns:
+                None
+
+            Example:
+                >>> gir = GeomaterialIdRetriever()
+                >>> gir.saveto("/path/to/directory", "france")
+        '''
+
+        print("Retrieving Geomaterials. This may take a while... ")
+
+        params = self._params
+        end_point = '/'.join(['geomaterials', self.sub_endpoint])
+        outdir = OUTDIR
+        file_name = FILE_NAME
+
+        ma = mindat_api.MindatApi()
+        ma.get_mindat_item(params, end_point, outdir, file_name)
+
+        # reset the query parameters in case the user wants to make another query
+        self._init_params()
+    
+    def save(self, FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            
+            Returns:
+                None
+
+            Example:
+                >>> gir = GeomaterialIdRetriever()
+                >>> gir.save()
+        '''
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
+        
+        
+        #NOT YET WORKING
+class GeomaterialDictRetriever:
+    """
+    This module provides the GeomaterialDictRetriever class for returning geomaterial Dictionaries
+    For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_dict_retrieve
+
+    Usage:
+        >>> gdr = GeomaterialDictRetriever()
+        >>> gdr.id(5)
+
+    Attributes:
+        id (int): An int to store id parameter.
+    """ 
+    
+    def __init__(self):
+        self.sub_endpoint = '0'
+        
+        self._params = {}
+        self._init_params()
+
+    def _init_params(self):
+        self._params.clear()
+        self._params = {'format': 'json'}
+    
+    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
+
+            Args:
+                OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+            Returns:
+                None
+
+            Example:
+                >>> gdr = GeomaterialDictRetriever()
+                >>> gdr.saveto("/path/to/directory", "France")
+        '''
+
+        print("Retrieving Geomaterials. This may take a while... ")
+
+        params = self._params
+        end_point = 'geomaterials/dict'
+        outdir = OUTDIR
+        file_name = FILE_NAME
+
+        ma = mindat_api.MindatApi()
+        ma.get_mindat_item(params, end_point, outdir, file_name)
+
+        # reset the query parameters in case the user wants to make another query
+        self._init_params()
+    
+    def save(self, FILE_NAME = ''):
+        '''
+            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
+
+            Args:
+                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            
+            Returns:
+                None
+
+            Example:
+                >>> gdr = GeomaterialDictRetriever()
+                >>> gdr.save()
+        '''
+        file_name = FILE_NAME
+        
+        self.saveto('', file_name)
 
 if __name__ == '__main__':
     gr = GeomaterialRetriever()

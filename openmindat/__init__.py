@@ -38,9 +38,26 @@ Press q to quit.
 """
 from . import mindat_api
 from .minerals_ima import MineralsIMARetriever
+from .minerals_ima import MineralsIdRetriever
 from .geomaterials_search import GeomaterialSearchRetriever
 from .geomaterials import GeomaterialRetriever
-from .localities import LocalityRetriever
+from .geomaterials import GeomaterialIdRetriever
+from .geomaterials import GeomaterialDictRetriever
+from .localities import LocalitiesRetriever
+from .localities import LocalitiesIdRetriever
+from .localities_age import LocalitiesAgeRetriever
+from .localities_age import LocalitiesAgeIdRetriever
+from .localities_status import LocalitiesStatusRetriever
+from .localities_status import LocalitiesStatusIdRetriever
+from .localities_type import LocalitiesTypeRetriever
+from .localities_type import LocalitiesTypeIdRetriever
+from .locgeoregion2 import GeoRegionRetriever
+from .locobject import LocobjectRetriever
+from .countries import CountriesRetriever
+from .countries import CountriesIdRetriever
+from .dana8 import DanaRetriever
+from .nickel_strunz import StrunzRetriever
+from .photo_count import PhotoCountRetriever
 
 if __name__ == "__main__":
     # --------------------------------------------

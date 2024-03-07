@@ -1,3 +1,4 @@
+import re
 import requests
 from pathlib import Path
 import sys
@@ -89,15 +90,30 @@ class MindatApi:
     def get_headers(self):
         return self._headers
     
-    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+    def get_file_path(self, OUTDIR, FILE_NAME):
+        '''
+            Reads an End_point
+        '''
+        file_name = str(FILE_NAME)
+        invalid_symbols = re.findall(r"[\\?%*:|\"<>\x7F\x00-\x1F]", file_name)
+        
+        #input sanitization
+        if invalid_symbols:
+            raise ValueError(f"Invalid characters in file name: {invalid_symbols}")  
+        
+        #creating filepath
+        if '' == OUTDIR:
+            return Path(self.data_dir, file_name.replace('/', '_') + '.json')
+        else:
+            return Path(OUTDIR, file_name.replace('/', '_') + '.json')
+    
+    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         params = QUERY_DICT
     
         end_point = END_POINT
-
-        if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point + '.json')
-        else:
-            file_path = Path(OUTDIR, end_point + '.json')
+        file_name = FILE_NAME if FILE_NAME else END_POINT        
+        
+        file_path = self.get_file_path(OUTDIR, file_name)
 
         with open(file_path, 'w') as f:
 
@@ -128,20 +144,19 @@ class MindatApi:
         # use datetime to get current date and time
         now = datetime.now()
         dt_string = now.strftime("%m%d%Y%H%M%S")
-        return dt_string
+        return dt_string        
 
-    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = ''):
+    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
             we need to loop through all pages and save them to a single json file
-        ''' 
-        end_point = END_POINT
+        '''
 
-        if '' == OUTDIR:
-            file_path = Path(self.data_dir, end_point + '.json')
-        else:
-            file_path = Path(OUTDIR, end_point + '.json')
+        end_point = END_POINT
+        file_name = FILE_NAME if FILE_NAME else END_POINT        
+        
+        file_path = self.get_file_path(OUTDIR, file_name)
 
         with open(file_path, 'w') as f:
 
@@ -156,6 +171,7 @@ class MindatApi:
                             params=params,
                             headers=self._headers)
             
+        
             try:
                 result_data = response.json()["results"]
             except:
@@ -177,6 +193,41 @@ class MindatApi:
 
             json.dump(json_data, f, indent=4)
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        
+    def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
+        '''
+            return one item.
+        '''
+        
+        end_point = END_POINT
+        file_name = FILE_NAME if FILE_NAME else END_POINT  
+        
+        file_path = self.get_file_path(OUTDIR, file_name)
+        
+        with open(file_path, 'w') as f:
+
+            params = QUERY_DICT
+
+            if len(params) <= 2 and 'format' in params and 'page_size' in params:
+                confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+                if confirm.lower() != 'y':
+                    sys.exit("Query not confirmed. Exiting...")
+
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            try:
+                result_data = response.json()
+            except:
+                print("Error: " + str(response.json()))
+                return
+            
+            json_data = {"results": result_data}
+
+            json.dump(json_data, f, indent=4)
+        print("Successfully saved item to " + str(file_path.resolve()))
+         
         
 if __name__ == '__main__':
     # test if api key is valid
