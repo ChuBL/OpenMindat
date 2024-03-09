@@ -79,7 +79,7 @@ Please consider using only one mineral species ID for querying localities occurr
 from openmindat import GeomaterialRetriever
 
 gr = GeomaterialRetriever()
-gr.ima(True).expand("locality").id__in(str(id_value))
+gr.expand("locality").id__in(str(id_value))
 gr.saveto("./mindat_data")
 ```
 
