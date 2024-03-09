@@ -107,6 +107,9 @@ The help() is also available for the specific functions:
 
 Press `q` to exit the help interface.
 
+- **OpenMindat API Documentation**:
+  [OpenMindat Redoc](https://api.mindat.org/schema/redoc/)
+
 
 ### Contact Us
 
