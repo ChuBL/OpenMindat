@@ -63,34 +63,24 @@ lr.country("France").txt("mine")
 lr.save()
 ```
 
-### 5. Retrieve Countries
+### 5. Retrieve Type Localities for IMA-Approved Mineral Species
 
 ```python
-from openmindat import CountriesRetriever
+from openmindat import GeomaterialRetriever
 
-cr = CountriesRetriever()
-cr.id(5)
-cr.save()
+gr = GeomaterialRetriever()
+gr.ima(True).expand("type_localities")
+gr.saveto("/content/sample_data")
 ```
 
-### 6. Dana-8 Retriever
-
+### 6. Retrieve Locality Occurrences for Single Mineral Species
+Please consider using only one mineral species ID for querying localities occurrences since this query might result in many records and exceed the server limitation.
 ```python
-from openmindat import DanaRetriever
+from openmindat import GeomaterialRetriever
 
-dr = DanaRetriever()
-dr.groups()
-dr.save()
-```
-
-### 7. Nickel-Strunz-10 Retriever
-
-```python
-from openmindat import StrunzRetriever
-
-sr = StrunzRetriever()
-sr.classes()
-sr.save()
+gr = GeomaterialRetriever()
+gr.ima(True).expand("locality").id__in(str(id_value))
+gr.saveto("./mindat_data")
 ```
 
 ## Documentation
