@@ -24,6 +24,7 @@ class DanaRetriever:
     
     def __init__(self):
        self.sub_endpoint = '' 
+       self.end_point = 'dana-8'
         
        self._params = {}
        self._init_params()
@@ -132,7 +133,7 @@ class DanaRetriever:
         params = self._params
         outdir = OUTDIR
         file_name = FILE_NAME
-        end_point = 'dana-8'
+        end_point = self.end_point
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
@@ -178,7 +179,7 @@ class DanaRetriever:
 
         '''
         
-        print("Retrieving geomaterials. This may take a while... ")
+        print("Retrieving dana-8. This may take a while... ")
        
         params = self._params
         
@@ -190,9 +191,9 @@ class DanaRetriever:
         
         ma = mindat_api.MindatApi()
         if isinstance(self.sub_endpoint, (int)):
-            return ma.return_mindat_object(params, end_point)
+            return ma.get_mindat_json(params, end_point)
         else:
-            return ma.return_mindat_list_object(params, end_point)
+            return ma.get_mindat_list_json(params, end_point)
 
 
 if __name__ == '__main__':

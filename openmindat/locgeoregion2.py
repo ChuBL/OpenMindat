@@ -120,8 +120,37 @@ class GeoRegionRetriever:
 
             Example:
                 >>> grr = GeoRegionRetriever()
-                >>> grr.save()
+                >>> grr.page(3).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the geoRegion data as a list of dictionaries.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+                >>> grr = GeoRegionRetriever()
+                >>> georegion3 = grr.page(3).get_json()
+        '''
+        
+        print("Retrieving local geoRegion search. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        
+        if "page" in params:
+            ma.get_mindat_json(params, end_point)
+        else:
+            ma.get_mindat_list_json(params, end_point)
+            
+            
+if __name__ == '__main__':
+    grr = GeoRegionRetriever()
+    grr.page(1).save()

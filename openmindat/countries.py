@@ -112,13 +112,13 @@ class CountriesRetriever:
 
         '''
         
-        print("Retrieving geomaterials. This may take a while... ")
+        print("Retrieving countries. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.return_mindat_object(params, end_point)
+        return ma.get_mindat_json(params, end_point)
         
 
 class CountriesIdRetriever:
@@ -235,13 +235,13 @@ class CountriesIdRetriever:
 
         '''
         
-        print("Retrieving geomaterials. This may take a while... ")
+        print("Retrieving countries. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.return_mindat_object(params, end_point)
+        return ma.get_mindat_json(params, end_point)
 
 if __name__ == '__main__':
     cidr = CountriesIdRetriever()

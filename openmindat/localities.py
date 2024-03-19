@@ -34,6 +34,7 @@ class LocalitiesRetriever:
 
     def __init__(self):
         self._params = {}
+        self.end_point = 'localities'
         self._init_params()
 
     def _init_params(self):
@@ -351,7 +352,7 @@ class LocalitiesRetriever:
         print("Retrieving localities. This may take a while... ")
 
         params = self._params
-        end_point = 'localities'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -379,6 +380,27 @@ class LocalitiesRetriever:
         
         self.saveto('', file_name)
         
+    def get_json(self):
+        '''
+        Executes the query to retrieve the list of localities and returns the json object.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+            >>> lr = LocalitiesRetriever()
+            >>> france = lr.country('France').get_json()
+
+        '''
+        
+        print("Retrieving localities. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        return ma.get_mindat_list_json(params, end_point)
+        
         
 class LocalitiesIdRetriever:
     """
@@ -394,6 +416,7 @@ class LocalitiesIdRetriever:
     """
     
     def __init__(self):
+        self.end_point = 'localities'
         self.sub_endpoint = '0'
         
         self._params = {}
@@ -449,7 +472,7 @@ class LocalitiesIdRetriever:
         print("Retrieving localities. This may take a while... ")
 
         params = self._params
-        end_point = '/'.join(['localities', self.sub_endpoint])
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -476,6 +499,27 @@ class LocalitiesIdRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve locality with a corresponding id and returns a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+                >>> lir = localitiesIdRetriever()
+                >>> locality5 = lir.id(5).get_json()
+
+        '''
+        
+        print("Retrieving localities. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        ma = mindat_api.MindatApi()
+        return ma.get_mindat_json(params, end_point)
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()

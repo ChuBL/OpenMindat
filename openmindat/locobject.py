@@ -20,6 +20,7 @@ class LocobjectRetriever:
     
     def __init__(self):
        self.end_point = 'locobject' 
+       self.sub_endpoint = ''
         
        self._params = {}
        self._init_params()
@@ -51,7 +52,7 @@ class LocobjectRetriever:
         
         id = str(ID)
         
-        self.end_point = '/'.join([self.end_point, id])
+        self.sub_endpoint = id
         
         return self
     
@@ -75,7 +76,7 @@ class LocobjectRetriever:
 
         params = self._params
         outdir = OUTDIR
-        end_point = self.end_point
+        end_point =  '/'.join([self.end_point, self.sub_endpoint])
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
@@ -96,11 +97,33 @@ class LocobjectRetriever:
 
             Example:
                 >>> lor = LocobjectRetriever()
-                >>> lor.save()
+                >>> lor.id(3).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve locobject with a corresponding id and returns a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> lor = LocobjectRetriever()
+            >>> lor.id(2)
+            >>> loco2 = lor.get_json()
+
+        '''
+        
+        print("Retrieving locObject. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        ma = mindat_api.MindatApi()
+        return ma.get_mindat_json(params, end_point)
 
 if __name__ == '__main__':
     lor = LocobjectRetriever()

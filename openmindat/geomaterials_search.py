@@ -18,6 +18,7 @@ class GeomaterialSearchRetriever:
     """
     def __init__(self):
        self._params = {}
+       self.end_point = 'geomaterials_search'
     
     def _init_params(self):
         self._params.clear()
@@ -56,7 +57,7 @@ class GeomaterialSearchRetriever:
         print("Retrieving geomaterials. This may take a while... ")
         
         params = self._params
-        end_point = 'geomaterials_search'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -96,10 +97,10 @@ class GeomaterialSearchRetriever:
         print("Retrieving geomaterial search. This may take a while... ")
        
         params = self._params
-        end_point = 'geomaterials_search'
+        end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.return_mindat_object(params, end_point)
+        return ma.get_mindat_json(params, end_point)
 
 
 if __name__ == '__main__':

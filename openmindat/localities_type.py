@@ -87,7 +87,7 @@ class LocalitiesTypeRetriever:
 
             Example:
                 >>> ltr = LocalityTypeRetriever()
-                >>> ltr.saveto("/path/to/directory")
+                >>> ltr.page(19).saveto("/path/to/directory")
         '''
         
         print("Retrieving localities. This may take a while... ")
@@ -126,6 +126,30 @@ class LocalitiesTypeRetriever:
         
         self.saveto('', file_name)
         
+    def get_json(self):
+        '''
+        Executes the query to retrieve the locality type data as a list of dictionaries.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+                >>> ltr = LocalitiesTypeRetriever()
+                >>> secondTypePage = ltr.page(2).get_json()
+        '''
+        
+        print("Retrieving localities search. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        
+        if "page" in params:
+            ma.get_mindat_json(params, end_point)
+        else:
+            ma.get_mindat_list_json(params, end_point)
+        
         
 class LocalitiesTypeIdRetriever:
     """
@@ -146,6 +170,7 @@ class LocalitiesTypeIdRetriever:
     
     def __init__(self):
        self.end_point = 'locality_type' 
+       self.sub_endpoint = ''
         
        self._params = {}
        self._init_params()
@@ -177,7 +202,7 @@ class LocalitiesTypeIdRetriever:
         
         id = str(ID)
         
-        self.end_point = '/'.join([self.end_point, id])
+        self.sub_endpoint = id
         
         return self
     
@@ -194,14 +219,14 @@ class LocalitiesTypeIdRetriever:
 
             Example:
                 >>> ltir = LocalitiesTypeIdRetriever()
-                >>> ltir.saveto("/path/to/directory")
+                >>> ltir.id(2).saveto("/path/to/directory")
         '''
         
         print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
-        end_point = self.end_point
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
@@ -227,6 +252,27 @@ class LocalitiesTypeIdRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve locality type with a corresponding id and returns a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+                >>> ltir = localitiesTypeIdRetriever()
+                >>> localityType2 = ltir.id(2).get_json()
+
+        '''
+        
+        print("Retrieving localities. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        ma = mindat_api.MindatApi()
+        return ma.get_mindat_json(params, end_point)
 
 if __name__ == '__main__':
     ltir = LocalitiesTypeIdRetriever()
