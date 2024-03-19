@@ -227,7 +227,74 @@ class MindatApi:
 
             json.dump(json_data, f, indent=4)
         print("Successfully saved item to " + str(file_path.resolve()))
-         
+        
+    def return_mindat_list_object(self, QUERY_DICT, END_POINT):
+        '''
+            get all items in a list and returns it to a list of dictionaries
+            Since this API has a limit of 1500 items per page,
+            we need to loop through all pages and save them to a single json file
+        '''
+
+        end_point = END_POINT
+
+        params = QUERY_DICT
+
+        if len(params) <= 2 and 'format' in params and 'page_size' in params:
+            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+            if confirm.lower() != 'y':
+                sys.exit("Query not confirmed. Exiting...")
+
+        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                        params=params,
+                        headers=self._headers)
+            
+        
+        try:
+            result_data = response.json()["results"]
+        except:
+            print("Error: " + str(response.json()))
+            return
+            
+        json_data = result_data
+
+        while True:
+            try:
+                next_url = response.json()["next"]
+                response = requests.get(next_url, headers=self._headers)
+                json_data += response.json()['results']
+
+            except requests.exceptions.MissingSchema as e:
+                # This error indicates the `next_url` is none
+                # i.e., we've reached the end of the results
+                break
+        
+        return json_data
+    
+    def return_mindat_object(self, QUERY_DICT, END_POINT):
+        '''
+            return one item to an object as a dictionary.
+        '''
+        end_point = END_POINT
+        params = QUERY_DICT
+
+        if len(params) <= 2 and 'format' in params and 'page_size' in params:
+            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+            if confirm.lower() != 'y':
+                sys.exit("Query not confirmed. Exiting...")
+
+        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                        params=params,
+                        headers=self._headers)
+        
+        try:
+            result_data = response.json()
+        except:
+            print("Error: " + str(response.json()))
+            return
+            
+        json_data = result_data
+        
+        return json_data
         
 if __name__ == '__main__':
     # test if api key is valid

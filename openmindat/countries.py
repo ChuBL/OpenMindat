@@ -65,7 +65,7 @@ class CountriesRetriever:
 
             Example:
                 >>> cr = countriesRetriever()
-                >>> cr.saveto("/path/to/directory")
+                >>> cr.page(2).saveto("/path/to/directory")
         '''
         
         print("Retrieving Countries. This may take a while... ")
@@ -83,7 +83,7 @@ class CountriesRetriever:
     
     def save(self, FILE_NAME = ''):
         '''
-            Executes the query to retrieve the list of country data and saves the results to the current directory.
+            Executes the query to retrieve the country data and saves the results to the current directory.
 
             Args:
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
@@ -93,11 +93,32 @@ class CountriesRetriever:
 
             Example:
                 >>> cr = countriesRetriever()
-                >>> cr.save()
+                >>> cr.page(2).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the country data as a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> cr = countriesRetriever()
+            >>> france = cr.page(2).get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_object(params, end_point)
         
 
 class CountriesIdRetriever:
@@ -167,7 +188,7 @@ class CountriesIdRetriever:
 
             Example:
                 >>> cidr = CountriesIdRetriever()
-                >>> cidr.saveto("/path/to/directory")
+                >>> cidr.id(2).saveto("/path/to/directory")
         '''
         
         print("Retrieving Countries. This may take a while... ")
@@ -195,11 +216,32 @@ class CountriesIdRetriever:
 
             Example:
                 >>> cidr = countriesIdRetriever()
-                >>> cidr.save()
+                >>> cidr.id(2).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the country data as a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> cidr = countriesIdRetriever()
+            >>> france = cidr.id(2).get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_object(params, end_point)
 
 if __name__ == '__main__':
     cidr = CountriesIdRetriever()

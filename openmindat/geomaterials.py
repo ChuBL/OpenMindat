@@ -1293,6 +1293,28 @@ class GeomaterialRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+
+    def get_json(self):
+        '''
+        Executes the query to retrieve the list of geomaterials and returns the json object.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+            >>> gr = GeomaterialRetriever()
+            >>> geoObject = gr.get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        end_point = 'geomaterials'
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_list_object(params, end_point)
 
 
 class GeomaterialIdRetriever:
@@ -1366,7 +1388,7 @@ class GeomaterialIdRetriever:
 
             Example:
                 >>> gir = GeomaterialIdRetriever()
-                >>> gir.saveto("/path/to/directory", "france")
+                >>> gir.id(5).saveto("/path/to/directory", "geo5")
         '''
 
         print("Retrieving Geomaterials. This may take a while... ")
@@ -1394,11 +1416,33 @@ class GeomaterialIdRetriever:
 
             Example:
                 >>> gir = GeomaterialIdRetriever()
-                >>> gir.save()
+                >>> gir.id(5).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> gir = GeomaterialIdRetriever()
+            >>> geo5 = gir.id(5).get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join(['geomaterials', self.sub_endpoint])
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_object(params, end_point)
+        
         
         
         #NOT YET WORKING
@@ -1438,7 +1482,7 @@ class GeomaterialDictRetriever:
 
             Example:
                 >>> gdr = GeomaterialDictRetriever()
-                >>> gdr.saveto("/path/to/directory", "France")
+                >>> gdr.saveto("/path/to/directory", "geoDict")
         '''
 
         print("Retrieving Geomaterials. This may take a while... ")
@@ -1470,7 +1514,29 @@ class GeomaterialDictRetriever:
         '''
         file_name = FILE_NAME
         
-        self.saveto('', file_name)
+        self.saveto('', file_name)   
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the dictionary of geomaterials.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> gdr = GeomaterialDictRetriever()
+            >>> geoDict = gdr.get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        end_point = 'geomaterials/dict'
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_object(params, end_point)
+        
 
 if __name__ == '__main__':
     gr = GeomaterialRetriever()

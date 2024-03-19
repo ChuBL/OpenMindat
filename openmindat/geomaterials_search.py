@@ -34,9 +34,9 @@ class GeomaterialSearchRetriever:
             self: The GeomaterialRetriever object, allowing for method chaining.
 
         Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.geomaterials_search("quartz, green, hexagonal")
-            >>> gr.save()
+            >>> gsr = GeomaterialSearchRetriever()
+            >>> gsr.geomaterials_search("quartz, green, hexagonal")
+            >>> gsr.save()
         '''
         keywords = KEYWORDS
         self._params.update({'q': keywords})
@@ -79,6 +79,27 @@ class GeomaterialSearchRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the geomaterial search data as a dictionary.
+
+        Returns:
+            dictionary.
+
+        Example:
+            >>> gsr = geomaterialSeachRetriever()
+            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_json()
+
+        '''
+        
+        print("Retrieving geomaterial search. This may take a while... ")
+       
+        params = self._params
+        end_point = 'geomaterials_search'
+        
+        ma = mindat_api.MindatApi()
+        return ma.return_mindat_object(params, end_point)
 
 
 if __name__ == '__main__':

@@ -138,7 +138,11 @@ class DanaRetriever:
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir, file_name)
+        
+        if isinstance(self.sub_endpoint, (int)):
+            ma.get_mindat_item(params, end_point, outdir, file_name)
+        else:
+            ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -160,6 +164,35 @@ class DanaRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_json(self):
+        '''
+        Executes the query to retrieve the dana-8 data as a dictionary.
+
+        Returns:
+            list of dictionaries for groups, subgroups, and retrieve, or a dictionary for id.
+
+        Example:
+            >>> dr = danaRetriever()
+            >>> danaGroups = cr.group().get_json()
+
+        '''
+        
+        print("Retrieving geomaterials. This may take a while... ")
+       
+        params = self._params
+        
+        
+        if self.sub_endpoint != '':
+            end_point = '/'.join(['dana-8', self.sub_endpoint])
+            
+        print(end_point)
+        
+        ma = mindat_api.MindatApi()
+        if isinstance(self.sub_endpoint, (int)):
+            return ma.return_mindat_object(params, end_point)
+        else:
+            return ma.return_mindat_list_object(params, end_point)
 
 
 if __name__ == '__main__':
