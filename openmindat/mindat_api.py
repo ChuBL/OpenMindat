@@ -228,7 +228,7 @@ class MindatApi:
             json.dump(json_data, f, indent=4)
         print("Successfully saved item to " + str(file_path.resolve()))
         
-    def get_mindat_list_json(self, QUERY_DICT, END_POINT):
+    def get_mindat_list_object(self, QUERY_DICT, END_POINT):
         '''
             get all items in a list and returns it to a list of dictionaries
             Since this API has a limit of 1500 items per page,
@@ -270,7 +270,7 @@ class MindatApi:
         
         return json_data
     
-    def get_mindat_json(self, QUERY_DICT, END_POINT):
+    def get_mindat_dict(self, QUERY_DICT, END_POINT):
         '''
             return one item to an object as a dictionary.
         '''

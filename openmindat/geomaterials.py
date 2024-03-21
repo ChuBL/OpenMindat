@@ -1295,7 +1295,7 @@ class GeomaterialRetriever:
         self.saveto('', file_name)
         
 
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the list of geomaterials and returns the json object.
 
@@ -1304,7 +1304,7 @@ class GeomaterialRetriever:
 
         Example:
             >>> gr = GeomaterialRetriever()
-            >>> geoObject = gr.density_min(3.25).get_json()
+            >>> geoObject = gr.density_min(3.25).get_list()
 
         '''
         
@@ -1314,7 +1314,7 @@ class GeomaterialRetriever:
         end_point = 'geomaterials'
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_list_json(params, end_point)
+        return ma.get_mindat_list_object(params, end_point)
 
 
 class GeomaterialIdRetriever:
@@ -1422,7 +1422,7 @@ class GeomaterialIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
@@ -1431,7 +1431,7 @@ class GeomaterialIdRetriever:
 
         Example:
             >>> gir = GeomaterialIdRetriever()
-            >>> geo5 = gir.id(5).get_json()
+            >>> geo5 = gir.id(5).get_list()
 
         '''
         
@@ -1441,7 +1441,7 @@ class GeomaterialIdRetriever:
         end_point = '/'.join(['geomaterials', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
         
         
         
@@ -1516,7 +1516,7 @@ class GeomaterialDictRetriever:
         
         self.saveto('', file_name)   
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the dictionary of geomaterials.
 
@@ -1525,7 +1525,7 @@ class GeomaterialDictRetriever:
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
-            >>> geoDict = gdr.get_json()
+            >>> geoDict = gdr.get_list()
 
         '''
         
@@ -1535,7 +1535,7 @@ class GeomaterialDictRetriever:
         end_point = 'geomaterials/dict'
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
         
 
 if __name__ == '__main__':

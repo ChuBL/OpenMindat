@@ -74,7 +74,7 @@ class PhotoCountRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve photo counts and returns a dictionary.
 
@@ -83,7 +83,7 @@ class PhotoCountRetriever:
 
         Example:
                 >>> pcr = PhotoCountRetriever()
-                >>> photoCount = pcr.get_json()
+                >>> photoCount = pcr.get_list()
 
         '''
         
@@ -93,7 +93,7 @@ class PhotoCountRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 if __name__ == '__main__':
     pcr = PhotoCountRetriever()

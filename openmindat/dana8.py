@@ -166,7 +166,7 @@ class DanaRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the dana-8 data as a dictionary.
 
@@ -175,7 +175,7 @@ class DanaRetriever:
 
         Example:
             >>> dr = danaRetriever()
-            >>> danaGroups = cr.group().get_json()
+            >>> danaGroups = cr.group().get_list()
 
         '''
         
@@ -191,9 +191,9 @@ class DanaRetriever:
         
         ma = mindat_api.MindatApi()
         if isinstance(self.sub_endpoint, (int)):
-            return ma.get_mindat_json(params, end_point)
+            return ma.get_mindat_dict(params, end_point)
         else:
-            return ma.get_mindat_list_json(params, end_point)
+            return ma.get_mindat_list_object(params, end_point)
 
 
 if __name__ == '__main__':

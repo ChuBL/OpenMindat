@@ -126,7 +126,7 @@ class LocalitiesTypeRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the locality type data as a list of dictionaries.
 
@@ -135,7 +135,7 @@ class LocalitiesTypeRetriever:
 
         Example:
                 >>> ltr = LocalitiesTypeRetriever()
-                >>> secondTypePage = ltr.page(2).get_json()
+                >>> secondTypePage = ltr.page(2).get_list()
         '''
         
         print("Retrieving localities search. This may take a while... ")
@@ -146,9 +146,9 @@ class LocalitiesTypeRetriever:
         ma = mindat_api.MindatApi()
         
         if "page" in params:
-            return ma.get_mindat_json(params, end_point)
+            return ma.get_mindat_dict(params, end_point)
         else:
-            return ma.get_mindat_list_json(params, end_point)
+            return ma.get_mindat_list_object(params, end_point)
         
         
 class LocalitiesTypeIdRetriever:
@@ -253,7 +253,7 @@ class LocalitiesTypeIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locality type with a corresponding id and returns a dictionary.
 
@@ -262,7 +262,7 @@ class LocalitiesTypeIdRetriever:
 
         Example:
                 >>> ltir = localitiesTypeIdRetriever()
-                >>> localityType2 = ltir.id(2).get_json()
+                >>> localityType2 = ltir.id(2).get_list()
 
         '''
         
@@ -272,7 +272,7 @@ class LocalitiesTypeIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 if __name__ == '__main__':
     ltir = LocalitiesTypeIdRetriever()

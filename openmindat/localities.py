@@ -380,7 +380,7 @@ class LocalitiesRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the list of localities and returns the json object.
 
@@ -389,7 +389,7 @@ class LocalitiesRetriever:
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> france = lr.country('France').get_json()
+            >>> france = lr.country('France').get_list()
 
         '''
         
@@ -399,7 +399,7 @@ class LocalitiesRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_list_json(params, end_point)
+        return ma.get_mindat_list_object(params, end_point)
         
         
 class LocalitiesIdRetriever:
@@ -500,7 +500,7 @@ class LocalitiesIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
@@ -509,7 +509,7 @@ class LocalitiesIdRetriever:
 
         Example:
                 >>> lir = localitiesIdRetriever()
-                >>> locality5 = lir.id(5).get_json()
+                >>> locality5 = lir.id(5).get_list()
 
         '''
         
@@ -519,7 +519,7 @@ class LocalitiesIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()

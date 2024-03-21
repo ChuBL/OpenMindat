@@ -298,7 +298,7 @@ class MineralsIMARetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the list of mineral data and returns the json object.
 
@@ -307,7 +307,7 @@ class MineralsIMARetriever:
 
         Example:
                 >>> mir = MineralsIMARetriever()
-                >>> quartsIMA = mir.q('quartz').get_json()
+                >>> quartsIMA = mir.q('quartz').get_list()
 
         '''
         
@@ -317,7 +317,7 @@ class MineralsIMARetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_list_json(params, end_point)
+        return ma.get_mindat_list_object(params, end_point)
         
         
 class MineralsIdRetriever:
@@ -418,7 +418,7 @@ class MineralsIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve mineral IMA status with a corresponding id and returns a dictionary.
 
@@ -427,7 +427,7 @@ class MineralsIdRetriever:
 
         Example:
                 >>> midr = MineralsIdRetriever()
-                >>> ima9 = midr.id(9).get_json()
+                >>> ima9 = midr.id(9).get_list()
 
         '''
         
@@ -437,7 +437,7 @@ class MineralsIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 
 if __name__ == '__main__':

@@ -81,7 +81,7 @@ class GeomaterialSearchRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the geomaterial search data as a dictionary.
 
@@ -90,7 +90,7 @@ class GeomaterialSearchRetriever:
 
         Example:
             >>> gsr = geomaterialSeachRetriever()
-            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_json()
+            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_list()
 
         '''
         
@@ -100,7 +100,7 @@ class GeomaterialSearchRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 
 if __name__ == '__main__':

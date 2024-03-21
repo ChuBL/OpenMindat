@@ -103,7 +103,7 @@ class LocobjectRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locobject with a corresponding id and returns a dictionary.
 
@@ -113,7 +113,7 @@ class LocobjectRetriever:
         Example:
             >>> lor = LocobjectRetriever()
             >>> lor.id(2)
-            >>> loco2 = lor.get_json()
+            >>> loco2 = lor.get_list()
 
         '''
         
@@ -123,7 +123,7 @@ class LocobjectRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 if __name__ == '__main__':
     lor = LocobjectRetriever()

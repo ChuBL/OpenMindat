@@ -126,7 +126,7 @@ class LocalitiesStatusRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the locality status data as a list of dictionaries.
 
@@ -135,7 +135,7 @@ class LocalitiesStatusRetriever:
 
         Example:
                 >>> lsr = LocalitiesStatusRetriever()
-                >>> secondAgePage = lsr.page(2).get_json()
+                >>> secondAgePage = lsr.page(2).get_list()
 
         '''
         
@@ -147,9 +147,9 @@ class LocalitiesStatusRetriever:
         ma = mindat_api.MindatApi()
         
         if "page" in params:
-            return ma.get_mindat_json(params, end_point)
+            return ma.get_mindat_dict(params, end_point)
         else:
-            return ma.get_mindat_list_json(params, end_point)
+            return ma.get_mindat_list_object(params, end_point)
         
         
 class LocalitiesStatusIdRetriever:
@@ -254,7 +254,7 @@ class LocalitiesStatusIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_json(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locality status with a corresponding id and returns a dictionary.
 
@@ -263,7 +263,7 @@ class LocalitiesStatusIdRetriever:
 
         Example:
                 >>> lsir = localitiesStatusIdRetriever()
-                >>> localitystatus2 = lsir.id(2).get_json()
+                >>> localitystatus2 = lsir.id(2).get_list()
 
         '''
         
@@ -273,7 +273,7 @@ class LocalitiesStatusIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_json(params, end_point)
+        return ma.get_mindat_dict(params, end_point)
 
 if __name__ == '__main__':
     lsir = LocalitiesStatusIdRetriever()
