@@ -149,7 +149,7 @@ class LocalitiesAgeRetriever:
         if "page" in params:
             return ma.get_mindat_dict(params, end_point)
         else:
-            return  ma.get_mindat_list_object(params, end_point)
+            return ma.get_mindat_list_object(params, end_point)
         
         
 class LocalitiesAgeIdRetriever:

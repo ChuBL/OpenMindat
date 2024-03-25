@@ -1,7 +1,7 @@
 from . import mindat_api
 
 
-class CountriesRetriever:
+class CountriesListRetriever:
     """
     A class to facilitate the retrieval of country data from the Mindat API using by page.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/countries/operation/countries_list
@@ -12,7 +12,7 @@ class CountriesRetriever:
         save(FILENAME): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> cr = CountriesRetriever()
+        >>> cr = CountriesListRetriever()
         >>> cr.page(2).save()
 
     Press q to quit.
@@ -39,7 +39,7 @@ class CountriesRetriever:
             self: The CountriesRetriver object.
 
         Example:
-            >>> cr = CountriesRetriever()
+            >>> cr = CountriesListRetriever()
             >>> cr.page(2)
             >>> cr.save()
         '''
@@ -64,7 +64,7 @@ class CountriesRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
+                >>> cr = CountriesListRetriever()
                 >>> cr.page(2).saveto("/path/to/directory")
         '''
         
@@ -76,7 +76,11 @@ class CountriesRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        
+        if "page" in params:
+            return ma.get_mindat_item(params, end_point)
+        else:
+            return ma.get_mindat_list(params, end_point)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -92,7 +96,7 @@ class CountriesRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
+                >>> cr = CountriesListRetriever()
                 >>> cr.page(2).save()
         '''
         file_name = FILE_NAME
@@ -107,7 +111,7 @@ class CountriesRetriever:
             dictionary.
 
         Example:
-            >>> cr = countriesRetriever()
+            >>> cr = CountriesListRetriever()
             >>> france = cr.page(2).get_list()
 
         '''
@@ -118,7 +122,11 @@ class CountriesRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+
+        if "page" in params:
+            return ma.get_mindat_dict(params, end_point)
+        else:
+            return ma.get_mindat_list_object(params, end_point)
         
 
 class CountriesIdRetriever:
