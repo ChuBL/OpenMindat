@@ -187,7 +187,8 @@ class DanaRetriever:
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
             
-        print(end_point)
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         if isinstance(self.sub_endpoint, (int)):

@@ -4,6 +4,8 @@ from pathlib import Path
 import sys
 import json
 from datetime import datetime
+import getpass
+import os
 
 
 class MindatApiTester:
@@ -15,14 +17,13 @@ class MindatApiTester:
     def test_api_key_status(self):
         # check if api key is set
         try:
-            with open('.api_key', 'r') as f:
-                api_key = f.read()
+            api_key = os.environ["OPENMINDAT_API_KEY"]
             
             status_code = self.is_api_key_avail(api_key)
             if 200 == status_code:
                 self.api_key = api_key
             return status_code
-        except FileNotFoundError:
+        except KeyError:
             print("API key not saved.")
             return False
             
@@ -52,8 +53,7 @@ class MindatApi:
         
         while 200 != mat.is_api_key_avail(self.load_api_key()):
             print('Please input a valid API key. ')
-            input_api_key = input("Your API key: ")
-            self.set_api_key(input_api_key)
+            self.set_api_key()
         
         self._api_key = self.load_api_key()
 
@@ -66,17 +66,15 @@ class MindatApi:
 
     def load_api_key(self):
         try:
-            with open('.api_key', 'r') as f:
-                api_key = f.read()
+            api_key = os.environ["OPENMINDAT_API_KEY"]
+                
             return api_key
-        except FileNotFoundError:
+        except KeyError:
             return ''
     
-    def set_api_key(self, API_KEY):
-        '''set api key by saving it to a file'''
+    def set_api_key(self):
 
-        with open('.api_key', 'w') as f:
-                f.write(API_KEY)
+        os.environ["OPENMINDAT_API_KEY"] = getpass.getpass("OpenMindat API Key: ")
     
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT

@@ -144,6 +144,8 @@ class LocalitiesTypeRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
+        #clears params for next get statement     
+        self._init_params()
         
         if "page" in params:
             return ma.get_mindat_dict(params, end_point)
@@ -270,6 +272,9 @@ class LocalitiesTypeIdRetriever:
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         return ma.get_mindat_dict(params, end_point)

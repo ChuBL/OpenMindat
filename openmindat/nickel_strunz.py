@@ -200,6 +200,8 @@ class StrunzRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
+        #clears params for next get statement     
+        self._init_params()
         
         if "classes" in self.sub_endpoint:
             return ma.get_mindat_dict(params, end_point)

@@ -17,6 +17,7 @@ class GeomaterialRetriever:
     """
     
     def __init__(self) -> None:
+        self.end_point = 'geomaterials'
         self._params = {}
         self._init_params()
          # Flag to indicate if the geomaterials have been retrieved
@@ -1311,7 +1312,10 @@ class GeomaterialRetriever:
         print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
-        end_point = 'geomaterials'
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         return ma.get_mindat_list_object(params, end_point)
@@ -1331,6 +1335,7 @@ class GeomaterialIdRetriever:
     """
     
     def __init__(self):
+        self.end_point = "geomaterials"
         self.sub_endpoint = '0'
         
         self._params = {}
@@ -1394,7 +1399,7 @@ class GeomaterialIdRetriever:
         print("Retrieving Geomaterials. This may take a while... ")
 
         params = self._params
-        end_point = '/'.join(['geomaterials', self.sub_endpoint])
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -1438,7 +1443,10 @@ class GeomaterialIdRetriever:
         print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
-        end_point = '/'.join(['geomaterials', self.sub_endpoint])
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         return ma.get_mindat_dict(params, end_point)
@@ -1460,6 +1468,7 @@ class GeomaterialDictRetriever:
     """ 
     
     def __init__(self):
+        self.end_point = 'geomaterials/dict'
         self.sub_endpoint = '0'
         
         self._params = {}
@@ -1488,7 +1497,7 @@ class GeomaterialDictRetriever:
         print("Retrieving Geomaterials. This may take a while... ")
 
         params = self._params
-        end_point = 'geomaterials/dict'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -1532,7 +1541,10 @@ class GeomaterialDictRetriever:
         print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
-        end_point = 'geomaterials/dict'
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         return ma.get_mindat_dict(params, end_point)

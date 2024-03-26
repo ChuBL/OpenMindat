@@ -145,6 +145,9 @@ class GeoRegionRetriever:
         
         ma = mindat_api.MindatApi()
         
+        #clears params for next get statement     
+        self._init_params()
+        
         if "page" in params:
             return ma.get_mindat_dict(params, end_point)
         else:

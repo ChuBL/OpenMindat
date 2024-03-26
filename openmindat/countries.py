@@ -78,9 +78,9 @@ class CountriesListRetriever:
         ma = mindat_api.MindatApi()
         
         if "page" in params:
-            return ma.get_mindat_item(params, end_point)
+            ma.get_mindat_item(params, end_point)
         else:
-            return ma.get_mindat_list(params, end_point)
+            ma.get_mindat_list(params, end_point)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -121,7 +121,11 @@ class CountriesListRetriever:
         params = self._params
         end_point = self.end_point
         
-        ma = mindat_api.MindatApi()
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()        \
+        #clears params for next get statement     
+        self._init_params()
 
         if "page" in params:
             return ma.get_mindat_dict(params, end_point)
@@ -247,6 +251,9 @@ class CountriesIdRetriever:
        
         params = self._params
         end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
         
         ma = mindat_api.MindatApi()
         return ma.get_mindat_dict(params, end_point)
