@@ -5,7 +5,7 @@ import sys
 import json
 from datetime import datetime
 import getpass
-import os
+import yaml
 
 
 class MindatApiTester:
@@ -17,13 +17,14 @@ class MindatApiTester:
     def test_api_key_status(self):
         # check if api key is set
         try:
-            api_key = os.environ["OPENMINDAT_API_KEY"]
+            with open('./.apikey.yaml', 'r') as f:
+                api_key = yaml.safe_load(f)
             
-            status_code = self.is_api_key_avail(api_key)
+            status_code = self.is_api_key_avail(api_key['api_key'])
             if 200 == status_code:
                 self.api_key = api_key
             return status_code
-        except KeyError:
+        except FileNotFoundError:
             print("API key not saved.")
             return False
             
@@ -53,7 +54,9 @@ class MindatApi:
         
         while 200 != mat.is_api_key_avail(self.load_api_key()):
             print('Please input a valid API key. ')
-            self.set_api_key()
+            api_key = getpass.getpass("OpenMindat API Key: ")
+            print(api_key)
+            self.save_api_key(api_key)
         
         self._api_key = self.load_api_key()
 
@@ -64,17 +67,19 @@ class MindatApi:
         self.data_dir = './mindat_data/'
         Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
-    def load_api_key(self):
+    def load_api_key(self): 
         try:
-            api_key = os.environ["OPENMINDAT_API_KEY"]
-                
-            return api_key
-        except KeyError:
+            with open('./.apikey.yaml', 'r') as f:
+                data = yaml.safe_load(f)
+            return data['api_key']
+        except FileNotFoundError:
             return ''
     
-    def set_api_key(self):
-
-        os.environ["OPENMINDAT_API_KEY"] = getpass.getpass("OpenMindat API Key: ")
+    def save_api_key(self, api_key):
+        data = {'api_key': api_key}
+        
+        with open('./.apikey.yaml', 'w') as file:
+            yaml.dump(data, file)
     
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT
