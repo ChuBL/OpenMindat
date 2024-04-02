@@ -140,7 +140,7 @@ class DanaRetriever:
         
         ma = mindat_api.MindatApi()
         
-        if isinstance(self.sub_endpoint, (int)):
+        if self.sub_endpoint.isnumeric():
             ma.get_mindat_item(params, end_point, outdir, file_name)
         else:
             ma.get_mindat_list(params, end_point, outdir, file_name)
@@ -181,8 +181,7 @@ class DanaRetriever:
         
         print("Retrieving dana-8. This may take a while... ")
        
-        params = self._params
-        
+        params = self._params        
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
@@ -191,7 +190,7 @@ class DanaRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        if isinstance(self.sub_endpoint, (int)):
+        if self.sub_endpoint.isnumeric():
             return ma.get_mindat_dict(params, end_point)
         else:
             return ma.get_mindat_list_object(params, end_point)
