@@ -1427,7 +1427,7 @@ class GeomaterialIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
@@ -1436,7 +1436,7 @@ class GeomaterialIdRetriever:
 
         Example:
             >>> gir = GeomaterialIdRetriever()
-            >>> geo5 = gir.id(5).get_list()
+            >>> geo5 = gir.id(5).get_dict()
 
         '''
         
@@ -1525,7 +1525,7 @@ class GeomaterialDictRetriever:
         
         self.saveto('', file_name)   
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the dictionary of geomaterials.
 
@@ -1534,7 +1534,7 @@ class GeomaterialDictRetriever:
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
-            >>> geoDict = gdr.get_list()
+            >>> geoDict = gdr.get_dict()
 
         '''
         

@@ -126,16 +126,16 @@ class LocalitiesStatusRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_object(self):
         '''
         Executes the query to retrieve the locality status data as a list of dictionaries.
 
         Returns:
-            list of dictionaries.
+            list of dictionaries, or a dictionary if "page" parameter is included.
 
         Example:
                 >>> lsr = LocalitiesStatusRetriever()
-                >>> secondAgePage = lsr.page(2).get_list()
+                >>> secondAgePage = lsr.page(2).get_object()
 
         '''
         
@@ -256,7 +256,7 @@ class LocalitiesStatusIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality status with a corresponding id and returns a dictionary.
 
@@ -265,7 +265,7 @@ class LocalitiesStatusIdRetriever:
 
         Example:
                 >>> lsir = localitiesStatusIdRetriever()
-                >>> localitystatus2 = lsir.id(2).get_list()
+                >>> localitystatus2 = lsir.id(2).get_dict()
 
         '''
         

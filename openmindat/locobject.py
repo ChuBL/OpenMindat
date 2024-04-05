@@ -103,7 +103,7 @@ class LocobjectRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locobject with a corresponding id and returns a dictionary.
 
@@ -113,7 +113,7 @@ class LocobjectRetriever:
         Example:
             >>> lor = LocobjectRetriever()
             >>> lor.id(2)
-            >>> loco2 = lor.get_list()
+            >>> loco2 = lor.get_dict()
 
         '''
         

@@ -166,7 +166,7 @@ class DanaRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_object(self):
         '''
         Executes the query to retrieve the dana-8 data as a dictionary.
 
@@ -175,7 +175,7 @@ class DanaRetriever:
 
         Example:
             >>> dr = danaRetriever()
-            >>> danaGroups = cr.group().get_list()
+            >>> danaGroups = cr.group().get_object()
 
         '''
         

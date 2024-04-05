@@ -103,16 +103,16 @@ class CountriesListRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_object(self):
         '''
         Executes the query to retrieve the country data as a dictionary.
 
         Returns:
-            dictionary.
+            list of dictionaries, or a dictionary if "page" parameter is included.
 
         Example:
             >>> cr = CountriesListRetriever()
-            >>> france = cr.page(2).get_list()
+            >>> france = cr.page(2).get_object()
 
         '''
         
@@ -232,7 +232,7 @@ class CountriesIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the country data as a dictionary.
 
@@ -241,7 +241,7 @@ class CountriesIdRetriever:
 
         Example:
             >>> cidr = countriesIdRetriever()
-            >>> france = cidr.id(2).get_list()
+            >>> france = cidr.id(2).get_dict()
 
         '''
         

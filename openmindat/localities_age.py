@@ -126,16 +126,16 @@ class LocalitiesAgeRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_object(self):
         '''
         Executes the query to retrieve the locality age data as a list of dictionaries.
 
         Returns:
-            list of dictionaries.
+            list of dictionaries, or a dictionary if "page" parameter is included.
 
         Example:
                 >>> lar = LocalitiesAgeRetriever()
-                >>> secondAgePage = lar.page(2).get_list()
+                >>> secondAgePage = lar.page(2).get_object()
 
         '''
         
@@ -258,7 +258,7 @@ class LocalitiesAgeIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
@@ -267,7 +267,7 @@ class LocalitiesAgeIdRetriever:
 
         Example:
                 >>> lair = localitiesAgeIdRetriever()
-                >>> localityAge2 = lair.id(2).get_list()
+                >>> localityAge2 = lair.id(2).get_dict()
 
         '''
         

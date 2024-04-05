@@ -81,7 +81,7 @@ class GeomaterialSearchRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the geomaterial search data as a dictionary.
 
@@ -90,7 +90,7 @@ class GeomaterialSearchRetriever:
 
         Example:
             >>> gsr = geomaterialSeachRetriever()
-            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_list()
+            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_dict()
 
         '''
         

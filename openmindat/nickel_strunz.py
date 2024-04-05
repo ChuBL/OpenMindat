@@ -182,16 +182,16 @@ class StrunzRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_object(self):
         '''
         Executes the query to retrieve the nickel_strunz data as a list of dictionaries.
 
         Returns:
-            list of dictionaries.
+            list of dictionaries or just a dictionary if "classes" is chosen.
 
         Example:
                 >>> sr = StrunzRetriever()
-                >>> nickelStrunzClasses = sr.classes().get_list()
+                >>> nickelStrunzClasses = sr.classes().get_object()
         '''
         
         print("Retrieving nickel-strunz. This may take a while... ")

@@ -421,7 +421,7 @@ class MineralsIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve mineral IMA status with a corresponding id and returns a dictionary.
 
@@ -430,7 +430,7 @@ class MineralsIdRetriever:
 
         Example:
                 >>> midr = MineralsIdRetriever()
-                >>> ima9 = midr.id(9).get_list()
+                >>> ima9 = midr.id(9).get_dict()
 
         '''
         
