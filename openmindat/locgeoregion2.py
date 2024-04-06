@@ -126,16 +126,16 @@ class GeoRegionRetriever:
         
         self.saveto('', file_name)
         
-    def get_object(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the geoRegion data as a list of dictionaries.
 
         Returns:
-            list of dictionaries or a dictionary if "page" parameter is included.
+            list of dictionaries.
 
         Example:
                 >>> grr = GeoRegionRetriever()
-                >>> georegion3 = grr.page(3).get_object()
+                >>> georegion3 = grr.page(3).get_list()
         '''
         
         print("Retrieving local geoRegion search. This may take a while... ")
@@ -149,7 +149,7 @@ class GeoRegionRetriever:
         self._init_params()
         
         if "page" in params:
-            return ma.get_mindat_dict(params, end_point)
+            return [ma.get_mindat_dict(params, end_point)]
         else:
             return ma.get_mindat_list_object(params, end_point)
             

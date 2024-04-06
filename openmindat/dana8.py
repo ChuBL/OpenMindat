@@ -166,16 +166,16 @@ class DanaRetriever:
         
         self.saveto('', file_name)
         
-    def get_object(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the dana-8 data as a dictionary.
 
         Returns:
-            list of dictionaries for groups, subgroups, and retrieve, or a dictionary for id.
+            list of dictionaries.
 
         Example:
             >>> dr = danaRetriever()
-            >>> danaGroups = cr.group().get_object()
+            >>> danaGroups = cr.group().get_list()
 
         '''
         
@@ -191,7 +191,7 @@ class DanaRetriever:
         
         ma = mindat_api.MindatApi()
         if self.sub_endpoint.isnumeric():
-            return ma.get_mindat_dict(params, end_point)
+            return [ma.get_mindat_dict(params, end_point)]
         else:
             return ma.get_mindat_list_object(params, end_point)
 

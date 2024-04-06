@@ -103,16 +103,16 @@ class CountriesListRetriever:
         
         self.saveto('', file_name)
         
-    def get_object(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the country data as a dictionary.
 
         Returns:
-            list of dictionaries, or a dictionary if "page" parameter is included.
+            list of dictionaries.
 
         Example:
             >>> cr = CountriesListRetriever()
-            >>> france = cr.page(2).get_object()
+            >>> france = cr.page(2).get_list()
 
         '''
         
@@ -126,7 +126,7 @@ class CountriesListRetriever:
         self._init_params()
 
         if "page" in params:
-            return ma.get_mindat_dict(params, end_point)
+            return [ma.get_mindat_dict(params, end_point)]
         else:
             return ma.get_mindat_list_object(params, end_point)
         
@@ -232,16 +232,16 @@ class CountriesIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_dict(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the country data as a dictionary.
 
         Returns:
-            dictionary.
+            list of dictionaries.
 
         Example:
             >>> cidr = countriesIdRetriever()
-            >>> france = cidr.id(2).get_dict()
+            >>> france = cidr.id(2).get_liat()
 
         '''
         
@@ -254,7 +254,7 @@ class CountriesIdRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     cidr = CountriesIdRetriever()

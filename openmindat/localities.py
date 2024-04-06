@@ -503,16 +503,16 @@ class LocalitiesIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_dict(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
         Returns:
-            dictionary.
+            List of Dictionaries.
 
         Example:
                 >>> lir = localitiesIdRetriever()
-                >>> locality5 = lir.id(5).get_dict()
+                >>> locality5 = lir.id(5).get_list()
 
         '''
         
@@ -525,7 +525,7 @@ class LocalitiesIdRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()

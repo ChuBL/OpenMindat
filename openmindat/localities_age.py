@@ -126,16 +126,16 @@ class LocalitiesAgeRetriever:
         
         self.saveto('', file_name)
         
-    def get_object(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the locality age data as a list of dictionaries.
 
         Returns:
-            list of dictionaries, or a dictionary if "page" parameter is included.
+            list of dictionaries.
 
         Example:
                 >>> lar = LocalitiesAgeRetriever()
-                >>> secondAgePage = lar.page(2).get_object()
+                >>> secondAgePage = lar.page(2).get_list()
 
         '''
         
@@ -150,7 +150,7 @@ class LocalitiesAgeRetriever:
         self._init_params()
         
         if "page" in params:
-            return ma.get_mindat_dict(params, end_point)
+            return [ma.get_mindat_dict(params, end_point)]
         else:
             return ma.get_mindat_list_object(params, end_point)
         
@@ -258,16 +258,16 @@ class LocalitiesAgeIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_dict(self):
+    def get_list(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
         Returns:
-            dictionary.
+            List of Dictionaries.
 
         Example:
                 >>> lair = localitiesAgeIdRetriever()
-                >>> localityAge2 = lair.id(2).get_dict()
+                >>> localityAge2 = lair.id(2).get_list()
 
         '''
         
@@ -280,7 +280,7 @@ class LocalitiesAgeIdRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     lair = LocalitiesAgeIdRetriever()

@@ -79,7 +79,7 @@ class PhotoCountRetriever:
         Executes the query to retrieve photo counts and returns a dictionary.
 
         Returns:
-            dictionary.
+            List of Dictionaries.
 
         Example:
                 >>> pcr = PhotoCountRetriever()
@@ -96,7 +96,7 @@ class PhotoCountRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     pcr = PhotoCountRetriever()

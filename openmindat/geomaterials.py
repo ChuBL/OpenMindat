@@ -1427,16 +1427,16 @@ class GeomaterialIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_dict(self):
+    def get_list(self):
         '''
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
         Returns:
-            dictionary.
+            List of DIctionaries.
 
         Example:
             >>> gir = GeomaterialIdRetriever()
-            >>> geo5 = gir.id(5).get_dict()
+            >>> geo5 = gir.id(5).get_list()
 
         '''
         
@@ -1449,7 +1449,7 @@ class GeomaterialIdRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
         
         
         
@@ -1525,7 +1525,7 @@ class GeomaterialDictRetriever:
         
         self.saveto('', file_name)   
         
-    def get_dict(self):
+    def get_list(self):
         '''
         Executes the query to retrieve the dictionary of geomaterials.
 
@@ -1534,7 +1534,7 @@ class GeomaterialDictRetriever:
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
-            >>> geoDict = gdr.get_dict()
+            >>> geoDict = gdr.get_list()
 
         '''
         
@@ -1547,7 +1547,7 @@ class GeomaterialDictRetriever:
         self._init_params()
         
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_dict(params, end_point)
+        return [ma.get_mindat_dict(params, end_point)]
         
 
 if __name__ == '__main__':
