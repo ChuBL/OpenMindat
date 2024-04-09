@@ -6,6 +6,7 @@ import json
 from datetime import datetime
 import getpass
 import yaml
+import os
 
 
 class MindatApiTester:
@@ -15,6 +16,21 @@ class MindatApiTester:
         pass
     
     def test_api_key_status(self):
+        #checks environment variable first
+        status = self.test_api_key_env()
+        
+        #if api key is not in environment, check local.
+        if status == False:
+            status = self.test_api_key_yaml()
+            
+        if status == False:
+            print("API key not saved.")
+            return False
+        else:
+            return status
+            
+    
+    def test_api_key_yaml(self):
         # check if api key is set
         try:
             with open('./.apikey.yaml', 'r') as f:
@@ -25,7 +41,17 @@ class MindatApiTester:
                 self.api_key = api_key
             return status_code
         except FileNotFoundError:
-            print("API key not saved.")
+            return False
+        
+    def test_api_key_env(self):
+        try:
+            api_key = os.environ["OPENMINDAT_API_KEY"]
+            
+            status_code = self.is_api_key_avail(api_key)
+            if 200 == status_code:
+                self.api_key = api_key
+            return status_code
+        except KeyError:
             return False
             
 
@@ -55,7 +81,6 @@ class MindatApi:
         while 200 != mat.is_api_key_avail(self.load_api_key()):
             print('Please input a valid API key. ')
             api_key = getpass.getpass("OpenMindat API Key: ")
-            print(api_key)
             self.save_api_key(api_key)
         
         self._api_key = self.load_api_key()
@@ -68,15 +93,20 @@ class MindatApi:
         Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
     def load_api_key(self): 
-        try:
-            with open('./.apikey.yaml', 'r') as f:
-                data = yaml.safe_load(f)
-            return data['api_key']
-        except FileNotFoundError:
-            return ''
+        if os.environ.get("MINDAT_API_KEY"):
+            return os.environ.get("MINDAT_API_KEY")
+        else:
+            try:
+                with open('./.apikey.yaml', 'r') as f:
+                    data = yaml.safe_load(f)
+                return data['api_key']
+            except FileNotFoundError:
+                return ''
     
     def save_api_key(self, api_key):
         data = {'api_key': api_key}
+        
+        os.environ["OPENMINDAT_API_KEY"] = api_key
         
         with open('./.apikey.yaml', 'w') as file:
             yaml.dump(data, file)
