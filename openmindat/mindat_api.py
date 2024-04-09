@@ -9,53 +9,92 @@ import yaml
 import os
 
 
-class MindatApiTester:
-    '''test if api key is valid
-    if valid, save it to a file'''
-    def __init__(self) -> None:
+class MindatApiKeyManeger:
+    def __init__(self):
         pass
-    
-    def test_api_key_status(self):
-        #checks environment variable first
-        status = self.test_api_key_env()
-        
-        #if api key is not in environment, check local.
-        if status == False:
-            status = self.test_api_key_yaml()
-            
-        if status == False:
-            print("API key not saved.")
-            return False
-        else:
-            return status
-            
-    
-    def test_api_key_yaml(self):
-        # check if api key is set
+
+    def inspect_stored_api_key(self):
+        try:
+            env_api_key = os.environ["MINDAT_API_KEY"]
+            status_code = self.get_api_key_status(env_api_key)
+            if 200 == status_code:
+                self._save_valid_api_key(env_api_key)
+                return True
+        except KeyError:
+            pass
+
         try:
             with open('./.apikey.yaml', 'r') as f:
-                api_key = yaml.safe_load(f)
+                yaml_api_key = yaml.safe_load(f)['api_key']
             
-            status_code = self.is_api_key_avail(api_key['api_key'])
+            status_code = self.get_api_key_status(yaml_api_key)
             if 200 == status_code:
-                self.api_key = api_key
-            return status_code
+                self._save_valid_api_key(yaml_api_key)
+                return True
         except FileNotFoundError:
-            return False
-        
-    def test_api_key_env(self):
-        try:
-            api_key = os.environ["OPENMINDAT_API_KEY"]
-            
-            status_code = self.is_api_key_avail(api_key)
-            if 200 == status_code:
-                self.api_key = api_key
-            return status_code
-        except KeyError:
-            return False
-            
+            pass
 
-    def is_api_key_avail(self, API_KEY):
+        return False
+    
+    def get_api_key_input(self):
+        api_key = getpass.getpass("Input or get your Mindat API key at https://www.mindat.org/a/how_to_get_my_mindat_api_key: ")
+
+        while False == self.is_valid_key_format(api_key):
+            api_key = getpass.getpass("The OpenMindat API key should be a 32-character string. Please re-enter: ")
+
+        status_code = self.get_api_key_status(api_key)
+
+        while 401 == status_code:
+            api_key = getpass.getpass("Invalid OpenMindat API key, please try again:")
+            status_code = self.get_api_key_status(api_key)
+
+        if 200 == status_code:
+            self._save_valid_api_key(api_key)
+        else:
+            raise ValueError("Mindat server error, please try again later.")
+        
+    def is_valid_key_format(self, KEY_INPUT):
+        """
+        Checks if the input string is exactly 32 characters long and consists only of letters and digits.
+        
+        Args:
+        input_string (str): The string to be checked.
+
+        Returns:
+        bool: True if the string meets the criteria, False otherwise.
+        """
+        pattern = r'^[A-Za-z0-9]{32}$'
+        return bool(re.match(pattern, KEY_INPUT))
+        
+    def _save_valid_api_key(self, VALID_KEY):
+        os.environ["MINDAT_API_KEY"] = VALID_KEY
+
+        with open('./.apikey.yaml', 'w') as f:
+            yaml.dump({'api_key': VALID_KEY}, f)
+        
+        return True
+    
+    def load_api_key(self):
+        if os.environ.get("MINDAT_API_KEY"):
+            api_key = os.environ.get("MINDAT_API_KEY")
+        else:
+            with open('./.apikey.yaml', 'r') as f:
+                api_key = yaml.safe_load(f)['api_key']
+        return api_key
+    
+    def reset_api_key(self):
+        try:
+            del os.environ["MINDAT_API_KEY"]
+        except KeyError:
+            pass
+        
+        try:
+            os.remove('./.apikey.yaml')
+        except FileNotFoundError:
+            pass
+        return True
+
+    def get_api_key_status(self, API_KEY):
         # test if api key is valid
         test_api_key = API_KEY
         MINDAT_API_URL = "https://api.mindat.org"
@@ -71,19 +110,8 @@ class MindatApiTester:
 class MindatApi:
     '''The main class for openmindat API'''
     def __init__(self):
-        mat = MindatApiTester()
-
-        status_code = mat.test_api_key_status()
-
-        if 500 == status_code:
-            raise Exception("Server Error (500), please try again later.") 
-        
-        while 200 != mat.is_api_key_avail(self.load_api_key()):
-            print('Please input a valid API key. ')
-            api_key = getpass.getpass("OpenMindat API Key: ")
-            self.save_api_key(api_key)
-        
-        self._api_key = self.load_api_key()
+        self._api_key = None
+        self._prepare_api_key()
 
         self.MINDAT_API_URL = "https://api.mindat.org"
         self._headers = {'Authorization': 'Token '+ self._api_key}
@@ -92,24 +120,13 @@ class MindatApi:
         self.data_dir = './mindat_data/'
         Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
-    def load_api_key(self): 
-        if os.environ.get("MINDAT_API_KEY"):
-            return os.environ.get("MINDAT_API_KEY")
-        else:
-            try:
-                with open('./.apikey.yaml', 'r') as f:
-                    data = yaml.safe_load(f)
-                return data['api_key']
-            except FileNotFoundError:
-                return ''
-    
-    def save_api_key(self, api_key):
-        data = {'api_key': api_key}
-        
-        os.environ["OPENMINDAT_API_KEY"] = api_key
-        
-        with open('./.apikey.yaml', 'w') as file:
-            yaml.dump(data, file)
+    def _prepare_api_key(self):
+        mam = MindatApiKeyManeger()
+
+        if False == mam.inspect_stored_api_key():
+            mam.get_api_key_input()
+
+        self._api_key = mam.load_api_key()
     
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT

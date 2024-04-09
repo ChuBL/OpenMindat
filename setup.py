@@ -25,6 +25,7 @@ setup(name='openmindat',
       packages=['openmindat'],
       install_requires=[
           'requests',
+          'PyYAML'
       ],
       include_package_data=True,
       zip_safe=False)
