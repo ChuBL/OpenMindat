@@ -4,6 +4,9 @@ from pathlib import Path
 import sys
 import json
 from datetime import datetime
+import getpass
+import yaml
+import os
 
 
 class MindatApiTester:
@@ -13,17 +16,42 @@ class MindatApiTester:
         pass
     
     def test_api_key_status(self):
+        #checks environment variable first
+        status = self.test_api_key_env()
+        
+        #if api key is not in environment, check local.
+        if status == False:
+            status = self.test_api_key_yaml()
+            
+        if status == False:
+            print("API key not saved.")
+            return False
+        else:
+            return status
+            
+    
+    def test_api_key_yaml(self):
         # check if api key is set
         try:
-            with open('.api_key', 'r') as f:
-                api_key = f.read()
+            with open('./.apikey.yaml', 'r') as f:
+                api_key = yaml.safe_load(f)
+            
+            status_code = self.is_api_key_avail(api_key['api_key'])
+            if 200 == status_code:
+                self.api_key = api_key
+            return status_code
+        except FileNotFoundError:
+            return False
+        
+    def test_api_key_env(self):
+        try:
+            api_key = os.environ["OPENMINDAT_API_KEY"]
             
             status_code = self.is_api_key_avail(api_key)
             if 200 == status_code:
                 self.api_key = api_key
             return status_code
-        except FileNotFoundError:
-            print("API key not saved.")
+        except KeyError:
             return False
             
 
@@ -52,8 +80,8 @@ class MindatApi:
         
         while 200 != mat.is_api_key_avail(self.load_api_key()):
             print('Please input a valid API key. ')
-            input_api_key = input("Your API key: ")
-            self.set_api_key(input_api_key)
+            api_key = getpass.getpass("OpenMindat API Key: ")
+            self.save_api_key(api_key)
         
         self._api_key = self.load_api_key()
 
@@ -64,19 +92,24 @@ class MindatApi:
         self.data_dir = './mindat_data/'
         Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
-    def load_api_key(self):
-        try:
-            with open('.api_key', 'r') as f:
-                api_key = f.read()
-            return api_key
-        except FileNotFoundError:
-            return ''
+    def load_api_key(self): 
+        if os.environ.get("MINDAT_API_KEY"):
+            return os.environ.get("MINDAT_API_KEY")
+        else:
+            try:
+                with open('./.apikey.yaml', 'r') as f:
+                    data = yaml.safe_load(f)
+                return data['api_key']
+            except FileNotFoundError:
+                return ''
     
-    def set_api_key(self, API_KEY):
-        '''set api key by saving it to a file'''
-
-        with open('.api_key', 'w') as f:
-                f.write(API_KEY)
+    def save_api_key(self, api_key):
+        data = {'api_key': api_key}
+        
+        os.environ["OPENMINDAT_API_KEY"] = api_key
+        
+        with open('./.apikey.yaml', 'w') as file:
+            yaml.dump(data, file)
     
     def set_params(self, PARAMS_DICT):
         self.params = PARAMS_DICT
@@ -191,7 +224,7 @@ class MindatApi:
                     # i.e., we've reached the end of the results
                     break
 
-            json.dump(json_data, f, indent=4)
+            json.dump(json_data, f, indent=4)            
         print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
     def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
@@ -227,7 +260,74 @@ class MindatApi:
 
             json.dump(json_data, f, indent=4)
         print("Successfully saved item to " + str(file_path.resolve()))
-         
+        
+    def get_mindat_list_object(self, QUERY_DICT, END_POINT):
+        '''
+            get all items in a list and returns it to a list of dictionaries
+            Since this API has a limit of 1500 items per page,
+            we need to loop through all pages and save them to a single json file
+        '''
+
+        end_point = END_POINT
+
+        params = QUERY_DICT
+
+        if len(params) <= 2 and 'format' in params and 'page_size' in params:
+            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+            if confirm.lower() != 'y':
+                sys.exit("Query not confirmed. Exiting...")
+
+        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                        params=params,
+                        headers=self._headers)
+            
+        
+        try:
+            result_data = response.json()["results"]
+        except:
+            print("Error: " + str(response.json()))
+            return
+            
+        json_data = result_data
+
+        while True:
+            try:
+                next_url = response.json()["next"]
+                response = requests.get(next_url, headers=self._headers)
+                json_data += response.json()['results']
+
+            except requests.exceptions.MissingSchema as e:
+                # This error indicates the `next_url` is none
+                # i.e., we've reached the end of the results
+                break
+        
+        return json_data
+    
+    def get_mindat_dict(self, QUERY_DICT, END_POINT):
+        '''
+            return one item to an object as a dictionary.
+        '''
+        end_point = END_POINT
+        params = QUERY_DICT
+
+        if len(params) <= 2 and 'format' in params and 'page_size' in params:
+            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
+            if confirm.lower() != 'y':
+                sys.exit("Query not confirmed. Exiting...")
+
+        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                        params=params,
+                        headers=self._headers)
+        
+        try:
+            result_data = response.json()
+        except:
+            print("Error: " + str(response.json()))
+            return
+            
+        json_data = result_data
+        
+        return json_data
         
 if __name__ == '__main__':
     # test if api key is valid

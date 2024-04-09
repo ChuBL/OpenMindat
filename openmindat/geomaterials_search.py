@@ -18,6 +18,7 @@ class GeomaterialSearchRetriever:
     """
     def __init__(self):
        self._params = {}
+       self.end_point = 'geomaterials_search'
     
     def _init_params(self):
         self._params.clear()
@@ -34,9 +35,9 @@ class GeomaterialSearchRetriever:
             self: The GeomaterialRetriever object, allowing for method chaining.
 
         Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.geomaterials_search("quartz, green, hexagonal")
-            >>> gr.save()
+            >>> gsr = GeomaterialSearchRetriever()
+            >>> gsr.geomaterials_search("quartz, green, hexagonal")
+            >>> gsr.save()
         '''
         keywords = KEYWORDS
         self._params.update({'q': keywords})
@@ -56,7 +57,7 @@ class GeomaterialSearchRetriever:
         print("Retrieving geomaterials. This may take a while... ")
         
         params = self._params
-        end_point = 'geomaterials_search'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -79,6 +80,30 @@ class GeomaterialSearchRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve the geomaterial search data as a dictionary.
+
+        Returns:
+            List of dictionaries.
+
+        Example:
+            >>> gsr = geomaterialSeachRetriever()
+            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_list()
+
+        '''
+        
+        print("Retrieving geomaterial search. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return [ma.get_mindat_dict(params, end_point)]
 
 
 if __name__ == '__main__':

@@ -126,6 +126,33 @@ class LocalitiesStatusRetriever:
         
         self.saveto('', file_name)
         
+    def get_list(self):
+        '''
+        Executes the query to retrieve the locality status data as a list of dictionaries.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+                >>> lsr = LocalitiesStatusRetriever()
+                >>> secondAgePage = lsr.page(2).get_list()
+
+        '''
+        
+        print("Retrieving localities search. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()
+        #clears params for next get statement     
+        self._init_params()
+        
+        if "page" in params:
+            return [ma.get_mindat_dict(params, end_point)]
+        else:
+            return ma.get_mindat_list_object(params, end_point)
+        
         
 class LocalitiesStatusIdRetriever:
     """
@@ -146,6 +173,7 @@ class LocalitiesStatusIdRetriever:
     
     def __init__(self):
        self.end_point = 'locality_status' 
+       self.sub_endpoint = ''
         
        self._params = {}
        self._init_params()
@@ -177,7 +205,7 @@ class LocalitiesStatusIdRetriever:
         
         id = str(ID)
         
-        self.end_point = '/'.join([self.end_point, id])
+        self.sub_endpoint = id
         
         return self
     
@@ -201,7 +229,7 @@ class LocalitiesStatusIdRetriever:
 
         params = self._params
         outdir = OUTDIR
-        end_point = self.end_point
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
@@ -227,6 +255,30 @@ class LocalitiesStatusIdRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve locality status with a corresponding id and returns a dictionary.
+
+        Returns:
+            List of Dictionaries.
+
+        Example:
+                >>> lsir = localitiesStatusIdRetriever()
+                >>> localitystatus2 = lsir.id(2).get_list()
+
+        '''
+        
+        print("Retrieving localities. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     lsir = LocalitiesStatusIdRetriever()

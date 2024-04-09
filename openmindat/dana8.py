@@ -24,6 +24,7 @@ class DanaRetriever:
     
     def __init__(self):
        self.sub_endpoint = '' 
+       self.end_point = 'dana-8'
         
        self._params = {}
        self._init_params()
@@ -132,13 +133,17 @@ class DanaRetriever:
         params = self._params
         outdir = OUTDIR
         file_name = FILE_NAME
-        end_point = 'dana-8'
+        end_point = self.end_point
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir, file_name)
+        
+        if self.sub_endpoint.isnumeric():
+            ma.get_mindat_item(params, end_point, outdir, file_name)
+        else:
+            ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -160,6 +165,35 @@ class DanaRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve the dana-8 data as a dictionary.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+            >>> dr = danaRetriever()
+            >>> danaGroups = cr.group().get_list()
+
+        '''
+        
+        print("Retrieving dana-8. This may take a while... ")
+       
+        params = self._params        
+        
+        if self.sub_endpoint != '':
+            end_point = '/'.join(['dana-8', self.sub_endpoint])
+            
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        if self.sub_endpoint.isnumeric():
+            return [ma.get_mindat_dict(params, end_point)]
+        else:
+            return ma.get_mindat_list_object(params, end_point)
 
 
 if __name__ == '__main__':

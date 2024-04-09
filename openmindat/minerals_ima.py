@@ -13,6 +13,7 @@ class MineralsIMARetriever:
     Press q to quit.
     '''
     def __init__(self):
+        self.end_point = 'minerals_ima'
         self._params = {}
 
     def _init_params(self):
@@ -269,7 +270,7 @@ class MineralsIMARetriever:
         print("Retrieving geomaterials. This may take a while... ")
 
         params = self._params
-        end_point = 'minerals_ima'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -297,6 +298,30 @@ class MineralsIMARetriever:
         
         self.saveto('', file_name)
         
+    def get_list(self):
+        '''
+        Executes the query to retrieve the list of mineral data and returns the json object.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+                >>> mir = MineralsIMARetriever()
+                >>> quartsIMA = mir.q('quartz').get_list()
+
+        '''
+        
+        print("Retrieving minerals. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return ma.get_mindat_list_object(params, end_point)
+        
         
 class MineralsIdRetriever:
     """
@@ -312,6 +337,7 @@ class MineralsIdRetriever:
     """
     
     def __init__(self):
+        self.end_point = 'minerals_ima'
         self.sub_endpoint = '0'
         
         self._params = {}
@@ -361,13 +387,13 @@ class MineralsIdRetriever:
 
             Example:
                 >>> midr = MineralsIdRetriever()
-                >>> midr.saveto("/path/to/directory", "Mineral_ima_id")
+                >>> midr.id(3).saveto("/path/to/directory", "Mineral_ima_id")
         '''
 
         print("Retrieving Minerals. This may take a while... ")
 
         params = self._params
-        end_point = '/'.join(['minerals_ima', self.sub_endpoint])
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
 
@@ -389,11 +415,35 @@ class MineralsIdRetriever:
 
             Example:
                 >>> midr = MineralsIdRetriever()
-                >>> midr.save()
+                >>> midr.id(3).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve mineral IMA status with a corresponding id and returns a dictionary.
+
+        Returns:
+            List of Dictionaries.
+
+        Example:
+                >>> midr = MineralsIdRetriever()
+                >>> ima9 = midr.id(9).get_list()
+
+        '''
+        
+        print("Retrieving minerals. This may take a while... ")
+       
+        params = self._params
+        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return [ma.get_mindat_dict(params, end_point)]
 
 
 if __name__ == '__main__':

@@ -26,6 +26,7 @@ class PhotoCountRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
     
+    #when fixed check if this needs get item or get list
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the photo count with keywords and saves the results to a specified directory.
@@ -72,6 +73,30 @@ class PhotoCountRetriever:
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve photo counts and returns a dictionary.
+
+        Returns:
+            List of Dictionaries.
+
+        Example:
+                >>> pcr = PhotoCountRetriever()
+                >>> photoCount = pcr.get_list()
+
+        '''
+        
+        print("Retrieving photo count. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     pcr = PhotoCountRetriever()

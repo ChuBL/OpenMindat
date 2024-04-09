@@ -53,7 +53,7 @@ from .localities_type import LocalitiesTypeRetriever
 from .localities_type import LocalitiesTypeIdRetriever
 from .locgeoregion2 import GeoRegionRetriever
 from .locobject import LocobjectRetriever
-from .countries import CountriesRetriever
+from .countries import CountriesListRetriever
 from .countries import CountriesIdRetriever
 from .dana8 import DanaRetriever
 from .nickel_strunz import StrunzRetriever

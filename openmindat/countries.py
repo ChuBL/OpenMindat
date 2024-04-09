@@ -1,7 +1,7 @@
 from . import mindat_api
 
 
-class CountriesRetriever:
+class CountriesListRetriever:
     """
     A class to facilitate the retrieval of country data from the Mindat API using by page.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/countries/operation/countries_list
@@ -12,7 +12,7 @@ class CountriesRetriever:
         save(FILENAME): Executes the search query and saves the data to the current directory.
 
     Usage:
-        >>> cr = CountriesRetriever()
+        >>> cr = CountriesListRetriever()
         >>> cr.page(2).save()
 
     Press q to quit.
@@ -39,7 +39,7 @@ class CountriesRetriever:
             self: The CountriesRetriver object.
 
         Example:
-            >>> cr = CountriesRetriever()
+            >>> cr = CountriesListRetriever()
             >>> cr.page(2)
             >>> cr.save()
         '''
@@ -64,8 +64,8 @@ class CountriesRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.saveto("/path/to/directory")
+                >>> cr = CountriesListRetriever()
+                >>> cr.page(2).saveto("/path/to/directory")
         '''
         
         print("Retrieving Countries. This may take a while... ")
@@ -76,14 +76,18 @@ class CountriesRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        
+        if "page" in params:
+            ma.get_mindat_item(params, end_point, outdir, file_name)
+        else:
+            ma.get_mindat_list(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
     
     def save(self, FILE_NAME = ''):
         '''
-            Executes the query to retrieve the list of country data and saves the results to the current directory.
+            Executes the query to retrieve the country data and saves the results to the current directory.
 
             Args:
                 FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
@@ -92,12 +96,39 @@ class CountriesRetriever:
                 None
 
             Example:
-                >>> cr = countriesRetriever()
-                >>> cr.save()
+                >>> cr = CountriesListRetriever()
+                >>> cr.page(2).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve the country data as a dictionary.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+            >>> cr = CountriesListRetriever()
+            >>> france = cr.page(2).get_list()
+
+        '''
+        
+        print("Retrieving countries. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        ma = mindat_api.MindatApi()        
+        #clears params for next get statement     
+        self._init_params()
+
+        if "page" in params:
+            return [ma.get_mindat_dict(params, end_point)]
+        else:
+            return ma.get_mindat_list_object(params, end_point)
         
 
 class CountriesIdRetriever:
@@ -167,7 +198,7 @@ class CountriesIdRetriever:
 
             Example:
                 >>> cidr = CountriesIdRetriever()
-                >>> cidr.saveto("/path/to/directory")
+                >>> cidr.id(2).saveto("/path/to/directory")
         '''
         
         print("Retrieving Countries. This may take a while... ")
@@ -195,11 +226,35 @@ class CountriesIdRetriever:
 
             Example:
                 >>> cidr = countriesIdRetriever()
-                >>> cidr.save()
+                >>> cidr.id(2).save()
         '''
         file_name = FILE_NAME
         
         self.saveto('', file_name)
+        
+    def get_list(self):
+        '''
+        Executes the query to retrieve the country data as a dictionary.
+
+        Returns:
+            list of dictionaries.
+
+        Example:
+            >>> cidr = countriesIdRetriever()
+            >>> france = cidr.id(2).get_liat()
+
+        '''
+        
+        print("Retrieving countries. This may take a while... ")
+       
+        params = self._params
+        end_point = self.end_point
+        
+        #clears params for next get statement     
+        self._init_params()
+        
+        ma = mindat_api.MindatApi()
+        return [ma.get_mindat_dict(params, end_point)]
 
 if __name__ == '__main__':
     cidr = CountriesIdRetriever()
