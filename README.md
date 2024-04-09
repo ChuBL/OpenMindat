@@ -2,7 +2,7 @@
 
 This is a test version of the OpenMindat Python package, designed to facilitate querying and retrieving data on minerals and geomaterials from the Mindat API. It provides classes for detailed queries based on various attributes like IMA status, keywords, and specific geomaterial properties.
 
-GitHub Reposity: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat)
+GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat)
 
 ## Get Started
 
@@ -21,6 +21,14 @@ import openmindat
 ```
 
 ## Use Cases
+
+### 0. Setting API Key in Alternative Ways
+
+```python
+os.environ["MINDAT_API_KEY"] = 'Your_Mindat_API_Key'
+```
+
+You can also set the API key by following the instructions when using the following queries.
 
 ### 1. Perform Detailed Queries on Geomaterials
 
@@ -87,6 +95,9 @@ gr.saveto("./mindat_data")
 
 - **GitHub Wiki**: For comprehensive documentation, visit our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki).
 
+- **OpenMindat API Documentation**:
+  [OpenMindat Redoc](https://api.mindat.org/schema/redoc/)
+
 - **Built-in Help**:
 
 To explore detailed class and method documentation within the OpenMindat package, use Python's built-in `help()` function. This provides direct access to docstrings, showcasing usage examples and parameter details. Example:
@@ -107,8 +118,6 @@ The help() is also available for the specific functions:
 
 Press `q` to exit the help interface.
 
-- **OpenMindat API Documentation**:
-  [OpenMindat Redoc](https://api.mindat.org/schema/redoc/)
 
 
 ### Contact Us
@@ -118,7 +127,9 @@ For further assistance or feedback, feel free to contact the development team at
 
 ## License
 
-[Apache](LICENSE)
+**Project Licence:** [Apache](LICENSE)
+
+**Mindat Data License:** [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
 
 ## Author
 
@@ -132,3 +143,16 @@ Jiyin Zhang, Clairmont Cory
 </p>
 
 - This work is supported by NSF, Award #2126315.
+
+## Updating Logs
+
+### 0.0.2
+**Released:** Apr 08, 2024
+
+- Now supporting more Mindat endpoints. Not fully tested. Feedback is welcome.
+- Revised API key obtaining workflow.
+
+### 0.0.1
+**Released:** Dec 14, 2023
+
+- Initial release of the package.
