@@ -27,6 +27,7 @@ class CountriesListRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
     
     def page(self, PAGE):
         '''
@@ -50,6 +51,28 @@ class CountriesListRetriever:
             "page": page
         })
         
+        return self
+    
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The CountriesListRetriever object.
+
+        Example:
+            >>> cr = CountriesListRetriever()
+            >>> cr.page_size(2)
+            >>> cr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
         return self
     
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
