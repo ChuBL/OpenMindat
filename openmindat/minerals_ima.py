@@ -19,6 +19,8 @@ class MineralsIMARetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
 
     def expand(self, EXPAND_FIELDS):
         '''
