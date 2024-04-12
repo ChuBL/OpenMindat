@@ -40,7 +40,7 @@ from openmindat import GeomaterialRetriever
 gr = GeomaterialRetriever()
 gr.density_min(2.0).density_max(5.0).crystal_system("Hexagonal")
 gr.elements_exc("Au,Ag")
-gr.saveto("/path/to/geomaterials_data")
+gr.saveto("./mindat_data")
 ```
 
 ### 2. Retrieve IMA-Approved Minerals
@@ -50,7 +50,7 @@ from openmindat import MineralsIMARetriever
 
 mir = MineralsIMARetriever()
 mir.ima(1).fields("id,name,ima_formula,ima_year")
-mir.saveto("/path/to/minerals_data")
+mir.saveto("./mindat_data", 'my_filename')
 ```
 
 ### 3. Search Geomaterials Using Keywords
@@ -60,7 +60,7 @@ from openmindat import GeomaterialSearchRetriever
 
 gsr = GeomaterialSearchRetriever()
 gsr.geomaterials_search("quartz, green, hexagonal")
-gsr.save()
+gsr.save('my_filename')
 ```
 
 ### 4. Retrieve Localities
@@ -80,11 +80,12 @@ from openmindat import GeomaterialRetriever
 
 gr = GeomaterialRetriever()
 gr.ima(True).expand("type_localities")
-gr.saveto("/content/sample_data")
+gr.saveto("./mindat_data")
 ```
 
 ### 6. Retrieve Locality Occurrences for Single Mineral Species
 Please consider using only one mineral species ID for querying localities occurrences since this query might result in many records and exceed the server limitation.
+
 ```python
 from openmindat import GeomaterialRetriever
 
