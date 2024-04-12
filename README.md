@@ -6,8 +6,6 @@ GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMind
 
 ## Get Started
 
-> If you do not have a Mindat API key, please refer to [How to Get My Mindat API Key or Token?](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
-
 ### Install via Pip
 
 ```console
@@ -30,7 +28,9 @@ import os
 os.environ["MINDAT_API_KEY"] = 'Your_Mindat_API_Key'
 ```
 
-You can also set the API key by following the instructions when using the following queries.
+> If you do not have a Mindat API key, please refer to [How to Get My Mindat API Key or Token?](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
+
+You can also set the API key by following the general queries.
 
 ### 1. Perform Detailed Queries on Geomaterials
 
