@@ -150,7 +150,7 @@ Jiyin Zhang, Clairmont Cory
 ## Updating Logs
 
 ### 0.0.2
-**Released:** Apr 08, 2024
+**Released:** Apr 11, 2024
 
 - Now supporting more Mindat endpoints. Not fully tested. Feedback is welcome.
 - Revised API key obtaining workflow.

@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='openmindat',
-      version='0.0.7',
+      version='0.0.2',
       description='An alpha version for OpenMindat package',
       long_description=open('README.md').read(),
       long_description_content_type='text/markdown',
