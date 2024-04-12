@@ -225,7 +225,7 @@ class MindatApi:
             try:
                 result_data = response.json()["results"]
             except:
-                print("Error: " + str(response.json()))
+                print("Error: " + str(response.reason))
                 return
             
             json_data = {"results": result_data}
@@ -235,7 +235,6 @@ class MindatApi:
                     next_url = response.json()["next"]
                     response = requests.get(next_url, headers=self._headers)
                     json_data["results"] += response.json()['results']
-
                 except requests.exceptions.MissingSchema as e:
                     # This error indicates the `next_url` is none
                     # i.e., we've reached the end of the results
@@ -298,7 +297,6 @@ class MindatApi:
                         params=params,
                         headers=self._headers)
             
-        
         try:
             result_data = response.json()["results"]
         except:

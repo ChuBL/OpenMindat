@@ -25,6 +25,8 @@ import openmindat
 ### 0. Setting API Key in Alternative Ways
 
 ```python
+import os
+
 os.environ["MINDAT_API_KEY"] = 'Your_Mindat_API_Key'
 ```
 
