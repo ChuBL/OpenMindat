@@ -149,9 +149,9 @@ Jiyin Zhang, Clairmont Cory
 
 ## Updating Logs
 
-### 0.0.2
+### 0.0.3
 **Released:** Apr 11, 2024
-
+- Tentative issue: Data queries involving multiple pages might return an `Internal Server Error` due to server-end issues. 
 - Now supporting more Mindat endpoints. Not fully tested. Feedback is welcome.
 - Revised API key obtaining workflow.
 
