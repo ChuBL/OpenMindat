@@ -185,15 +185,15 @@ class DanaRetriever:
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
-            
-        #clears params for next get statement     
-        self._init_params()
         
         ma = mindat_api.MindatApi()
         if self.sub_endpoint.isnumeric():
-            return [ma.get_mindat_dict(params, end_point)]
+            results = [ma.get_mindat_dict(params, end_point)]
         else:
-            return ma.get_mindat_list_object(params, end_point)
+            results = ma.get_mindat_list_object(params, end_point)
+        
+        self._init_params()
+        return results
 
 
 if __name__ == '__main__':

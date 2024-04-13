@@ -145,13 +145,14 @@ class LocalitiesStatusRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        #clears params for next get statement     
-        self._init_params()
         
         if "page" in params:
-            return [ma.get_mindat_dict(params, end_point)]
+            results = [ma.get_mindat_dict(params, end_point)]
         else:
-            return ma.get_mindat_list_object(params, end_point)
+            results = ma.get_mindat_list_object(params, end_point)
+            
+        self._init_params()
+        return results
         
         
 class LocalitiesStatusIdRetriever:
@@ -274,11 +275,11 @@ class LocalitiesStatusIdRetriever:
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
-        #clears params for next get statement     
-        self._init_params()
-        
         ma = mindat_api.MindatApi()
-        return [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_dict(params, end_point)]
+        
+        self._init_params()
+        return results
 
 if __name__ == '__main__':
     lsir = LocalitiesStatusIdRetriever()
