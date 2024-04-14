@@ -1432,7 +1432,7 @@ class GeomaterialIdRetriever:
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
         Returns:
-            List of DIctionaries.
+            List of Dictionaries.
 
         Example:
             >>> gir = GeomaterialIdRetriever()

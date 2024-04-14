@@ -4,8 +4,27 @@ These classes offer flexible query parameters, method chaining, and functionalit
 
 Attributes:
     MineralsIMARetriever (class): A class for querying mineral data based on IMA status and other parameters.
+    MineralIdRetriever (class): A class for querying mineral IMA data based on id.
     GeomaterialSearchRetriever (class): A class for searching geomaterials using specific keywords.
     GeomaterialRetriever (class): A class for performing detailed queries on geomaterials.
+    GeomaterialIdRetriever (class): A class for querying geomaterials based on id.
+    GeomaterialDictRetriever (class): A class for displaying a dictionary of values for a field.
+    LocalitiesRetriever (class): A class for performing detailed queries based on localities.
+    LocalitiesIdRetriever (class): A class for finding locality data based on id.
+    LocalitiesAgeRetriever (class): A class for querying locality age data.
+    LocalitiesAgeIdRetriever (class): A class for querying locality age based on id.
+    LocalitiesStatusRetriever (class): A class for querying locality status data.
+    LocalitiesStatusIdRetriever (class): A class for querying locality status based on id.
+    LocalitiesTypeRetriever (class): A class for querying locality type data.
+    LocalitiesTypeIdRetriever (class): A class for querying locality type based on id.
+    GeoRegionRetriever (class): A class for querying locality georegion data.
+    LocObjectRetriever (class): A class for querying locality object data based on id.
+    CountriesListRetriever (class): A class for querying country data from OpenMindat.
+    CountriesIdRetriever (class): A class for querying country data based on id.
+    DanaRetriever (class): A class for querying dana-8 group and subgroup data. 
+    StrunzRetriever (class): A class for querying different types of nickel-strunz-10 data.
+    PhotoCountRetriever(class): A class to facilitate the retrieval of photo count data from the Mindat API.
+    
 
 Todo:
     * Expand the module with additional classes and functions as needed.
