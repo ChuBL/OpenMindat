@@ -34,7 +34,10 @@ You can also set the API key by following the general queries.
 
 ### 1. Perform Detailed Queries on Geomaterials
 
+:exclamation: Temporarily Outage, see https://github.com/ChuBL/OpenMindat/issues/12
+
 ```python
+# Temporarily Outage, see https://github.com/ChuBL/OpenMindat/issues/12
 from openmindat import GeomaterialRetriever
 
 gr = GeomaterialRetriever()
@@ -60,10 +63,17 @@ from openmindat import GeomaterialSearchRetriever
 
 gsr = GeomaterialSearchRetriever()
 gsr.geomaterials_search("quartz, green, hexagonal")
-gsr.save('my_filename')
+gsr.save("filename")
+
+# Alternatively, you can get the list object directly:
+gsr = GeomaterialSearchRetriever()
+gsr.geomaterials_search("ruby, red, hexagonal")
+print(gsr.get_list())
 ```
 
 ### 4. Retrieve Localities
+
+:exclamation: Some country names, e.g., United States and United Kingdom, are not working due to server-side problems, which will be fixed in the future.
 
 ```python
 from openmindat import LocalitiesRetriever
@@ -71,6 +81,11 @@ from openmindat import LocalitiesRetriever
 lr = LocalitiesRetriever()
 lr.country("France").txt("mine")
 lr.save()
+
+# Alternatively, you can get the list object directly:
+lr = LocalitiesRetriever()
+lr.country("Canada").description("mine")
+print(lr.get_list())
 ```
 
 ### 5. Retrieve Type Localities for IMA-Approved Mineral Species
@@ -149,8 +164,15 @@ Jiyin Zhang, Clairmont Cory
 
 ## Updating Logs
 
+### 0.0.4
+**Released:** Apr 14, 2024
+
+- Tentative issue: Data queries involving multiple pages might return an `Internal Server Error` due to server-end issues. [Related GitHub issue](https://github.com/ChuBL/OpenMindat/issues/12)
+- Added support to getting list objects of obtained data in addition to saving it to local directories.
+
 ### 0.0.3
 **Released:** Apr 11, 2024
+
 - Tentative issue: Data queries involving multiple pages might return an `Internal Server Error` due to server-end issues. 
 - Now supporting more Mindat endpoints. Not fully tested. Feedback is welcome.
 - Revised API key obtaining workflow.
