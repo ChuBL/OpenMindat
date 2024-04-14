@@ -59,9 +59,49 @@ class LocalitiesRetriever:
             >>> lr.country("United States")
             >>> lr.saveto()
         '''
-        self._params.update({
-            'country': COUNTRY_STR
-        })
+        valid_options = ["Afghanistan","Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antigua and Barbuda",
+                         "Argentina", "Armenia", "Aruba", "Ashmore and Cartier Islands", "Australia", "Austria", "Azerbaijan", "Bahamas",
+                         "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan",
+                         "Bolivia", "Bosnia And Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territories",
+                         "British Solomon Islands", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia",
+                         "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China",
+                         "Christmas Island", "Cocos Islands", "Colombia", "Comoro Islands", "Cook Islands", "Costa Rica", "Croatia",
+                         "Cuba", "Cyprus", "Czech Republic", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica",
+                         "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Estonia",
+                         "Ethiopia", "Faeroe Islands", "Falkland Islands", "Federated States of Micronesia", "Fiji", "Finland",
+                         "France", "French Guiana", "French Polynesia", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar",
+                         "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau",
+                         "Guyana", "Haiti", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq",
+                         "Ireland", "Isle of Man", "Israel", "Italy", "Ivory Coast (Côte d'Ivoire)", "Jamaica", "Japan", "Jersey",
+                         "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon",
+                         "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi",
+                         "Malaysia", "Maldives", "Mali", "Malta", "Martinique", "Mauritania", "Mauritius", "Mexico", "Moldova",
+                         "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+                         "Nepal", "Netherlands", "Netherlands Antilles", "New Caledonia", "New Zealand", "Nicaragua", "Niger",
+                         "Nigeria", "North Korea", "Norway", "Oman", "Pakistan", "Panama", "Papua New Guinea", "Paraguay", "Peru",
+                         "Philippines", "Poland", "Portugal", "Puerto Rico", "Qatar", "Republic of Congo (Brazzaville)",
+                         "Republic of Macedonia", "Reunion Island", "Romania", "Russia", "Rwanda", "Saint Helena", "Saint Lucia",
+                         "Saint Vincent and the Grenadines", "San Marino", "Sao Tome And Principe", "Saudi Arabia", "Senegal",
+                         "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia",
+                         "South Africa", "South Korea", "Spain", "Sri Lanka", "St Christopher-Nevis Islands", "Sudan", "Suriname",
+                         "Swaziland", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo",
+                         "Tonga", "Trinidad And Tobago", "Tunisia", "Turkey", "Turkmenistan", "Turks And Caicos Islands", "Tuvalu",
+                         "U.S. Virgin Islands", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States",
+                         "Uruguay", "Uzbekistan", "Vanuatu (Republic of Vanuatu; New Hebrides) ", "Venezuela", "Vietnam",
+                         "Western Sahara", "Western Samoa", "Yemen", "Zambia", "Zimbabwe"]
+        
+        if COUNTRY_STR is not None:
+            if isinstance(COUNTRY_STR, str):
+                country = COUNTRY_STR  
+            else:
+                raise TypeError("Country must be a string")
+
+            if country not in valid_options:
+                raise ValueError(f"Invalid country: {country}. Valid options are: {', '.join(valid_options)}")
+
+            self._params.update({
+                'country': country
+            })  
 
         return self
     
@@ -398,11 +438,11 @@ class LocalitiesRetriever:
         params = self._params
         end_point = self.end_point
         
-        #clears params for next get statement     
-        self._init_params()
-        
         ma = mindat_api.MindatApi()
-        return ma.get_mindat_list_object(params, end_point)
+        results = ma.get_mindat_list_object(params, end_point)
+        
+        self._init_params()
+        return results
         
         
 class LocalitiesIdRetriever:
@@ -521,11 +561,11 @@ class LocalitiesIdRetriever:
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
-        #clears params for next get statement     
-        self._init_params()
-        
         ma = mindat_api.MindatApi()
-        return [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_dict(params, end_point)]
+        
+        self._init_params()
+        return results
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()
