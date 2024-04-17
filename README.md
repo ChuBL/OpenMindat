@@ -149,6 +149,8 @@ For further assistance or feedback, feel free to contact the development team at
 
 **Mindat Data License:** [CC BY-NC-SA 4.0 DEED](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
 
+The Mindat API is currently in beta test, and while access is free for all, please note that the data provided are not yet licensed for redistribution and are for private, non-commercial use only. Once launched, data will be available under an open-access license, but please always check the terms of use of the license before reusing these data.
+
 ## Author
 
 Jiyin Zhang, Clairmont Cory
