@@ -34,10 +34,7 @@ You can also set the API key by following the general queries.
 
 ### 1. Perform Detailed Queries on Geomaterials
 
-:exclamation: Temporarily Outage, see https://github.com/ChuBL/OpenMindat/issues/12
-
 ```python
-# Temporarily Outage, see https://github.com/ChuBL/OpenMindat/issues/12
 from openmindat import GeomaterialRetriever
 
 gr = GeomaterialRetriever()
