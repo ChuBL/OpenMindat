@@ -49,7 +49,7 @@ gr.saveto("./mindat_data")
 from openmindat import MineralsIMARetriever
 
 mir = MineralsIMARetriever()
-mir.ima(1).fields("id,name,ima_formula,ima_year")
+mir.fields("id,name,ima_formula,ima_year")
 mir.saveto("./mindat_data", 'my_filename')
 ```
 

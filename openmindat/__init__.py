@@ -55,7 +55,7 @@ Examples:
         
 Press q to quit.
 """
-from . import mindat_api
+from .mindat_api import MindatApi, MindatApiKeyManeger
 from .minerals_ima import MineralsIMARetriever
 from .minerals_ima import MineralsIdRetriever
 from .geomaterials_search import GeomaterialSearchRetriever

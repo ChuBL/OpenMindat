@@ -1,13 +1,31 @@
+import os
 import re
-import requests
-from pathlib import Path
 import sys
 import json
+import yaml
+import requests
+from pathlib import Path
 from datetime import datetime
 import getpass
-import yaml
-import os
 
+
+def in_notebook():
+    '''
+        Check if the package is running in notebook, e.g., Jupyter or Colab
+        return type: Bool
+    '''
+    try:
+        from IPython import get_ipython
+        if 'IPKernelApp' not in get_ipython().config:  # Check if not within an IPython kernel
+            return False
+    except (ImportError, AttributeError):
+        return False
+    return True
+
+if in_notebook():
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 
 class MindatApiKeyManeger:
     def __init__(self):
@@ -116,9 +134,7 @@ class MindatApi:
         self.MINDAT_API_URL = "https://api.mindat.org"
         self._headers = {'Authorization': 'Token '+ self._api_key}
         self.params = {'format': 'json'}
-        # self.endpoint = "/items/"
         self.data_dir = './mindat_data/'
-        Path(self.data_dir).mkdir(parents=True, exist_ok=True)
 
     def _prepare_api_key(self):
         mam = MindatApiKeyManeger()
@@ -153,41 +169,12 @@ class MindatApi:
         
         #creating filepath
         if '' == OUTDIR:
-            return Path(self.data_dir, file_name.replace('/', '_') + '.json')
+            out_dir = Path(self.data_dir)
         else:
-            return Path(OUTDIR, file_name.replace('/', '_') + '.json')
-    
-    def get_mindat_search(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
-        params = QUERY_DICT
-    
-        end_point = END_POINT
-        file_name = FILE_NAME if FILE_NAME else END_POINT        
+            out_dir = Path(OUTDIR)
         
-        file_path = self.get_file_path(OUTDIR, file_name)
-
-        with open(file_path, 'w') as f:
-
-            params = QUERY_DICT
-
-            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                            params=params,
-                            headers=self._headers)
-            
-            try:
-                result_data = response.json()
-            except:
-                print("Error: " + str(response.json()))
-                return
-
-            json_data = {"results": result_data}
-
-            json.dump(json_data, f, indent=4)
-
-        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
-
-
-    def print_the_result(self, JSONFILE, FILENAME):
-        print("Successfully retrieved", len(JSONFILE['results']), "items in", FILENAME, '. ')
+        out_dir.mkdir(parents=True, exist_ok=True)
+        return Path(out_dir, file_name.replace('/', '_') + '.json')
 
 
     def get_datetime(self):
@@ -195,154 +182,108 @@ class MindatApi:
         now = datetime.now()
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string        
-
-    def get_mindat_list(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
+    
+        
+    def get_mindat_json(self, QUERY_DICT, END_POINT):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
             we need to loop through all pages and save them to a single json file
         '''
-
-        end_point = END_POINT
-        file_name = FILE_NAME if FILE_NAME else END_POINT        
-        
-        file_path = self.get_file_path(OUTDIR, file_name)
-
-        with open(file_path, 'w') as f:
-
-            params = QUERY_DICT
-
-            if len(params) <= 2 and 'format' in params and 'page_size' in params:
-                confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
-                if confirm.lower() != 'y':
-                    sys.exit("Query not confirmed. Exiting...")
-
-            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                            params=params,
-                            headers=self._headers)
-            
-        
-            try:
-                result_data = response.json()["results"]
-            except:
-                print("Error: " + str(response.reason))
-                return
-            
-            json_data = {"results": result_data}
-
-            while True:
-                try:
-                    next_url = response.json()["next"]
-                    response = requests.get(next_url, headers=self._headers)
-                    json_data["results"] += response.json()['results']
-                except requests.exceptions.MissingSchema as e:
-                    # This error indicates the `next_url` is none
-                    # i.e., we've reached the end of the results
-                    break
-
-            json.dump(json_data, f, indent=4)            
-        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
-        
-    def get_mindat_item(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
-        '''
-            return one item.
-        '''
-        
-        end_point = END_POINT
-        file_name = FILE_NAME if FILE_NAME else END_POINT  
-        
-        file_path = self.get_file_path(OUTDIR, file_name)
-        
-        with open(file_path, 'w') as f:
-
-            params = QUERY_DICT
-
-            if len(params) <= 2 and 'format' in params and 'page_size' in params:
-                confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
-                if confirm.lower() != 'y':
-                    sys.exit("Query not confirmed. Exiting...")
-
-            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                            params=params,
-                            headers=self._headers)
-            
-            try:
-                result_data = response.json()
-            except:
-                print("Error: " + str(response.json()))
-                return
-            
-            json_data = {"results": result_data}
-
-            json.dump(json_data, f, indent=4)
-        print("Successfully saved item to " + str(file_path.resolve()))
-        
-    def get_mindat_list_object(self, QUERY_DICT, END_POINT):
-        '''
-            get all items in a list and returns it to a list of dictionaries
-            Since this API has a limit of 1500 items per page,
-            we need to loop through all pages and save them to a single json file
-        '''
-
-        end_point = END_POINT
-
+        # Parameter Checking
         params = QUERY_DICT
+        # We discarded the param checking for convenience
+        # if len(params) <= 2:
+        #     confirm = input(f"Query Param:{params}\nDo you confirm this query? (y/n): ")
+        #     if confirm.lower() != 'y':
+        #         sys.exit("Query not confirmed. Exiting...")
 
-        if len(params) <= 2 and 'format' in params and 'page_size' in params:
-            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
-            if confirm.lower() != 'y':
-                sys.exit("Query not confirmed. Exiting...")
+        end_point = END_POINT
 
+        # Retrieve the first page of data
         response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
                         params=params,
                         headers=self._headers)
-            
         try:
-            result_data = response.json()["results"]
+            response_json = response.json()
+            result_data = response_json["results"]
+        except KeyError:
+            # This error indicates the result only has one page
+            # We will convert the result data into a list for consistency
+            response_json = response.json()
+            result_data = [response_json]
+        except TypeError:
+            # This error indicates the result data is a list instead of a dict
+            # We will pass the response result directly
+            response_json = response.json()
+            result_data = response_json
         except:
-            print("Error: " + str(response.json()))
+            print("Error: " + str(response.reason))
             return
-            
-        json_data = result_data
+        
+        json_data = {"results": result_data}
 
+        # Try if progress bar is needed for multipage download
+        try:
+            total_item = response.json().get("count", None)
+            item_per_request = len(response.json()["results"])
+            pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
+            pbar.update(item_per_request)
+        except (TypeError, AttributeError):
+            pass
+
+        # Try if multipage download is needed
         while True:
             try:
                 next_url = response.json()["next"]
                 response = requests.get(next_url, headers=self._headers)
-                json_data += response.json()['results']
-
-            except requests.exceptions.MissingSchema as e:
-                # This error indicates the `next_url` is none
-                # i.e., we've reached the end of the results
+                new_results = response.json()['results']
+                json_data["results"] += new_results
+                pbar.update(len(new_results))
+            except (KeyError, TypeError):
+                # This error indicates the queried item only has one page
+                # or it is a list instead of a dict
+                # i.e., No more pages to fetch
                 break
-        
+            except requests.exceptions.MissingSchema:
+                # This error indicates the `next_url` is none
+                # i.e., No more pages to fetch
+                break
+
+        # Try close the progress bar if defined
+        try:
+            pbar.close()
+        except UnboundLocalError:
+            # This error indicates the tqdm progress bar wasn't defined
+            # i.e., no tqdm progress bar is displayed.
+            pass
+            
+        # print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        #json_data = json.loads(json_data)
         return json_data
     
-    def get_mindat_dict(self, QUERY_DICT, END_POINT):
+    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         '''
-            return one item to an object as a dictionary.
+            get all items in a list
+            Since this API has a limit of 1000 items per page,
+            we need to loop through all pages and save them to a single json file
         '''
-        end_point = END_POINT
-        params = QUERY_DICT
+        # get the json data
+        json_data = self.get_mindat_json(QUERY_DICT, END_POINT)
 
-        if len(params) <= 2 and 'format' in params and 'page_size' in params:
-            confirm = input("The query dict only has 'format' and 'page_size' keys. Do you confirm this query? (y/n): ")
-            if confirm.lower() != 'y':
-                sys.exit("Query not confirmed. Exiting...")
+        # The default output name is same as the endpoint
+        file_name = FILE_NAME if FILE_NAME else END_POINT   
 
-        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                        params=params,
-                        headers=self._headers)
-        
-        try:
-            result_data = response.json()
-        except:
-            print("Error: " + str(response.json()))
-            return
-            
-        json_data = result_data
-        
-        return json_data
+        # Creating the directory for output file
+        out_dir = Path(OUTDIR)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        file_path = self.get_file_path(OUTDIR, file_name)
+
+        # Create and write the json data to the file
+        with open(file_path, 'w') as f:
+            json.dump(json_data, f, indent=4)   
+
+        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
 if __name__ == '__main__':
     # test if api key is valid

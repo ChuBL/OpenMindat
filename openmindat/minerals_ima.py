@@ -113,6 +113,7 @@ class MineralsIMARetriever:
 
     def ima(self, IS_IMA):
         '''
+            This filter is probably not working as intended. Just ignore it for now.
             Include IMA-approved names only (1) / to be determined(0)
 
             Args:
@@ -277,7 +278,7 @@ class MineralsIMARetriever:
         file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -319,7 +320,7 @@ class MineralsIMARetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_list_object(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
@@ -400,7 +401,7 @@ class MineralsIdRetriever:
         file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -442,7 +443,7 @@ class MineralsIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_json(params, end_point)]
         
         self._init_params()
         return results

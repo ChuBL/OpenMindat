@@ -157,9 +157,9 @@ class StrunzRetriever:
         ma = mindat_api.MindatApi()
         
         if 'classes' in self.sub_endpoint:
-            ma.get_mindat_item(params, end_point, outdir, file_name)
+            ma.download_mindat_json(params, end_point, outdir, file_name)
         else:
-            ma.get_mindat_list(params, end_point, outdir, file_name)
+            ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -202,9 +202,9 @@ class StrunzRetriever:
         ma = mindat_api.MindatApi()
         
         if "classes" in self.sub_endpoint:
-            results = [ma.get_mindat_dict(params, end_point)]
+            results = [ma.get_mindat_json(params, end_point)]
         else:
-            results = ma.get_mindat_list_object(params, end_point)
+            results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results

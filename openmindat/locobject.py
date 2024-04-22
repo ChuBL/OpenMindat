@@ -80,7 +80,7 @@ class LocobjectRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -123,7 +123,7 @@ class LocobjectRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_json(params, end_point)]
         
         self._init_params()
         return results

@@ -1271,7 +1271,7 @@ class GeomaterialRetriever:
         file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_list(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1315,7 +1315,7 @@ class GeomaterialRetriever:
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_list_object(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
@@ -1344,6 +1344,7 @@ class GeomaterialIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
+        self.sub_endpoint = '0'
 
     #ask about if this option of addint variety to this endpoint is a good idea
     def id(self, ID, VARIETIES = None):
@@ -1404,7 +1405,7 @@ class GeomaterialIdRetriever:
         file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1446,7 +1447,7 @@ class GeomaterialIdRetriever:
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_json(params, end_point)]
         
         self._init_params()
         return results
@@ -1502,7 +1503,7 @@ class GeomaterialDictRetriever:
         file_name = FILE_NAME
 
         ma = mindat_api.MindatApi()
-        ma.get_mindat_item(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1544,7 +1545,7 @@ class GeomaterialDictRetriever:
         end_point = self.end_point
 
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_dict(params, end_point)]
+        results = [ma.get_mindat_json(params, end_point)]
         
         self._init_params()
         return results
