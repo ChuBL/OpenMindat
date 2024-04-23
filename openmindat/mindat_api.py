@@ -274,9 +274,7 @@ class MindatApi:
         # The default output name is same as the endpoint
         file_name = FILE_NAME if FILE_NAME else END_POINT   
 
-        # Creating the directory for output file
-        out_dir = Path(OUTDIR)
-        out_dir.mkdir(parents=True, exist_ok=True)
+        # Getting the directory for the output file
         file_path = self.get_file_path(OUTDIR, file_name)
 
         # Create and write the json data to the file
