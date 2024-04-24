@@ -23,6 +23,7 @@ class GeomaterialRetriever:
          # Flag to indicate if the geomaterials have been retrieved
 
     def _init_params(self):
+        self.end_point = 'geomaterials'
         self._params.clear()
         self._params.update({'format': 'json'})
         self.page_size(1500)
@@ -1262,8 +1263,6 @@ class GeomaterialRetriever:
             >>> gr.density_min(3.25).saveto("/path/to/directory")
 
         '''
-
-        print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
         end_point = 'geomaterials'
@@ -1296,7 +1295,7 @@ class GeomaterialRetriever:
         self.saveto('', file_name)
         
 
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the list of geomaterials and returns the json object.
 
@@ -1305,11 +1304,9 @@ class GeomaterialRetriever:
 
         Example:
             >>> gr = GeomaterialRetriever()
-            >>> geoObject = gr.density_min(3.25).get_list()
+            >>> geoObject = gr.density_min(3.25).get_dict()
 
         '''
-        
-        print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
@@ -1344,6 +1341,7 @@ class GeomaterialIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
+        self.end_point = "geomaterials"
         self.sub_endpoint = '0'
 
     #ask about if this option of addint variety to this endpoint is a good idea
@@ -1397,8 +1395,6 @@ class GeomaterialIdRetriever:
                 >>> gir.id(5).saveto("/path/to/directory", "geo5")
         '''
 
-        print("Retrieving Geomaterials. This may take a while... ")
-
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
@@ -1428,7 +1424,7 @@ class GeomaterialIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
@@ -1437,17 +1433,15 @@ class GeomaterialIdRetriever:
 
         Example:
             >>> gir = GeomaterialIdRetriever()
-            >>> geo5 = gir.id(5).get_list()
+            >>> geo5 = gir.id(5).get_dict()
 
         '''
-        
-        print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
@@ -1476,6 +1470,8 @@ class GeomaterialDictRetriever:
         self._init_params()
 
     def _init_params(self):
+        self.end_point = 'geomaterials/dict'
+        self.sub_endpoint = '0'
         self._params.clear()
         self._params = {'format': 'json'}
     
@@ -1494,8 +1490,6 @@ class GeomaterialDictRetriever:
                 >>> gdr = GeomaterialDictRetriever()
                 >>> gdr.saveto("/path/to/directory", "geoDict")
         '''
-
-        print("Retrieving Geomaterials. This may take a while... ")
 
         params = self._params
         end_point = self.end_point
@@ -1526,7 +1520,7 @@ class GeomaterialDictRetriever:
         
         self.saveto('', file_name)   
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the dictionary of geomaterials.
 
@@ -1535,17 +1529,15 @@ class GeomaterialDictRetriever:
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
-            >>> geoDict = gdr.get_list()
+            >>> geoDict = gdr.get_dict()
 
         '''
-        
-        print("Retrieving geomaterials. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
 
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
@@ -1555,4 +1547,3 @@ if __name__ == '__main__':
     gr = GeomaterialRetriever()
     # gr.cleavagetype('Distinct/Good').colour('blue').crystal_system(["Amorphous", "Hexagonal"]).save()
     gr.id__in("3337, 114").save()
-    # print(gr.density_max('9').density_min(8).ordering('-name')._params)

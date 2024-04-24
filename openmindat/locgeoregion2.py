@@ -19,12 +19,13 @@ class GeoRegionRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locgeoregion2' 
+        self.end_point = 'locgeoregion2' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locgeoregion2' 
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -89,8 +90,6 @@ class GeoRegionRetriever:
                 >>> grr = GeoRegionRetriever()
                 >>> grr.saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -126,7 +125,7 @@ class GeoRegionRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the geoRegion data as a list of dictionaries.
 
@@ -135,20 +134,14 @@ class GeoRegionRetriever:
 
         Example:
                 >>> grr = GeoRegionRetriever()
-                >>> georegion3 = grr.page(3).get_list()
+                >>> georegion3 = grr.page(3).get_dict()
         '''
-        
-        print("Retrieving local geoRegion search. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results

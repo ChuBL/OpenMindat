@@ -19,12 +19,13 @@ class CountriesListRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'countries' 
+        self.end_point = 'countries' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'countries' 
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -90,8 +91,6 @@ class CountriesListRetriever:
                 >>> cr = CountriesListRetriever()
                 >>> cr.page(2).saveto("/path/to/directory")
         '''
-        
-        print("Retrieving Countries. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -138,8 +137,6 @@ class CountriesListRetriever:
             >>> france = cr.page(2).get_list()
 
         '''
-        
-        print("Retrieving countries. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
@@ -177,14 +174,38 @@ class CountriesIdRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'countries' 
+        self.end_point = 'countries' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'countries' 
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The CountriesIdRetriever object.
+
+        Example:
+            >>> cidr = CountriesListRetriever()
+            >>> cidr.page_size(2)
+            >>> cidr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''
@@ -228,8 +249,6 @@ class CountriesIdRetriever:
                 >>> cidr = CountriesIdRetriever()
                 >>> cidr.id(2).saveto("/path/to/directory")
         '''
-        
-        print("Retrieving Countries. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -272,8 +291,6 @@ class CountriesIdRetriever:
             >>> france = cidr.id(2).get_liat()
 
         '''
-        
-        print("Retrieving countries. This may take a while... ")
        
         params = self._params
         end_point = self.end_point    

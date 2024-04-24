@@ -18,6 +18,7 @@ class MineralsIMARetriever:
         self._init_params()
 
     def _init_params(self):
+        self.end_point = 'minerals_ima'
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -270,8 +271,6 @@ class MineralsIMARetriever:
                 >>> mir.saveto("/path/to/directory")
         '''
 
-        print("Retrieving geomaterials. This may take a while... ")
-
         params = self._params
         end_point = self.end_point
         outdir = OUTDIR
@@ -301,7 +300,7 @@ class MineralsIMARetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the list of mineral data and returns the json object.
 
@@ -310,11 +309,9 @@ class MineralsIMARetriever:
 
         Example:
                 >>> mir = MineralsIMARetriever()
-                >>> quartsIMA = mir.q('quartz').get_list()
+                >>> quartsIMA = mir.q('quartz').get_dict()
 
         '''
-        
-        print("Retrieving minerals. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
@@ -347,6 +344,8 @@ class MineralsIdRetriever:
         self._init_params()
 
     def _init_params(self):
+        self.end_point = 'minerals_ima'
+        self.sub_endpoint = '0'
         self._params.clear()
         self._params = {'format': 'json'}
 
@@ -393,8 +392,6 @@ class MineralsIdRetriever:
                 >>> midr.id(3).saveto("/path/to/directory", "Mineral_ima_id")
         '''
 
-        print("Retrieving Minerals. This may take a while... ")
-
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
@@ -424,7 +421,7 @@ class MineralsIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve mineral IMA status with a corresponding id and returns a dictionary.
 
@@ -433,17 +430,15 @@ class MineralsIdRetriever:
 
         Example:
                 >>> midr = MineralsIdRetriever()
-                >>> ima9 = midr.id(9).get_list()
+                >>> ima9 = midr.id(9).get_dict()
 
         '''
-        
-        print("Retrieving minerals. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results

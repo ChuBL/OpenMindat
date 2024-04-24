@@ -24,13 +24,15 @@ class StrunzRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'nickel-strunz-10'
-       self.sub_endpoint = '' 
+        self.end_point = 'nickel-strunz-10'
+        self.sub_endpoint = '' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'nickel-strunz-10'
+        self.sub_endpoint = '' 
         self._params.clear()
         self._params = {'format': 'json'}
         
@@ -146,8 +148,6 @@ class StrunzRetriever:
                 >>> sr = strunzRetriever()
                 >>> sr.families.saveto("/path/to/directory")
         '''
-        
-        print("Retrieving nickel strunz Data. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -182,7 +182,7 @@ class StrunzRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the nickel_strunz data as a list of dictionaries.
 
@@ -191,20 +191,14 @@ class StrunzRetriever:
 
         Example:
                 >>> sr = StrunzRetriever()
-                >>> nickelStrunzClasses = sr.classes().get_list()
+                >>> nickelStrunzClasses = sr.classes().get_dict()
         '''
-        
-        print("Retrieving nickel-strunz. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        
-        if "classes" in self.sub_endpoint:
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results

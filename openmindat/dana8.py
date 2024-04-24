@@ -23,13 +23,15 @@ class DanaRetriever:
     """
     
     def __init__(self):
-       self.sub_endpoint = '' 
-       self.end_point = 'dana-8'
+        self.sub_endpoint = ''
+        self.end_point = 'dana-8'
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'dana-8'
+        self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
         
@@ -128,8 +130,6 @@ class DanaRetriever:
                 >>> dr.saveto("/path/to/directory")
         '''
         
-        print("Retrieving Dana8 Data. This may take a while... ")
-
         params = self._params
         outdir = OUTDIR
         file_name = FILE_NAME
@@ -166,7 +166,7 @@ class DanaRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the dana-8 data as a dictionary.
 
@@ -175,11 +175,9 @@ class DanaRetriever:
 
         Example:
             >>> dr = danaRetriever()
-            >>> danaGroups = cr.group().get_list()
+            >>> danaGroups = cr.group().get_dict()
 
         '''
-        
-        print("Retrieving dana-8. This may take a while... ")
        
         params = self._params        
         
@@ -187,10 +185,7 @@ class DanaRetriever:
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        if self.sub_endpoint.isnumeric():
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
