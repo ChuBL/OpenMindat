@@ -184,20 +184,13 @@ class MindatApi:
         return dt_string        
     
         
-    def get_mindat_json(self, QUERY_DICT, END_POINT):
+    def get_mindat_json(self, PARAM_DICT, END_POINT):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
             we need to loop through all pages and save them to a single json file
         '''
-        # Parameter Checking
-        params = QUERY_DICT
-        # We discarded the param checking for convenience
-        # if len(params) <= 2:
-        #     confirm = input(f"Query Param:{params}\nDo you confirm this query? (y/n): ")
-        #     if confirm.lower() != 'y':
-        #         sys.exit("Query not confirmed. Exiting...")
-
+        params = PARAM_DICT
         end_point = END_POINT
 
         # Retrieve the first page of data
@@ -210,58 +203,57 @@ class MindatApi:
         except KeyError:
             # This error indicates the result only has one page
             # We will convert the result data into a list for consistency
-            response_json = response.json()
             result_data = [response_json]
         except TypeError:
             # This error indicates the result data is a list instead of a dict
             # We will pass the response result directly
-            response_json = response.json()
             result_data = response_json
         except:
-            print("Error: " + str(response.reason))
-            return
+            raise ValueError(str(response.reason))
         
+        # Format the obtained data in a JSON dict
         json_data = {"results": result_data}
 
-        # Try if progress bar is needed for multipage download
-        try:
+        # Check if the query involves multiple pages
+        multipage_flag = self._is_multipage_query(params, response.json())
+        
+        if True == multipage_flag:
+            # Create the progress bar
             total_item = response.json().get("count", None)
             item_per_request = len(response.json()["results"])
             pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
             pbar.update(item_per_request)
-        except (TypeError, AttributeError):
-            pass
 
-        # Try if multipage download is needed
-        while True:
-            try:
-                next_url = response.json()["next"]
-                response = requests.get(next_url, headers=self._headers)
-                new_results = response.json()['results']
-                json_data["results"] += new_results
-                pbar.update(len(new_results))
-            except (KeyError, TypeError):
-                # This error indicates the queried item only has one page
-                # or it is a list instead of a dict
-                # i.e., No more pages to fetch
-                break
-            except requests.exceptions.MissingSchema:
-                # This error indicates the `next_url` is none
-                # i.e., No more pages to fetch
-                break
+            # Try if multipage download is needed
+            while True:
+                try:
+                    next_url = response.json()["next"]
+                    response = requests.get(next_url, headers=self._headers)
+                    new_results = response.json()['results']
+                    json_data["results"] += new_results
+                    pbar.update(len(new_results))
+                except requests.exceptions.MissingSchema:
+                    # This error indicates the `next_url` is none
+                    # i.e., No more pages to fetch
+                    break
 
-        # Try close the progress bar if defined
-        try:
+            # Close the progress bar
             pbar.close()
-        except UnboundLocalError:
-            # This error indicates the tqdm progress bar wasn't defined
-            # i.e., no tqdm progress bar is displayed.
-            pass
             
-        # print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
-        #json_data = json.loads(json_data)
         return json_data
     
+    def _is_multipage_query(self, PARAM, RAW_JSON):
+        if 'page' in PARAM:
+            return False
+        
+        raw_json = RAW_JSON
+        try:
+            result_data = raw_json["results"]
+        except:
+            return False
+
+        return True
+
     def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
         '''
             get all items in a list
