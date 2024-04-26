@@ -19,12 +19,13 @@ class LocalitiesTypeRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_type' 
+        self.end_point = 'locality_type' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_type' 
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -37,7 +38,7 @@ class LocalitiesTypeRetriever:
             PAGE_SIZE (int): The number of results per page.
 
         Returns:
-            self: The LocalitiesRetriever object.
+            self: The LocalitiesTypeRetriever object.
             
         Example:
             >>> ltr = LocalitiesTypeRetriever()
@@ -89,8 +90,6 @@ class LocalitiesTypeRetriever:
                 >>> ltr = LocalityTypeRetriever()
                 >>> ltr.page(19).saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -126,7 +125,7 @@ class LocalitiesTypeRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the locality type data as a list of dictionaries.
 
@@ -135,20 +134,14 @@ class LocalitiesTypeRetriever:
 
         Example:
                 >>> ltr = LocalitiesTypeRetriever()
-                >>> secondTypePage = ltr.page(2).get_list()
+                >>> secondTypePage = ltr.page(2).get_dict()
         '''
-        
-        print("Retrieving localities search. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results
@@ -172,15 +165,39 @@ class LocalitiesTypeIdRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_type' 
-       self.sub_endpoint = ''
+        self.end_point = 'locality_type' 
+        self.sub_endpoint = ''
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_type' 
+        self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesTypeIdRetriever object.
+            
+        Example:
+            >>> ltidr = LocalitiesTypeIdRetriever()
+            >>> ltidr.id(50)
+            >>> ltidr.saveto()
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''
@@ -224,8 +241,6 @@ class LocalitiesTypeIdRetriever:
                 >>> ltir = LocalitiesTypeIdRetriever()
                 >>> ltir.id(2).saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -256,7 +271,7 @@ class LocalitiesTypeIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality type with a corresponding id and returns a dictionary.
 
@@ -265,17 +280,15 @@ class LocalitiesTypeIdRetriever:
 
         Example:
                 >>> ltir = localitiesTypeIdRetriever()
-                >>> localityType2 = ltir.id(2).get_list()
+                >>> localityType2 = ltir.id(2).get_dict()
 
         '''
-        
-        print("Retrieving localities. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results

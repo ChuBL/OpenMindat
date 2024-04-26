@@ -38,6 +38,7 @@ class LocalitiesRetriever:
         self._init_params()
 
     def _init_params(self):
+        self.end_point = 'localities'
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -389,8 +390,6 @@ class LocalitiesRetriever:
                 >>> lr.saveto("/path/to/directory", "france")
         '''
 
-        print("Retrieving localities. This may take a while... ")
-
         params = self._params
         end_point = self.end_point
         outdir = OUTDIR
@@ -420,7 +419,7 @@ class LocalitiesRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the list of localities and returns the json object.
 
@@ -429,11 +428,9 @@ class LocalitiesRetriever:
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> france = lr.country('France').get_list()
+            >>> france = lr.country('France').get_dict()
 
         '''
-        
-        print("Retrieving localities. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
@@ -460,7 +457,7 @@ class LocalitiesIdRetriever:
     
     def __init__(self):
         self.end_point = 'localities'
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
         
         self._params = {}
         self._init_params()
@@ -468,6 +465,30 @@ class LocalitiesIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
+        self.end_point = 'localities'
+        self.sub_endpoint = ''
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesIdRetriever object.
+            
+        Example:
+            >>> lidr = LocalitiesRetriever()
+            >>> lidr.page_size(50)
+            >>> lidr.saveto()
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
 
     def id(self, ID):
         '''
@@ -510,10 +531,8 @@ class LocalitiesIdRetriever:
             Example:
                 >>> lir = LocalitiesIdRetriever()
                 >>> lir.saveto("/path/to/directory", "france")
-        '''
-
-        print("Retrieving localities. This may take a while... ")
-
+        ''' 
+        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         outdir = OUTDIR
@@ -543,7 +562,7 @@ class LocalitiesIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
@@ -552,17 +571,15 @@ class LocalitiesIdRetriever:
 
         Example:
                 >>> lir = localitiesIdRetriever()
-                >>> locality5 = lir.id(5).get_list()
+                >>> locality5 = lir.id(5).get_dict()
 
         '''
-        
-        print("Retrieving localities. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results

@@ -17,14 +17,38 @@ class PhotoCountRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'photocount' 
+        self.end_point = 'photocount' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'photocount' 
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The PhotoCountRetriever object.
+
+        Example:
+            >>> pcr = PhotoCountRetriever()
+            >>> pcr.page_size(1500)
+            >>> pcr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     #when fixed check if this needs get item or get list
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
@@ -42,8 +66,6 @@ class PhotoCountRetriever:
                 >>> pcr = PhotoCountRetriever()
                 >>> pcr.saveto("/path/to/directory")
         '''
-        
-        print("Retrieving photo count. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -74,7 +96,7 @@ class PhotoCountRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve photo counts and returns a dictionary.
 
@@ -83,17 +105,15 @@ class PhotoCountRetriever:
 
         Example:
                 >>> pcr = PhotoCountRetriever()
-                >>> photoCount = pcr.get_list()
+                >>> photoCount = pcr.get_dict()
 
         '''
-        
-        print("Retrieving photo count. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results

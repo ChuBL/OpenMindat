@@ -19,12 +19,13 @@ class LocalitiesAgeRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_age' 
+        self.end_point = 'locality_age' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_age' 
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -89,8 +90,6 @@ class LocalitiesAgeRetriever:
                 >>> lar = LocalityAgeRetriever()
                 >>> lar.saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -98,11 +97,7 @@ class LocalitiesAgeRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
-        else:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
             
 
         # Reset the query parameters in case the user wants to make another query.
@@ -126,7 +121,7 @@ class LocalitiesAgeRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the locality age data as a list of dictionaries.
 
@@ -135,21 +130,15 @@ class LocalitiesAgeRetriever:
 
         Example:
                 >>> lar = LocalitiesAgeRetriever()
-                >>> secondAgePage = lar.page(2).get_list()
+                >>> secondAgePage = lar.page(2).get_dict()
 
         '''
-        
-        print("Retrieving localities search. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results
@@ -173,15 +162,40 @@ class LocalitiesAgeIdRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_age'
-       self.sub_endpoint = ''
+        self.end_point = 'locality_age'
+        self.sub_endpoint = ''
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_age'
+        self.sub_endpoint = ''
         self._params.clear()
+        self.page_size(1500)
         self._params = {'format': 'json'}
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesAgeIdRetriever object.
+
+        Example:
+            >>> laidr = LocalitiesAgeIdRetriever()
+            >>> laidr.page_size(2)
+            >>> laidr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''
@@ -226,8 +240,6 @@ class LocalitiesAgeIdRetriever:
                 >>> lair = LocalitiesAgeIdRetriever()
                 >>> lair.id(4).saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -258,7 +270,7 @@ class LocalitiesAgeIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality with a corresponding id and returns a dictionary.
 
@@ -267,17 +279,15 @@ class LocalitiesAgeIdRetriever:
 
         Example:
                 >>> lair = localitiesAgeIdRetriever()
-                >>> localityAge2 = lair.id(2).get_list()
+                >>> localityAge2 = lair.id(2).get_dict()
 
         '''
-        
-        print("Retrieving localities. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results

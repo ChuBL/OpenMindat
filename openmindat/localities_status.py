@@ -19,12 +19,13 @@ class LocalitiesStatusRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_status' 
+        self.end_point = 'locality_status' 
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_status' 
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -90,8 +91,6 @@ class LocalitiesStatusRetriever:
                 >>> lsr.saveto("/path/to/directory")
         '''
         
-        print("Retrieving localities. This may take a while... ")
-
         params = self._params
         outdir = OUTDIR
         end_point = self.end_point
@@ -126,7 +125,7 @@ class LocalitiesStatusRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve the locality status data as a list of dictionaries.
 
@@ -135,21 +134,15 @@ class LocalitiesStatusRetriever:
 
         Example:
                 >>> lsr = LocalitiesStatusRetriever()
-                >>> secondAgePage = lsr.page(2).get_list()
+                >>> secondAgePage = lsr.page(2).get_dict()
 
         '''
-        
-        print("Retrieving localities search. This may take a while... ")
        
         params = self._params
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            results = [ma.get_mindat_json(params, end_point)]
-        else:
-            results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point)
             
         self._init_params()
         return results
@@ -173,15 +166,40 @@ class LocalitiesStatusIdRetriever:
     """
     
     def __init__(self):
-       self.end_point = 'locality_status' 
-       self.sub_endpoint = ''
+        self.end_point = 'locality_status' 
+        self.sub_endpoint = ''
         
-       self._params = {}
-       self._init_params()
+        self._params = {}
+        self._init_params()
     
     def _init_params(self):
+        self.end_point = 'locality_status' 
+        self.sub_endpoint = ''
         self._params.clear()
+        self.page_size(1500)
         self._params = {'format': 'json'}
+    
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesStatusIdRetriever object.
+
+        Example:
+            >>> lsidr = LocalitiesStatusIdRetriever()
+            >>> lsidr.page_size(1500)
+            >>> lsidr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''
@@ -225,8 +243,6 @@ class LocalitiesStatusIdRetriever:
                 >>> lsir = LocalitiesStatusIdRetriever()
                 >>> lsir.saveto("/path/to/directory")
         '''
-        
-        print("Retrieving localities. This may take a while... ")
 
         params = self._params
         outdir = OUTDIR
@@ -257,7 +273,7 @@ class LocalitiesStatusIdRetriever:
         
         self.saveto('', file_name)
         
-    def get_list(self):
+    def get_dict(self):
         '''
         Executes the query to retrieve locality status with a corresponding id and returns a dictionary.
 
@@ -266,17 +282,15 @@ class LocalitiesStatusIdRetriever:
 
         Example:
                 >>> lsir = localitiesStatusIdRetriever()
-                >>> localitystatus2 = lsir.id(2).get_list()
+                >>> localitystatus2 = lsir.id(2).get_dict()
 
         '''
-        
-        print("Retrieving localities. This may take a while... ")
        
         params = self._params
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = [ma.get_mindat_json(params, end_point)]
+        results = ma.get_mindat_json(params, end_point)
         
         self._init_params()
         return results
