@@ -70,13 +70,11 @@ print(gsr.get_dict())
 
 ### 4. Retrieve Localities
 
-:exclamation: Some country names, e.g., United States and United Kingdom, are not working due to server-side problems, which will be fixed in the future.
-
 ```python
 from openmindat import LocalitiesRetriever
 
 lr = LocalitiesRetriever()
-lr.country("France").txt("mine")
+lr.country("UK").txt("mine")
 lr.save()
 
 # Alternatively, you can get the list object directly:
@@ -162,6 +160,11 @@ Jiyin Zhang, Clairmont Cory, Xiaogang Ma
 - This work is supported by NSF, Award #2126315.
 
 ## Upgrading Logs
+
+### 0.0.7
+**Released:** Apr 26, 2024
+
+- The Locality country filter is fixed. The endpoint can download the data for specific countries, e.g., UK, USA, etc.
 
 ### 0.0.6
 **Released:** Apr 26, 2024
