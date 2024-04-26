@@ -150,7 +150,7 @@ The Mindat API is currently in beta test, and while access is free for all, plea
 
 ## Author
 
-Jiyin Zhang, Clairmont Cory
+Jiyin Zhang, Clairmont Cory, Xiaogang Ma
 
 ## Acknowledgments
 
