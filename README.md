@@ -164,7 +164,7 @@ Jiyin Zhang, Clairmont Cory, Xiaogang Ma
 ### 0.0.7
 **Released:** Apr 26, 2024
 
-- The Locality country filter is fixed. The endpoint can download the data for specific countries, e.g., UK, USA, etc.
+- The Locality country filter is fixed. The endpoint can download the data for specific countries, e.g., 'UK', 'USA', etc.
 
 ### 0.0.6
 **Released:** Apr 26, 2024
