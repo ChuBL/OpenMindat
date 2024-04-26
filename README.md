@@ -40,7 +40,7 @@ from openmindat import GeomaterialRetriever
 gr = GeomaterialRetriever()
 gr.density_min(2.0).density_max(5.0).crystal_system("Hexagonal")
 gr.elements_exc("Au,Ag")
-gr.saveto("./mindat_data")
+gr.save()
 ```
 
 ### 2. Retrieve IMA-Approved Minerals
@@ -65,7 +65,7 @@ gsr.save("filename")
 # Alternatively, you can get the list object directly:
 gsr = GeomaterialSearchRetriever()
 gsr.geomaterials_search("ruby, red, hexagonal")
-print(gsr.get_list())
+print(gsr.get_dict())
 ```
 
 ### 4. Retrieve Localities
@@ -82,7 +82,7 @@ lr.save()
 # Alternatively, you can get the list object directly:
 lr = LocalitiesRetriever()
 lr.country("Canada").description("mine")
-print(lr.get_list())
+print(lr.get_dict())
 ```
 
 ### 5. Retrieve Type Localities for IMA-Approved Mineral Species
@@ -161,7 +161,16 @@ Jiyin Zhang, Clairmont Cory
 
 - This work is supported by NSF, Award #2126315.
 
-## Updating Logs
+## Upgrading Logs
+
+### 0.0.5
+**Released:** Apr 26, 2024
+
+- The `Internal Server Error` issue in v0.0.4 is fixed from the server side.
+- The get functions are now changed to `get_dict`.
+- Added progress bars for multiple-page queries.
+- Some other minor updates.
+
 
 ### 0.0.4
 **Released:** Apr 14, 2024
