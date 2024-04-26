@@ -39,7 +39,7 @@ Examples:
 
     Using the MineralsIMARetriever class to retrieve IMA-approved minerals:
         >>> mir = MineralsIMARetriever()
-        >>> mir.ima(1).fields("id,name,ima_formula,ima_year")
+        >>> mir.fields("id,name,ima_formula,ima_year")
         >>> mir.saveto("/path/to/minerals_data")
 
     Searching geomaterials with specific keywords using GeomaterialSearchRetriever:
