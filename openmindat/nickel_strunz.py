@@ -35,6 +35,29 @@ class StrunzRetriever:
         self.sub_endpoint = '' 
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The StrunzRetriever object.
+
+        Example:
+            >>> sr = StrunzRetriever()
+            >>> sr.page_size(1500)
+            >>> sr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
         
     def retrieve(self):
         '''

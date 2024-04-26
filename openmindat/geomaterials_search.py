@@ -24,6 +24,29 @@ class GeomaterialSearchRetriever:
         self.end_point = 'geomaterials_search'
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The GeomaterialSearchRetriever object.
+
+        Example:
+            >>> gsr = GeomaterialSearchRetriever()
+            >>> gsr.page_size(500)
+            >>> gsr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
 
     def geomaterials_search(self, KEYWORDS):
         '''

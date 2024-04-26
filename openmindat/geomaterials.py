@@ -1333,7 +1333,7 @@ class GeomaterialIdRetriever:
     
     def __init__(self):
         self.end_point = "geomaterials"
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
         
         self._params = {}
         self._init_params()
@@ -1342,9 +1342,31 @@ class GeomaterialIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
         self.end_point = "geomaterials"
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
 
-    #ask about if this option of addint variety to this endpoint is a good idea
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The GeomaterialRetriever object.
+
+        Example:
+            >>> gr = GeomaterialRetriever()
+            >>> gr.page_size(50)
+            >>> gr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
+
     def id(self, ID, VARIETIES = None):
         '''
         Returns locality with matching id
@@ -1464,16 +1486,39 @@ class GeomaterialDictRetriever:
     
     def __init__(self):
         self.end_point = 'geomaterials/dict'
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
         
         self._params = {}
         self._init_params()
 
     def _init_params(self):
         self.end_point = 'geomaterials/dict'
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The GeomaterialDictRetriever object.
+
+        Example:
+            >>> gdr = GeomaterialDictRetriever()
+            >>> gdr.page_size(50)
+            >>> gdr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''

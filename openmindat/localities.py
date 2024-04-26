@@ -457,7 +457,7 @@ class LocalitiesIdRetriever:
     
     def __init__(self):
         self.end_point = 'localities'
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
         
         self._params = {}
         self._init_params()
@@ -466,7 +466,29 @@ class LocalitiesIdRetriever:
         self._params.clear()
         self._params = {'format': 'json'}
         self.end_point = 'localities'
-        self.sub_endpoint = '0'
+        self.sub_endpoint = ''
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesIdRetriever object.
+            
+        Example:
+            >>> lidr = LocalitiesRetriever()
+            >>> lidr.page_size(50)
+            >>> lidr.saveto()
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
 
     def id(self, ID):
         '''

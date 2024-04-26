@@ -38,7 +38,7 @@ class LocalitiesTypeRetriever:
             PAGE_SIZE (int): The number of results per page.
 
         Returns:
-            self: The LocalitiesRetriever object.
+            self: The LocalitiesTypeRetriever object.
             
         Example:
             >>> ltr = LocalitiesTypeRetriever()
@@ -176,6 +176,28 @@ class LocalitiesTypeIdRetriever:
         self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesTypeIdRetriever object.
+            
+        Example:
+            >>> ltidr = LocalitiesTypeIdRetriever()
+            >>> ltidr.id(50)
+            >>> ltidr.saveto()
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''

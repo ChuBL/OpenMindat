@@ -97,11 +97,7 @@ class LocalitiesAgeRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
-        else:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
             
 
         # Reset the query parameters in case the user wants to make another query.
@@ -134,7 +130,7 @@ class LocalitiesAgeRetriever:
 
         Example:
                 >>> lar = LocalitiesAgeRetriever()
-                >>> secondAgePage = lar.page(2).get_list()
+                >>> secondAgePage = lar.page(2).get_dict()
 
         '''
        
@@ -176,7 +172,30 @@ class LocalitiesAgeIdRetriever:
         self.end_point = 'locality_age'
         self.sub_endpoint = ''
         self._params.clear()
+        self.page_size(1500)
         self._params = {'format': 'json'}
+        
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The LocalitiesAgeIdRetriever object.
+
+        Example:
+            >>> laidr = LocalitiesAgeIdRetriever()
+            >>> laidr.page_size(2)
+            >>> laidr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     def id(self, ID):
         '''
@@ -260,7 +279,7 @@ class LocalitiesAgeIdRetriever:
 
         Example:
                 >>> lair = localitiesAgeIdRetriever()
-                >>> localityAge2 = lair.id(2).get_list()
+                >>> localityAge2 = lair.id(2).get_dict()
 
         '''
        

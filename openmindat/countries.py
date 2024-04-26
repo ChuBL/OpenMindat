@@ -98,11 +98,7 @@ class CountriesListRetriever:
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        
-        if "page" in params:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
-        else:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -196,7 +192,7 @@ class CountriesIdRetriever:
             self: The CountriesIdRetriever object.
 
         Example:
-            >>> cidr = CountriesListRetriever()
+            >>> cidr = CountriesListIdRetriever()
             >>> cidr.page_size(2)
             >>> cidr.save()
 

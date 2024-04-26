@@ -26,6 +26,29 @@ class PhotoCountRetriever:
         self.end_point = 'photocount' 
         self._params.clear()
         self._params = {'format': 'json'}
+        self.page_size(1500)
+
+    def page_size(self, PAGE_SIZE):
+        '''
+        Sets the number of results per page.
+
+        Args:
+            PAGE_SIZE (int): The number of results per page.
+
+        Returns:
+            self: The PhotoCountRetriever object.
+
+        Example:
+            >>> pcr = PhotoCountRetriever()
+            >>> pcr.page_size(1500)
+            >>> pcr.save()
+
+        '''
+        self._params.update({
+            'page_size': PAGE_SIZE
+        })
+
+        return self
     
     #when fixed check if this needs get item or get list
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
