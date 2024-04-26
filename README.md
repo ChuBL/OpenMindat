@@ -163,6 +163,11 @@ Jiyin Zhang, Clairmont Cory
 
 ## Upgrading Logs
 
+### 0.0.6
+**Released:** Apr 26, 2024
+
+- Revised a neglected get function for country endpoints.
+
 ### 0.0.5
 **Released:** Apr 26, 2024
 
