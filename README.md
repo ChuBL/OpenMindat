@@ -73,8 +73,9 @@ print(gsr.get_dict())
 ```python
 from openmindat import LocalitiesRetriever
 
+# Download Localities for certain state
 lr = LocalitiesRetriever()
-lr.country("UK").txt("mine")
+lr.country("USA").txt("Idaho")
 lr.save()
 
 # Alternatively, you can get the list object directly:
