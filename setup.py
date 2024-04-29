@@ -1,13 +1,12 @@
 from setuptools import setup
 
-def readme():
-    with open('README.md') as f:
-        return f.read()
+with open('README.md') as f:
+    long_description = f.read()
 
 setup(name='openmindat',
       version='0.0.7',
       description='An alpha version for OpenMindat package',
-      long_description=open('README.md').read(),
+      long_description=long_description,
       long_description_content_type='text/markdown',
       classifiers=[
         'Development Status :: 3 - Alpha',
