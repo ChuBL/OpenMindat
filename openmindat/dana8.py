@@ -162,11 +162,8 @@ class DanaRetriever:
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        
-        if self.sub_endpoint.isnumeric():
-            ma.download_mindat_json(params, end_point, outdir, file_name)
-        else:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+
+        ma.download_mindat_json(params, end_point, outdir, file_name)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -202,7 +199,8 @@ class DanaRetriever:
 
         '''
        
-        params = self._params        
+        params = self._params       
+        end_point = self.end_point 
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
