@@ -411,11 +411,15 @@ class GeomaterialRetriever:
         valid_options = ["description", "type_localities", "locality", "relations", "minstats", "~all", "*"]
         invalid_options = [field for field in expand_fields if field not in valid_options]
 
+        #Changes * to "*" and from a list to a string since this is what the param will read without failing.
+        expand_fields = [w.replace('*', '"*"') for w in expand_fields]
+        expand_fields_string = ','.join(expand_fields)
+
         if invalid_options:
             raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
 
         self._params.update({
-            'expand': expand_fields
+            'expand': expand_fields_string
         })
 
         return self
