@@ -11,7 +11,7 @@ class GeomaterialRetriever:
     Usage:
         >>> gr = GeomaterialRetriever()
         >>> gr.cleavagetype('Distinct/Good').colour('blue').crystal_system(["Amorphous", "Hexagonal"]).save()
-        >>> gr.density_max('9').density_min(8).save()
+        >>> gr.density_max(9).density_min(8).save()
 
     Press q to quit.
     """
