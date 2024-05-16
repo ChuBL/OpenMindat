@@ -234,14 +234,14 @@ class MindatApi:
                     new_results = response.json()['results']
                     json_data["results"] += new_results
                     pbar.update(len(new_results))
-                except TypeError: #special case for locgeoregion2
-                    json_data["results"]["features"] += new_results["features"]
-                    pbar.update(len(new_results))
                 except JSONDecodeError:
                     time.sleep(10)
                     response = requests.get(next_url, headers=self._headers)
                     new_results = response.json()['results']
                     json_data["results"] += new_results
+                    pbar.update(len(new_results))
+                except TypeError: #special case for locgeoregion2
+                    json_data["results"]["features"] += new_results["features"]
                     pbar.update(len(new_results))
                 except requests.exceptions.MissingSchema:
                     # This error indicates the `next_url` is none

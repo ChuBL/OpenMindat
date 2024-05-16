@@ -416,7 +416,7 @@ class GeomaterialRetriever:
         expand_fields_string = ','.join(expand_fields)
 
         if invalid_options:
-            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
+            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}\nExample: \"['description', 'relations']\"")
 
         self._params.update({
             'expand': expand_fields_string
@@ -640,6 +640,12 @@ class GeomaterialRetriever:
             raise ValueError(f"Invalid IMA_NOTES: {IMA_NOTES}\nIMA_NOTES must be a list of strings.")
         else:
             ima_notes = IMA_NOTES
+            
+        valid_options = ["GROUP", "INTERMEDIATE", "NAMED_AMPHIBOLE", "PENDING_APPROVAL", "PUBLISHED_WITHOUT_APPROVAL", "REDEFINED", "REJECTED", "RENAMED", "UNNAMED_INVALID", "UNNAMED_VALID"]
+        invalid_options = [option for option in ima_notes if option not in valid_options]
+
+        if invalid_options:
+            raise ValueError(f"Invalid note: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
 
         self._params.update({
             'ima_notes': ima_notes
@@ -671,6 +677,13 @@ class GeomaterialRetriever:
             raise ValueError(f"Invalid IMA_STATUS: {IMA_STATUS}\nIMA_STATUS must be a list of strings.")
         else:
             ima_status = IMA_STATUS
+            
+        valid_options = ["APPROVED", "DISCREDITED", "GRANDFATHERED", "PENDING_PUBLICATION", "QUESTIONABLE"]
+        invalid_options = [option for option in ima_status if option not in valid_options]
+
+        if invalid_options:
+            raise ValueError(f"Invalid status: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+
 
         self._params.update({
             'ima_status': ima_status
@@ -706,6 +719,12 @@ class GeomaterialRetriever:
         self._params.update({
             'lustretype': lustre_type
         })
+
+        valid_options = ["Adamantine", "Dull", "Earthy", "Greasy", "Metallic", "Pearly", "Resinous", "Silky", "Sub-Adamantine", "Sub-Metallic", "Sub-Vitreous", "Vitreous", "Waxy"]
+        invalid_options = [option for option in lustre_type if option not in valid_options]
+
+        if invalid_options:
+            raise ValueError(f"Invalid Lustre types: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
 
         return self
 
@@ -1338,6 +1357,7 @@ class GeomaterialIdRetriever:
     def __init__(self):
         self.end_point = "geomaterials"
         self.sub_endpoint = ''
+        self.variety = False
         
         self._params = {}
         self._init_params()
@@ -1347,6 +1367,7 @@ class GeomaterialIdRetriever:
         self._params = {'format': 'json'}
         self.end_point = "geomaterials"
         self.sub_endpoint = ''
+        self.variety = False
         self.page_size(1500)
         
     def page_size(self, PAGE_SIZE):
@@ -1371,7 +1392,7 @@ class GeomaterialIdRetriever:
 
         return self
 
-    def id(self, ID, VARIETIES = None):
+    def id(self, ID):
         '''
         Returns locality with matching id
 
@@ -1394,14 +1415,37 @@ class GeomaterialIdRetriever:
             raise ValueError("Invalid input. ID must be a valid integer.")
         
         id = str(ID)
+        
+        self.sub_endpoint = id
+        
+        return self
+    
+    def varieties(self, VARIETIES):
+        '''
+        Toggles varieties for the id
+
+        Args:
+            VARIETIES (bool): The .
+            variety: optional toggle returning varieties with True, leave empty if varieties aren't wanted or False
+
+        Returns:
+            self: The GeomaterialIdRetriever() object.
+
+        Example:
+            >>> gir = GeomaterialIdRetriever()
+            >>> gir.id(2).varieties(True)
+            >>> gir.save()
+        '''
         varieties = VARIETIES
         
-        if varieties == 'y':
-            self.sub_endpoint = '/'.join([id, 'varieties'])
-        elif varieties != None:
-            raise ValueError(f"Invalid input for 'varieties': {varieties}")
+        if type(varieties) is bool:
+            if varieties:
+                self.variety = True
+            else:
+                self.variety = False
         else:
-            self.sub_endpoint = id
+            raise TypeError("Invalid option: ", varieties, "varieties() only accepts True or False.")
+            
         
         return self
     
@@ -1422,7 +1466,12 @@ class GeomaterialIdRetriever:
         '''
 
         params = self._params
-        end_point = '/'.join([self.end_point, self.sub_endpoint])
+        sub_endpoint = self.sub_endpoint
+        
+        if self.variety:
+            sub_endpoint = '/'.join([self.sub_endpoint, "varieties"])
+        
+        end_point = '/'.join([self.end_point, sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
 
