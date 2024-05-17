@@ -54,7 +54,7 @@ class MineralsIMARetriever:
         invalid_options = [field for field in EXPAND_FIELDS if field not in valid_options]
 
         if invalid_options:
-            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
 
         expand_fields = EXPAND_FIELDS
         self._params.update({

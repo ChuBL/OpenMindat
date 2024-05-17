@@ -926,7 +926,7 @@ class GeomaterialRetriever:
         valid_options = ["+", "+/-", "-", None]
         
         if OPTICALSIGN not in valid_options:
-            print(f"Invalid input. OPTICALSIGN must be one of the following: '+', '+/-', '-', None")
+            print(f"Possible Invalid input. OPTICALSIGN must be one of the following: {', '.join(filter(None, (valid_options)))}")
         
         self._params.update({
             'opticalsign': OPTICALSIGN
