@@ -149,6 +149,9 @@ class MineralsIMARetriever:
             https://api.mindat.org/schema/redoc/#tag/minerals_ima/operation/minerals_ima_list
         Returns:
             self: The MineralsIMARetriever object.
+            
+        Valid options:
+            id,name,ima_formula,ima_symbol,ima_year,discovery_year,ima_status,ima_notes,type_specimen_store,mindat_longid,mindat_guid,type_localities,description_short,mindat_formula,mindat_formula_note,~all,*
 
         Example:
             >>> mir = MineralsIMARetriever()

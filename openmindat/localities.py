@@ -191,7 +191,7 @@ class LocalitiesRetriever:
         invalid_options = [field for field in EXPAND_FIELDS if field not in valid_options]
 
         if invalid_options:
-            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
 
                 #Changes * to "*" and from a list to a string since this is what the param will read without failing.
         expand_fields = [w.replace('*', '"*"') for w in expand_fields]
