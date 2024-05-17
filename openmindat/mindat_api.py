@@ -4,8 +4,10 @@ import sys
 import json
 import yaml
 import requests
+import time
 from pathlib import Path
 from datetime import datetime
+from json import JSONDecodeError
 import getpass
 
 
@@ -181,7 +183,21 @@ class MindatApi:
         # use datetime to get current date and time
         now = datetime.now()
         dt_string = now.strftime("%m%d%Y%H%M%S")
-        return dt_string        
+        return dt_string
+    
+    def get_results(self, URL, JSON_DATA, PBAR):
+        url = URL        
+        
+        try:
+            response = requests.get(url, headers=self._headers)
+            new_results = response.json()['results']
+            JSON_DATA["results"] += new_results
+            PBAR.update(len(new_results))
+        except TypeError: #special case for locgeoregion2
+            JSON_DATA["results"]["features"] += new_results["features"]
+            PBAR.update(len(new_results))
+            
+        return response
     
         
     def get_mindat_json(self, PARAM_DICT, END_POINT):
@@ -226,17 +242,18 @@ class MindatApi:
 
             # Try if multipage download is needed
             while True:
-                try:
-                    next_url = response.json()["next"]
-                    response = requests.get(next_url, headers=self._headers)
-                    new_results = response.json()['results']
-                    json_data["results"] += new_results
-                    pbar.update(len(new_results))
-                except requests.exceptions.MissingSchema:
-                    # This error indicates the `next_url` is none
-                    # i.e., No more pages to fetch
-                    break
-
+                
+                next_url = response.json()["next"]
+                
+                if next_url:                
+                    try:
+                        response = self.get_results(next_url, json_data, pbar)
+                    except JSONDecodeError:
+                        time.sleep(10)
+                        response = self.get_results(next_url, json_data, pbar)
+                else:
+                    break    
+                
             # Close the progress bar
             pbar.close()
             

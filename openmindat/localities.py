@@ -180,6 +180,8 @@ class LocalitiesRetriever:
             >>> lr.expand(["description", "type_localities"])
             >>> lr.saveto()
         '''
+        
+        expand_fields = EXPAND_FIELDS
 
         valid_options = ["geomaterials", "~all", "*"]
 
@@ -189,11 +191,14 @@ class LocalitiesRetriever:
         invalid_options = [field for field in EXPAND_FIELDS if field not in valid_options]
 
         if invalid_options:
-            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
 
-        expand_fields = EXPAND_FIELDS
+                #Changes * to "*" and from a list to a string since this is what the param will read without failing.
+        expand_fields = [w.replace('*', '"*"') for w in expand_fields]
+        expand_fields_string = ','.join(expand_fields)
+
         self._params.update({
-            'expand': expand_fields
+            'expand': expand_fields_string
         })
 
         return self

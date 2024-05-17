@@ -54,7 +54,7 @@ class MineralsIMARetriever:
         invalid_options = [field for field in EXPAND_FIELDS if field not in valid_options]
 
         if invalid_options:
-            raise ValueError(f"Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid EXPAND_FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}")
 
         expand_fields = EXPAND_FIELDS
         self._params.update({
@@ -149,6 +149,9 @@ class MineralsIMARetriever:
             https://api.mindat.org/schema/redoc/#tag/minerals_ima/operation/minerals_ima_list
         Returns:
             self: The MineralsIMARetriever object.
+            
+        Valid options:
+            id,name,ima_formula,ima_symbol,ima_year,discovery_year,ima_status,ima_notes,type_specimen_store,mindat_longid,mindat_guid,type_localities,description_short,mindat_formula,mindat_formula_note,~all,*
 
         Example:
             >>> mir = MineralsIMARetriever()
