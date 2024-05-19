@@ -18,6 +18,23 @@ foo@bar:~$ pip install openmindat
 import openmindat
 ```
 
+## Endpoint Descriptions 
+
+| Endpoint | Classes | Description |
+|:------------------:|------------|----------|
+| Dana8              |   -[DanaRetriever()](https://github.com/ChuBL/OpenMindat/wiki/DanaRetriever)   |   Search query to return information about the Dana-8 classification standard.   |
+| Geomaterials       |  -[GeomaterialRetriever()](https://github.com/ChuBL/OpenMindat/wiki/GeomaterialRetriever)<br>-[GeomaterialIdRetreiver()](https://github.com/ChuBL/OpenMindat/wiki/GeomaterialIdRetriever)<br>-[GeomaterialDictRetriever()](https://github.com/ChuBL/OpenMindat/wiki/GeomaterialDictRetriever) |   Search query to return information about mindat database items such as id, name, group id etc.    |
+| Geomaterial_search | &#x2011;[GeomaterialSearchRetriever()](https://github.com/ChuBL/OpenMindat/wiki/GeomaterialSearchRetriever)   |   Query to search for mindat database entries based on search keywords.|
+| Localities         | -[LocalitiesRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesRetriever)<br>-[LocalitiesIdRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesIdRetriever) | Search query to return information about different localities, for examples the main elements present in the Jegdalek ruby deposit in Afghanistan |
+| Localities_Age     | -[LocalitiesAgeRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesAgeRetriever)<br>-[LocalitiesAgeIdRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesAgeIdRetriever) |Search query to return locality age details. |
+| Localities_Statues | -[LocalitiesStatusRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesStatusRetriever)<br>-[LocalitiesStatusIdRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesStatusIdRetriever) | Search query to return information about the status type of localities. For example, abandoned is a status type. |
+| Localities_Type    | -[LocalitiesTypeRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesTypeRetriever)<br>-[LocalitiesTypeIdRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocalitiesTypeIdRetriever)| Search query to return information about the type of localities. For example, a Mining Field is a locality type.|
+| LocGeoregion2      | -[GeoRegionRetriever()](https://github.com/ChuBL/OpenMindat/wiki/GeoRegionRetriever) | Gives information about GeoRegion boundaries |
+| LocObject          | -[LocobjectRetriever()](https://github.com/ChuBL/OpenMindat/wiki/LocobjectRetriever) | N/A |
+| Minerals-IMA       | -[MineralsIMARetriever()](https://github.com/ChuBL/OpenMindat/wiki/MineralsIMARetriever)<br>-[MineralsIdRetriever()](https://github.com/ChuBL/OpenMindat/wiki/MineralsIdRetriever) | Search query to return IMA details for a mineral. For example the year it's IMA status was approved. |
+| Nickel_Strunz      | -[StrunzRetriever()](https://github.com/ChuBL/OpenMindat/wiki/StrunzRetriever) | Search query to return information about the Nickel-Strunz-10 classification standard.  |
+| Photo_Count        | -[PhotoCountRetriever()](https://github.com/ChuBL/OpenMindat/wiki/PhotoCountRetriever) | N/A|
+
 ## Use Cases
 
 ### 0. Setting API Key in Alternative Ways
