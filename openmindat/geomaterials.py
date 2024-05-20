@@ -106,7 +106,7 @@ class GeomaterialRetriever:
             invalid_cleavage_types = [ct for ct in cleavage_types if ct not in valid_cleavage_types]
             
             if invalid_cleavage_types:
-                print(f"Possible Invalid cleavage types: {', '.join(invalid_cleavage_types)}. Valid options are: {', '.join(valid_cleavage_types)}")
+                print(f"Possible Invalid cleavage types: {', '.join(invalid_cleavage_types)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
                 
             self._params.update({
                 'cleavage_type': cleavage_types
@@ -197,7 +197,7 @@ class GeomaterialRetriever:
             invalid_crystal_systems = [cs for cs in crystal_systems if cs not in valid_crystal_systems]
             
             if invalid_crystal_systems:
-                 print(f"Possible Invalid crystal system(s) found: {', '.join(invalid_crystal_systems)}. Valid options are: {', '.join(valid_crystal_systems)}")
+                 print(f"Possible Invalid crystal system(s) found: {', '.join(invalid_crystal_systems)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
             self._params.update({
                 'crystal_system': crystal_systems
             })
@@ -284,7 +284,7 @@ class GeomaterialRetriever:
         invalid_options = [option for option in diaphaneity_options if option not in valid_options]
 
         if invalid_options:
-            print(f"Possible Invalid diaphaneity options: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+            print(f"Possible Invalid diaphaneity options: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         self._params.update({
             'diaphaneity': diaphaneity_options
@@ -372,7 +372,7 @@ class GeomaterialRetriever:
             entry_type = ENTRYTYPE
         else:
             valid_options = ["0 - mineral", "1 - synonym", "2 - variety", "3 - mixture", "4 - series", "5 - grouplist", "6 - polytype", "7 - rock", "8 - commodity"]
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nENTRYTYPE must be an integer or a list of integers: {', '.join(valid_options)}")
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         self._params.update({
             'entry_type': entry_type
@@ -419,7 +419,7 @@ class GeomaterialRetriever:
         expand_fields_string = ','.join(expand_fields)
 
         if invalid_options:
-            print(f"Potentially Invalid FIELDS: {', '.join(invalid_options)}\nEXPAND_FIELDS must be one or more of the following: {', '.join(valid_options)}\nExample: \"['description', 'relations']\"")
+            print(f"Potentially Invalid FIELDS: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list\nExample: \"['description', 'relations']\"")
 
         self._params.update({
             'expand': expand_fields_string
@@ -482,7 +482,7 @@ class GeomaterialRetriever:
         invalid_options = [option for option in fracture_types if option not in valid_options]
 
         if invalid_options:
-            print(f"Invalid fracture types: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+            print(f"Invalid fracture types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         self._params.update({
             'fracture_type': fracture_types
@@ -648,7 +648,7 @@ class GeomaterialRetriever:
         invalid_options = [option for option in ima_notes if option not in valid_options]
 
         if invalid_options:
-            print(f"Possible Invalid note: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+            print(f"Possible Invalid note: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         self._params.update({
             'ima_notes': ima_notes
@@ -685,7 +685,7 @@ class GeomaterialRetriever:
         invalid_options = [option for option in ima_status if option not in valid_options]
 
         if invalid_options:
-            print(f"Invalid status: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+            print(f"Invalid status: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
 
         self._params.update({
@@ -727,7 +727,7 @@ class GeomaterialRetriever:
         invalid_options = [option for option in lustre_type if option not in valid_options]
 
         if invalid_options:
-            print(f"Possible Invalid Lustre types: {', '.join(invalid_options)}\nValid options are: {', '.join(valid_options)}")
+            print(f"Possible Invalid Lustre types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         return self
 
@@ -926,7 +926,7 @@ class GeomaterialRetriever:
         valid_options = ["+", "+/-", "-", None]
         
         if OPTICALSIGN not in valid_options:
-            print(f"Possible Invalid input. OPTICALSIGN must be one of the following: {', '.join(filter(None, (valid_options)))}")
+            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
         
         self._params.update({
             'opticalsign': OPTICALSIGN
@@ -961,7 +961,7 @@ class GeomaterialRetriever:
             OPTICALTYPE = [OPTICALTYPE]  # Convert single string input to list
         
         if not all(opt in valid_options for opt in OPTICALTYPE):
-            print(f"Possible Invalid input. OPTICALTYPE must be one of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
         
         self._params.update({
             'opticaltype': OPTICALTYPE
@@ -989,7 +989,7 @@ class GeomaterialRetriever:
 
 
         if ORDERING not in valid_options:
-            print(f"Possible Invalid input. ORDERING must be one of the following: {', '.join(valid_options)}")
+            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
         self._params.update({
             'ordering': ORDERING
@@ -1214,7 +1214,7 @@ class GeomaterialRetriever:
 
             for option in tenacity_list:
                 if option not in valid_options:
-                    print(f"Possible Invalid tenacity option: {option}. Valid options are: {', '.join(filter(None, (valid_options)))}")
+                    print(f"Possible Invalid tenacity option: {option}.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
 
             self._params.update({
                 'tenacity': tenacity_list
