@@ -126,7 +126,7 @@ gr.expand("locality").id__in(str(id_value))
 gr.saveto("./mindat_data")
 ```
 
-## Documentation and Relative Links
+## Documentation and Relevant Links
 
 - **API Key Application**: [How to Get My Mindat API Key or Token?](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
 
