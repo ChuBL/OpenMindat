@@ -19,7 +19,7 @@ import openmindat
 ```
 
 <p float="left">
-        <img src="https://github.com/ChuBL/OpenMindat/blob/main/figures/OpenMindat_Flowchart.png?raw=true"  width="25%">
+        <img src="figures/OpenMindat_Flowchart.png?raw=true"  width="100%">
 </p>
 
 ## Endpoint Descriptions 
@@ -175,8 +175,8 @@ Jiyin Zhang, Cory Clairmont, Xiaogang Ma
 ## Acknowledgments
 
 <p float="left">
-        <img src="https://github.com/ChuBL/OpenMindat/blob/main/figures/mindat2017.png?raw=true"  width="25%">
-        <img src="https://github.com/ChuBL/OpenMindat/blob/main/figures/NSF_Official_logo_Low_Res.png?raw=true"  width="10%">
+        <img src="figures/mindat2017.png?raw=true"  width="25%">
+        <img src="figures/NSF_Official_logo_Low_Res.png?raw=true"  width="10%">
 </p>
 
 - This work is supported by NSF, Award #2126315.
