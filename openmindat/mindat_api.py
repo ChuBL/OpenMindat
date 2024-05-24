@@ -196,6 +196,8 @@ class MindatApi:
         except TypeError: #special case for locgeoregion2
             JSON_DATA["results"]["features"] += new_results["features"]
             PBAR.update(len(new_results))
+        #except JSONDecodeError:
+        #    raise
             
         return response
     
@@ -245,12 +247,16 @@ class MindatApi:
                 
                 next_url = response.json()["next"]
                 
-                if next_url:                
-                    try:
-                        response = self.get_results(next_url, json_data, pbar)
-                    except JSONDecodeError:
-                        time.sleep(10)
-                        response = self.get_results(next_url, json_data, pbar)
+                if next_url:
+                    for i in range(4):
+                        try:
+                            response = self.get_results(next_url, json_data, pbar)
+                            break
+                        except JSONDecodeError as e:
+                            time.sleep(5*i)
+                            pass
+                    else:
+                        raise JSONDecodeError("\nSearch was not able to resolve, please try again.", next_url, 0)
                 else:
                     break    
                 
