@@ -251,12 +251,14 @@ class MindatApi:
                     for i in range(4):
                         try:
                             response = self.get_results(next_url, json_data, pbar)
+                            pbar.set_postfix()
                             break
                         except JSONDecodeError as e:
+                            pbar.set_postfix({'retry attempt': i})
                             time.sleep(5*i)
                             pass
                     else:
-                        raise JSONDecodeError("\nSearch was not able to resolve, please try again.", next_url, 0)
+                        raise JSONDecodeError("\nServer was not able to resolve the search, please try again.", next_url, 0)
                 else:
                     break    
                 
