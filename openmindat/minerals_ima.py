@@ -324,6 +324,26 @@ class MineralsIMARetriever:
         
         self._init_params()
         return results
+    
+    def available_methods(self):
+        '''
+        Prints the available methods of the class.
+
+        Example:
+            >>> mr = MineralsIMARetriever()
+            >>> mr.available_methods()
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        print("Available methods:", methods)
+
+    def __getattr__(self, name):
+        '''
+        Custom attribute access method to handle mistyped method names.
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        if name not in methods:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+        return object.__getattribute__(self, name)
         
         
 class MineralsIdRetriever:
@@ -468,6 +488,26 @@ class MineralsIdRetriever:
         
         self._init_params()
         return results
+    
+    def available_methods(self):
+        '''
+        Prints the available methods of the class.
+
+        Example:
+            >>> midr = MineralsIdRetriever()
+            >>> midr.available_methods()
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        print("Available methods:", methods)
+
+    def __getattr__(self, name):
+        '''
+        Custom attribute access method to handle mistyped method names.
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        if name not in methods:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+        return object.__getattribute__(self, name)
 
 
 if __name__ == '__main__':

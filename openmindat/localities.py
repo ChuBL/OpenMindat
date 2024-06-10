@@ -260,7 +260,7 @@ class LocalitiesRetriever:
         Args:
             OMIT_FIELDS (str): The fields to omit, separated by commas. 
             Please check the API documentation for the list of available fields.
-            https://api.mindat.org/schema/redoc/#tag/minerals_ima/operation/minerals_ima_list
+            https://api.mindat.org/schema/redoc/#tag/localities
         
         Returns:
             self: The LocalitiesRetriever object.
@@ -417,6 +417,25 @@ class LocalitiesRetriever:
         self._init_params()
         return results
         
+    def available_methods(self):
+        '''
+        Prints the available methods of the class.
+
+        Example:
+            >>> lr = LocalitiesRetriever()
+            >>> lr.available_methods()
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        print("Available methods:", methods)
+
+    def __getattr__(self, name):
+        '''
+        Custom attribute access method to handle mistyped method names.
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        if name not in methods:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+        return object.__getattribute__(self, name)
         
 class LocalitiesIdRetriever:
     """
@@ -559,6 +578,26 @@ class LocalitiesIdRetriever:
         
         self._init_params()
         return results
+
+    def available_methods(self):
+        '''
+        Prints the available methods of the class.
+
+        Example:
+            >>> lidr = LocalitiesIdRetriever()
+            >>> lidr.available_methods()
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        print("Available methods:", methods)
+
+    def __getattr__(self, name):
+        '''
+        Custom attribute access method to handle mistyped method names.
+        '''
+        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        if name not in methods:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+        return object.__getattribute__(self, name)
 
 if __name__ == '__main__':
     lr = LocalitiesRetriever()
