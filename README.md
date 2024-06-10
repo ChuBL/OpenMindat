@@ -185,6 +185,12 @@ Jiyin Zhang, Cory Clairmont, Xiaogang Ma
 
 ## Upgrading Logs
 
+### 0.0.8
+**Released:** Jun 09, 2024
+
+- Added misspelling checks and messages for the functions in the endpoint classes. Typos in the function names will get error messages of a valid function list.
+- Revised downloading logic with retries and improved stability.
+
 ### 0.0.7
 **Released:** Apr 26, 2024
 
