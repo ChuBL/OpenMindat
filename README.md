@@ -74,7 +74,8 @@ gr.elements_in('Cu')
 Available methods: ['_init_params', 'available_methods', 'bi_max', 'bi_min', 'cleavagetype', 'color', 
 'colour', 'crystal_system', 'density_max', 'density_min', 'diaphaneity', 'elements_exc', 'elements_inc', 
 'entrytype', 'expand', 'fields', 'fracturetype', 'get_dict', 'groupid', 'hardness_max', 'hardness_min', 
-'id__in', 'ima', 'ima_notes', 'ima_status', 'lustretype', 'meteoritical_code', 'meteoritical_code_exists', 'name', 'non_utf', 'omit', 'optical2v_max', 'optical2v_min', 'opticalsign', 
+'id__in', 'ima', 'ima_notes', 'ima_status', 'lustretype', 'meteoritical_code', 
+'meteoritical_code_exists', 'name', 'non_utf', 'omit', 'optical2v_max', 'optical2v_min', 'opticalsign', 
 'opticaltype', 'ordering', 'page', 'page_size', 'polytypeof', 'q', 'ri_max', 'ri_min', 'save', 'saveto', 
 'streak', 'synid', 'tenacity', 'updated_at', 'varietyof']. Did you mean: 'elements_inc'?'''
 ```
