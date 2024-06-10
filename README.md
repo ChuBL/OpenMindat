@@ -175,9 +175,9 @@ help(GeomaterialRetriever)
 The help() is also available for the specific functions:
 
 ```python
->>> from openmindat import MineralsIMARetriever
+from openmindat import MineralsIMARetriever
 
->>> help(MineralsIMARetriever.fields)
+help(MineralsIMARetriever.fields)
 ```
 
 Press `q` to exit the help interface.
