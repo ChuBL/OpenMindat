@@ -41,7 +41,9 @@ import openmindat
 
 ## Use Cases
 
-### 0. Setting API Key in Alternative Ways
+### 0. Setup
+
+#### Setting API Key in Alternative Ways
 
 ```python
 import os
@@ -52,6 +54,30 @@ os.environ["MINDAT_API_KEY"] = 'Your_Mindat_API_Key'
 > If you do not have a Mindat API key, please refer to [How to Get My Mindat API Key or Token?](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
 
 You can also set the API key by following the general queries.
+
+#### Checking Available Methods
+
+```python
+from openmindat import GeomaterialRetriever
+
+gr = GeomaterialRetriever()
+# Print out the available functions for a class
+gr.available_methods()
+```
+```python
+from openmindat import GeomaterialRetriever
+
+gr = GeomaterialRetriever()
+# Typo check
+gr.elements_in('Cu')
+'''>>> AttributeError: 'GeomaterialRetriever' object has no attribute 'elements_in', 
+Available methods: ['_init_params', 'available_methods', 'bi_max', 'bi_min', 'cleavagetype', 'color', 
+'colour', 'crystal_system', 'density_max', 'density_min', 'diaphaneity', 'elements_exc', 'elements_inc', 
+'entrytype', 'expand', 'fields', 'fracturetype', 'get_dict', 'groupid', 'hardness_max', 'hardness_min', 
+'id__in', 'ima', 'ima_notes', 'ima_status', 'lustretype', 'meteoritical_code', 'meteoritical_code_exists', 'name', 'non_utf', 'omit', 'optical2v_max', 'optical2v_min', 'opticalsign', 
+'opticaltype', 'ordering', 'page', 'page_size', 'polytypeof', 'q', 'ri_max', 'ri_min', 'save', 'saveto', 
+'streak', 'synid', 'tenacity', 'updated_at', 'varietyof']. Did you mean: 'elements_inc'?'''
+```
 
 ### 1. Perform Detailed Queries on Geomaterials
 
