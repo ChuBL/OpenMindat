@@ -17,12 +17,14 @@ class GeomaterialRetriever:
     """
     
     def __init__(self) -> None:
+        self.verbose_flag = 2
         self.end_point = 'geomaterials'
         self._params = {}
         self._init_params()
          # Flag to indicate if the geomaterials have been retrieved
 
     def _init_params(self):
+        self.verbose_flag = 2
         self.end_point = 'geomaterials'
         self._params.clear()
         self._params.update({'format': 'json'})
@@ -1272,6 +1274,31 @@ class GeomaterialRetriever:
         })
 
         return self
+    
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> gr = GeomaterialRetriever()
+            >>> gr.density_min(3.25).verbose(0).saveto("/path/to/directory")
+
+        '''
+        
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
 
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
@@ -1294,9 +1321,10 @@ class GeomaterialRetriever:
         end_point = 'geomaterials'
         outdir = OUTDIR
         file_name = FILE_NAME
+        verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1336,9 +1364,10 @@ class GeomaterialRetriever:
        
         params = self._params
         end_point = self.end_point
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results
@@ -1381,6 +1410,7 @@ class GeomaterialIdRetriever:
         self.end_point = "geomaterials"
         self.sub_endpoint = ''
         self.variety = False
+        self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
@@ -1391,6 +1421,7 @@ class GeomaterialIdRetriever:
         self.end_point = "geomaterials"
         self.sub_endpoint = ''
         self.variety = False
+        self.verbose_flag = 2
         self.page_size(1500)
         
     def page_size(self, PAGE_SIZE):
@@ -1472,6 +1503,30 @@ class GeomaterialIdRetriever:
         
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> gidr = GeomaterialIdRetriever()
+            >>> gidr.id(3).verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
@@ -1488,8 +1543,6 @@ class GeomaterialIdRetriever:
                 >>> gir.id(5).saveto("/path/to/directory", "geo5")
         '''
 
-        params = self._params
-        sub_endpoint = self.sub_endpoint
         
         if self.variety:
             sub_endpoint = '/'.join([self.sub_endpoint, "varieties"])
@@ -1497,9 +1550,12 @@ class GeomaterialIdRetriever:
         end_point = '/'.join([self.end_point, sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
+        params = self._params
+        sub_endpoint = self.sub_endpoint
+        verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1536,10 +1592,11 @@ class GeomaterialIdRetriever:
         '''
        
         params = self._params
+        verbose = self.verbose_flag
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results
@@ -1583,12 +1640,14 @@ class GeomaterialDictRetriever:
     def __init__(self):
         self.end_point = 'geomaterials/dict'
         self.sub_endpoint = ''
+        self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
 
     def _init_params(self):
         self.end_point = 'geomaterials/dict'
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
@@ -1616,6 +1675,30 @@ class GeomaterialDictRetriever:
 
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> gdr = GeomaterialDictRetriever()
+            >>> gdr.verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
@@ -1636,9 +1719,10 @@ class GeomaterialDictRetriever:
         end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
+        verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -1676,9 +1760,10 @@ class GeomaterialDictRetriever:
        
         params = self._params
         end_point = self.end_point
+        verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results

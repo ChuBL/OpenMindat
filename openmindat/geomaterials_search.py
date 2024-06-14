@@ -19,9 +19,11 @@ class GeomaterialSearchRetriever:
     def __init__(self):
         self._params = {}
         self.end_point = 'geomaterials_search'
+        self.verbose_flag = 2
     
     def _init_params(self):
         self.end_point = 'geomaterials_search'
+        self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -67,6 +69,30 @@ class GeomaterialSearchRetriever:
         self._params.update({'q': keywords})
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> gsr = GeomaterialSearchRetriever()
+            >>> gsr.geomaterials_Search("mica").verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
@@ -83,9 +109,10 @@ class GeomaterialSearchRetriever:
         end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
+        verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
@@ -119,9 +146,10 @@ class GeomaterialSearchRetriever:
        
         params = self._params
         end_point = self.end_point
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results

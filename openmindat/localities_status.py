@@ -20,12 +20,14 @@ class LocalitiesStatusRetriever:
     
     def __init__(self):
         self.end_point = 'locality_status' 
+        self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
         self.end_point = 'locality_status' 
+        self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -75,6 +77,30 @@ class LocalitiesStatusRetriever:
         
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> Lsr = LocalitiesStatusRetriever()
+            >>> Lsr.verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
@@ -95,13 +121,14 @@ class LocalitiesStatusRetriever:
         outdir = OUTDIR
         end_point = self.end_point
         file_name = FILE_NAME
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
         
         if "page" in params:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+            ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
         else:
-            ma.download_mindat_json(params, end_point, outdir, file_name)
+            ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
             
 
         # Reset the query parameters in case the user wants to make another query.
@@ -140,9 +167,10 @@ class LocalitiesStatusRetriever:
        
         params = self._params
         end_point = self.end_point
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
             
         self._init_params()
         return results
@@ -187,6 +215,7 @@ class LocalitiesStatusIdRetriever:
     
     def __init__(self):
         self.end_point = 'locality_status' 
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         
         self._params = {}
@@ -194,6 +223,7 @@ class LocalitiesStatusIdRetriever:
     
     def _init_params(self):
         self.end_point = 'locality_status' 
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
         self.page_size(1500)
@@ -248,6 +278,30 @@ class LocalitiesStatusIdRetriever:
         
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> Lsidr = LocalitiesStatusIdRetriever()
+            >>> Lsidr.id(3).verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
@@ -268,9 +322,10 @@ class LocalitiesStatusIdRetriever:
         outdir = OUTDIR
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         file_name = FILE_NAME
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -307,10 +362,11 @@ class LocalitiesStatusIdRetriever:
         '''
        
         params = self._params
+        verbose = self.verbose_flag
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results

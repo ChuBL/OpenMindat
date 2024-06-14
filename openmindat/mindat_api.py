@@ -185,24 +185,26 @@ class MindatApi:
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string
     
-    def get_results(self, URL, JSON_DATA, PBAR):
+    def get_results(self, URL, JSON_DATA, PBAR, VERBOSE = 2):
         url = URL        
         
         try:
             response = requests.get(url, headers=self._headers)
             new_results = response.json()['results']
             JSON_DATA["results"] += new_results
-            PBAR.update(len(new_results))
+            if VERBOSE == 2:
+                PBAR.update(len(new_results))
         except TypeError: #special case for locgeoregion2
             JSON_DATA["results"]["features"] += new_results["features"]
-            PBAR.update(len(new_results))
+            if VERBOSE == 2:
+                PBAR.update(len(new_results))
         #except JSONDecodeError:
         #    raise
             
         return response
     
         
-    def get_mindat_json(self, PARAM_DICT, END_POINT):
+    def get_mindat_json(self, PARAM_DICT, END_POINT, VERBOSE = 2):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
@@ -239,8 +241,9 @@ class MindatApi:
             # Create the progress bar
             total_item = response.json().get("count", None)
             item_per_request = len(response.json()["results"])
-            pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
-            pbar.update(item_per_request)
+            if VERBOSE == 2:
+                pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
+                pbar.update(item_per_request)
 
             # Try if multipage download is needed
             while True:
@@ -250,11 +253,13 @@ class MindatApi:
                 if next_url:
                     for server_fail_count in range(4):
                         try:
-                            response = self.get_results(next_url, json_data, pbar)
-                            pbar.set_postfix()
+                            response = self.get_results(next_url, json_data, pbar, VERBOSE)
+                            if VERBOSE == 2:
+                                pbar.set_postfix()
                             break
                         except JSONDecodeError as e:
-                            pbar.set_postfix({'retry attempt': server_fail_count})
+                            if VERBOSE == 2:
+                                pbar.set_postfix({'retry attempt': server_fail_count})
                             time.sleep(5*server_fail_count)
                     else:
                         raise JSONDecodeError("\nServer was not able to resolve the search, please try again.", next_url, 0)
@@ -262,7 +267,9 @@ class MindatApi:
                     break    
                 
             # Close the progress bar
-            pbar.close()
+            
+            if VERBOSE == 2:
+                pbar.close()
             
         return json_data
     
@@ -278,14 +285,14 @@ class MindatApi:
 
         return True
 
-    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
+    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = '', VERBOSE = 2):
         '''
             get all items in a list
             Since this API has a limit of 1000 items per page,
             we need to loop through all pages and save them to a single json file
         '''
         # get the json data
-        json_data = self.get_mindat_json(QUERY_DICT, END_POINT)
+        json_data = self.get_mindat_json(QUERY_DICT, END_POINT, VERBOSE)
 
         # The default output name is same as the endpoint
         file_name = FILE_NAME if FILE_NAME else END_POINT   
@@ -297,7 +304,8 @@ class MindatApi:
         with open(file_path, 'w') as f:
             json.dump(json_data, f, indent=4)   
 
-        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        if VERBOSE > 0:
+            print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
 if __name__ == '__main__':
     # test if api key is valid
