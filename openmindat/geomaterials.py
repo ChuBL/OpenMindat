@@ -1546,6 +1546,8 @@ class GeomaterialIdRetriever:
         
         if self.variety:
             sub_endpoint = '/'.join([self.sub_endpoint, "varieties"])
+        else:
+            sub_endpoint = self.sub_endpoint
         
         end_point = '/'.join([self.end_point, sub_endpoint])
         outdir = OUTDIR

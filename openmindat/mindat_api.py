@@ -185,19 +185,19 @@ class MindatApi:
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string
     
-    def get_results(self, URL, JSON_DATA, PBAR, VERBOSE = 2):
+    def get_results(self, URL, json_data, pbar, VERBOSE = 2):
         url = URL        
         
         try:
             response = requests.get(url, headers=self._headers)
             new_results = response.json()['results']
-            JSON_DATA["results"] += new_results
+            json_data["results"] += new_results
             if VERBOSE == 2:
-                PBAR.update(len(new_results))
+                pbar.update(len(new_results))
         except TypeError: #special case for locgeoregion2
-            JSON_DATA["results"]["features"] += new_results["features"]
+            json_data["results"]["features"] += new_results["features"]
             if VERBOSE == 2:
-                PBAR.update(len(new_results))
+                pbar.update(len(new_results))
         #except JSONDecodeError:
         #    raise
             
@@ -214,22 +214,36 @@ class MindatApi:
         end_point = END_POINT
 
         # Retrieve the first page of data
-        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                        params=params,
-                        headers=self._headers)
-        try:
-            response_json = response.json()
-            result_data = response_json["results"]
-        except KeyError:
-            # This error indicates the result only has one page
-            # We will convert the result data into a list for consistency
-            result_data = [response_json]
-        except TypeError:
-            # This error indicates the result data is a list instead of a dict
-            # We will pass the response result directly
-            result_data = response_json
-        except:
-            raise ValueError(str(response.reason))
+        while True:
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            if len(response.url) > 4097:
+                raise ValueError("Search query to big, reduce the size of the search and try again.")
+            
+            try:
+                response_json = response.json()
+                result_data = response_json["results"]
+                break
+            except KeyError:
+                # This error indicates the result only has one page
+                # We will convert the result data into a list for consistency
+                result_data = [response_json]
+                break
+            except TypeError:
+                # This error indicates the result data is a list instead of a dict
+                # We will pass the response result directly
+                result_data = response_json
+                break
+            except ValueError:
+                if(params['page_size'] < 200):
+                    raise ValueError(str(response.reason))
+                params['page_size'] = params['page_size']/2
+                print("page size too big, reducing and trying again. New size: ", params['page_size'])
+                time.sleep(1)
+            except:
+                raise ValueError(str(response.reason))
         
         # Format the obtained data in a JSON dict
         json_data = {"results": result_data}
