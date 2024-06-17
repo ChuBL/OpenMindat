@@ -185,24 +185,26 @@ class MindatApi:
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string
     
-    def get_results(self, URL, JSON_DATA, PBAR):
+    def get_results(self, URL, json_data, pbar, VERBOSE = 2):
         url = URL        
         
         try:
             response = requests.get(url, headers=self._headers)
             new_results = response.json()['results']
-            JSON_DATA["results"] += new_results
-            PBAR.update(len(new_results))
+            json_data["results"] += new_results
+            if VERBOSE == 2:
+                pbar.update(len(new_results))
         except TypeError: #special case for locgeoregion2
-            JSON_DATA["results"]["features"] += new_results["features"]
-            PBAR.update(len(new_results))
+            json_data["results"]["features"] += new_results["features"]
+            if VERBOSE == 2:
+                pbar.update(len(new_results))
         #except JSONDecodeError:
         #    raise
             
         return response
     
         
-    def get_mindat_json(self, PARAM_DICT, END_POINT):
+    def get_mindat_json(self, PARAM_DICT, END_POINT, VERBOSE = 2):
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
@@ -212,21 +214,36 @@ class MindatApi:
         end_point = END_POINT
 
         # Retrieve the first page of data
-        response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                        params=params,
-                        headers=self._headers)
-        try:
-            response_json = response.json()
-            result_data = response_json["results"]
-        except KeyError:
-            # This error indicates the result only has one page
-            # We will convert the result data into a list for consistency
-            result_data = [response_json]
-        except TypeError:
-            # This error indicates the result data is a list instead of a dict
-            # We will pass the response result directly
-            result_data = response_json
-        except:
+        for i in range(4):
+            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
+                            params=params,
+                            headers=self._headers)
+            
+            if len(response.url) > 4097:
+                raise ValueError("Search query to big, reduce the size of the search and try again.")
+            
+            try:
+                response_json = response.json()
+                result_data = response_json["results"]
+                break
+            except KeyError:
+                # This error indicates the result only has one page
+                # We will convert the result data into a list for consistency
+                result_data = [response_json]
+                break
+            except TypeError:
+                # This error indicates the result data is a list instead of a dict
+                # We will pass the response result directly
+                result_data = response_json
+                break
+            except ValueError:
+                if(params['page_size'] < 150):
+                    raise ValueError(str(response.reason))
+                params['page_size'] = int(params['page_size']/2)
+                print("page size too big, reducing and trying again. New size: ", params['page_size'])
+            except:
+                raise ValueError(str(response.reason))
+        else:
             raise ValueError(str(response.reason))
         
         # Format the obtained data in a JSON dict
@@ -239,8 +256,11 @@ class MindatApi:
             # Create the progress bar
             total_item = response.json().get("count", None)
             item_per_request = len(response.json()["results"])
-            pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
-            pbar.update(item_per_request)
+            if VERBOSE == 2:
+                pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
+                pbar.update(item_per_request)
+            else:
+                pbar = None
 
             # Try if multipage download is needed
             while True:
@@ -250,11 +270,13 @@ class MindatApi:
                 if next_url:
                     for server_fail_count in range(4):
                         try:
-                            response = self.get_results(next_url, json_data, pbar)
-                            pbar.set_postfix()
+                            response = self.get_results(next_url, json_data, pbar, VERBOSE)
+                            if VERBOSE == 2:
+                                pbar.set_postfix()
                             break
                         except JSONDecodeError as e:
-                            pbar.set_postfix({'retry attempt': server_fail_count})
+                            if VERBOSE == 2:
+                                pbar.set_postfix({'retry attempt': server_fail_count})
                             time.sleep(5*server_fail_count)
                     else:
                         raise JSONDecodeError("\nServer was not able to resolve the search, please try again.", next_url, 0)
@@ -262,7 +284,9 @@ class MindatApi:
                     break    
                 
             # Close the progress bar
-            pbar.close()
+            
+            if VERBOSE == 2:
+                pbar.close()
             
         return json_data
     
@@ -278,14 +302,14 @@ class MindatApi:
 
         return True
 
-    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = ''):
+    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = '', VERBOSE = 2):
         '''
             get all items in a list
             Since this API has a limit of 1000 items per page,
             we need to loop through all pages and save them to a single json file
         '''
         # get the json data
-        json_data = self.get_mindat_json(QUERY_DICT, END_POINT)
+        json_data = self.get_mindat_json(QUERY_DICT, END_POINT, VERBOSE)
 
         # The default output name is same as the endpoint
         file_name = FILE_NAME if FILE_NAME else END_POINT   
@@ -297,7 +321,8 @@ class MindatApi:
         with open(file_path, 'w') as f:
             json.dump(json_data, f, indent=4)   
 
-        print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
+        if VERBOSE > 0:
+            print("Successfully saved " + str(len(json_data['results'])) + " entries to " + str(file_path.resolve()))
         
 if __name__ == '__main__':
     # test if api key is valid

@@ -25,12 +25,14 @@ class DanaRetriever:
     def __init__(self):
         self.sub_endpoint = ''
         self.end_point = 'dana-8'
+        self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
         self.end_point = 'dana-8'
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
@@ -137,6 +139,30 @@ class DanaRetriever:
         
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> dr = DanaRetriever()
+            >>> dr.subgroups().verbose(0).saveto("/path/to/directory")
+        '''
+        
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the dana-8 data with keywords and saves the results to a specified directory.
@@ -157,13 +183,14 @@ class DanaRetriever:
         outdir = OUTDIR
         file_name = FILE_NAME
         end_point = self.end_point
+        verbose = self.verbose_flag
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
 
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -201,12 +228,13 @@ class DanaRetriever:
        
         params = self._params       
         end_point = self.end_point 
+        verbose = self.verbose_flag
         
         if self.sub_endpoint != '':
             end_point = '/'.join(['dana-8', self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results

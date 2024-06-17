@@ -17,13 +17,15 @@ class PhotoCountRetriever:
     """
     
     def __init__(self):
-        self.end_point = 'photocount' 
+        self.end_point = 'photocount'
+        self.verbose_flag = 2 
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
         self.end_point = 'photocount' 
+        self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
@@ -50,6 +52,30 @@ class PhotoCountRetriever:
 
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> pcr = PhotoCountRetriever()
+            >>> pcr.verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     #when fixed check if this needs get item or get list
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
@@ -70,10 +96,11 @@ class PhotoCountRetriever:
         params = self._params
         outdir = OUTDIR
         end_point = self.end_point
+        verbose = self.verbose_flag
         file_name = FILE_NAME
         
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -110,10 +137,11 @@ class PhotoCountRetriever:
         '''
        
         params = self._params
+        verbose = self.verbose_flag
         end_point = self.end_point
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results

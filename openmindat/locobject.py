@@ -20,6 +20,7 @@ class LocobjectRetriever:
     
     def __init__(self):
         self.end_point = 'locobject' 
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         
         self._params = {}
@@ -27,6 +28,7 @@ class LocobjectRetriever:
     
     def _init_params(self):
         self.end_point = 'locobject' 
+        self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
         self._params = {'format': 'json'}
@@ -58,6 +60,30 @@ class LocobjectRetriever:
         
         return self
     
+    def verbose(self, FLAG):
+        '''
+        Determinse the verbose mode of the query.
+
+        Args:
+            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+
+        Returns:
+            None
+
+        Example:
+            >>> Lor = LocobjectRetriever()
+            >>> Lor.verbose(0).saveto("/path/to/directory")
+
+        '''
+        if isinstance(FLAG, int):
+            flag = FLAG
+        else:
+            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
+        
+        self.verbose_flag = flag
+        
+        return self
+    
     def saveto(self, OUTDIR = '', FILE_NAME = ''):
         '''
             Executes the query to retrieve the loc object with keywords and saves the results to a specified directory.
@@ -78,9 +104,10 @@ class LocobjectRetriever:
         outdir = OUTDIR
         end_point =  '/'.join([self.end_point, self.sub_endpoint])
         file_name = FILE_NAME
+        verbose = self.verbose_flag
         
         ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name)
+        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
 
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
@@ -118,10 +145,11 @@ class LocobjectRetriever:
         '''
        
         params = self._params
+        verbose = self.verbose_flag
         end_point = '/'.join([self.end_point, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point)
+        results = ma.get_mindat_json(params, end_point, verbose)
         
         self._init_params()
         return results
