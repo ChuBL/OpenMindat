@@ -241,7 +241,6 @@ class MindatApi:
                     raise ValueError(str(response.reason))
                 params['page_size'] = int(params['page_size']/2)
                 print("page size too big, reducing and trying again. New size: ", params['page_size'])
-                time.sleep(1)
             except:
                 raise ValueError(str(response.reason))
         else:
