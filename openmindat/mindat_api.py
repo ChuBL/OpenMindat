@@ -214,7 +214,7 @@ class MindatApi:
         end_point = END_POINT
 
         # Retrieve the first page of data
-        for i in range(3):
+        for i in range(4):
             response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
                             params=params,
                             headers=self._headers)
@@ -259,6 +259,8 @@ class MindatApi:
             if VERBOSE == 2:
                 pbar = tqdm(total=total_item, desc="Fetching data") if total_item is not None else tqdm(desc="Fetching data")
                 pbar.update(item_per_request)
+            else:
+                pbar = None
 
             # Try if multipage download is needed
             while True:
