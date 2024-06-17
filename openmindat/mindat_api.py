@@ -214,7 +214,7 @@ class MindatApi:
         end_point = END_POINT
 
         # Retrieve the first page of data
-        while True:
+        for i in range(3):
             response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
                             params=params,
                             headers=self._headers)
@@ -237,7 +237,7 @@ class MindatApi:
                 result_data = response_json
                 break
             except ValueError:
-                if(params['page_size'] < 200):
+                if(params['page_size'] < 150):
                     raise ValueError(str(response.reason))
                 params['page_size'] = params['page_size']/2
                 print("page size too big, reducing and trying again. New size: ", params['page_size'])
