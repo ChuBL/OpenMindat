@@ -1,8 +1,27 @@
-# OpenMindat Python Package
+# OpenMindat: A Python Package for Geomaterial Data Analysis and Retrieval from Mindat API
 
-This is a test version of the OpenMindat Python package, designed to facilitate querying and retrieving data on minerals and geomaterials from the Mindat API. It provides classes for detailed queries based on various attributes like IMA status, keywords, and specific geomaterial properties.
+The OpenMindat Python package is designed to facilitate querying and retrieving data on minerals and geomaterials from the Mindat API. It provides classes for detailed queries based on various attributes like IMA status, keywords, and specific geomaterial properties.
 
 GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat)
+
+## Table of Contents
+  - [Get Started](#get-started)
+  - [Endpoint Descriptions](#endpoint-descriptions)
+  - [Use Cases](#use-cases)
+    - [0. Setup](#0-setup)
+    - [1. Perform Detailed Queries on Geomaterials](#1-perform-detailed-queries-on-geomaterials)
+    - [2. Retrieve IMA-Approved Minerals](#2-retrieve-ima-approved-minerals)
+    - [3. Search Geomaterials Using Keywords](#3-search-geomaterials-using-keywords)
+    - [4. Retrieve Localities](#4-retrieve-localities)
+    - [5. Retrieve Type Localities for IMA-Approved Mineral Species](#5-retrieve-type-localities-for-ima-approved-mineral-species)
+    - [6. Retrieve Locality Occurrences for Single Mineral Species](#6-retrieve-locality-occurrences-for-single-mineral-species)
+  - [Documentation and Relevant Links](#documentation-and-relevant-links)
+  - [Contact Us](#contact-us)
+  - [License](#license)
+  - [Authors](#authors)
+  - [Citations](#citations)
+  - [Acknowledgments](#acknowledgments)
+  - [Upgrade Logs](#upgrade-logs)
 
 ## Get Started
 
@@ -153,14 +172,13 @@ gr.expand("locality").id__in(str(id_value))
 gr.saveto("./mindat_data")
 ```
 
-## Documentation and Relevant Links
+## Documentation and Links
 
-- **API Key Application**: [How to Get My Mindat API Key or Token?](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
-
-- **GitHub Wiki**: For comprehensive documentation, visit our [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki).
-
-- **OpenMindat API Documentation**:
-  [OpenMindat Redoc](https://api.mindat.org/schema/redoc/)
+- [Get your Mindat API Key](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
+- [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki)
+- [API Documentation](https://api.mindat.org/schema/redoc)
+- [Geomaterial Fields Definition](https://github.com/smrgeoinfo/How-to-Use-Mindat-API/blob/main/geomaterialfields.csv)
+- [R package for OpenMindat](https://github.com/quexiang/OpenMindat)
 
 - **Built-in Help**:
 
@@ -183,7 +201,6 @@ help(MineralsIMARetriever.fields)
 Press `q` to exit the help interface.
 
 
-
 ## Contact Us
 
 For further assistance or feedback, feel free to contact the development team at [jiyinz@uidaho.edu](mailto:jiyinz@uidaho.edu).
@@ -197,9 +214,31 @@ For further assistance or feedback, feel free to contact the development team at
 
 The Mindat API is currently in beta test, and while access is free for all, please note that the data provided are not yet licensed for redistribution and are for private, non-commercial use only. Once launched, data will be available under an open-access license, but please always check the terms of use of the license before reusing these data.
 
-## Author
+## Authors
 
 Jiyin Zhang, Cory Clairmont, Xiaogang Ma
+
+## Citations
+
+If you use the data or code from this repository, please cite it as indicated below.
+
+```
+@misc{OpenMindat,
+  author = {Jiyin Zhang and Cory Clairmont and Xiaogang Ma},
+  title = {OpenMindat: A Python Package for Geomaterial Data Analysis and Retrieval from Mindat API},
+  year = {2024},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/ChuBL/OpenMindat}},
+  note = {Version 0.0.8}
+}
+```
+
+Additionally, you should also reference the following paper:
+
+Ma, X., Ralph, J., Zhang, J., Que, X., Prabhu, A., Morrison, S.M., Hazen, R.M., Wyborn, L. and Lehnert, K., 2024. *OpenMindat: Open and FAIR mineralogy data from the Mindat database*. *Geoscience Data Journal*, 11(1), pp.94-104. [https://doi.org/10.1002/gdj3.204](https://doi.org/10.1002/gdj3.204).
+
+
 
 ## Acknowledgments
 
@@ -210,7 +249,23 @@ Jiyin Zhang, Cory Clairmont, Xiaogang Ma
 
 - This work is supported by NSF, Award #2126315.
 
-## Upgrading Logs
+## Upgrade Logs
+
+### 0.0.9
+
+**Release Date:** Jun 17, 2024
+
+- Introduced a `verbose` function to control the display of save notifications and the progress bar.
+
+> **Usage:** `.verbose(FLAG)` where `FLAG` can be:
+> 
+> - `0`: Silent mode (no notifications)
+>
+> - `1`: Show save notifications only
+> 
+> - `2` (default): Show progress bar and notifications
+
+- Enhanced the download logic for handling large content with oversized page sizes.
 
 ### 0.0.8
 **Released:** Jun 09, 2024
