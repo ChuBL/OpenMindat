@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Clean previous builds
+        run: rm -rf dist build *.egg-info
+
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
