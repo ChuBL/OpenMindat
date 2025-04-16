@@ -1,5 +1,9 @@
 # OpenMindat: A Python Package for Geomaterial Data Analysis and Retrieval from Mindat API
 
+> [!Caution]
+> We located that some endpoints and features are currently unavailable due to the server-side notation changes, which will be fixed soon. I appreciate your patience.
+> If you wish to bypass this problem urgently, consider manually modifying the underscores in the endpoint names and parameters into hyphens.
+
 The OpenMindat Python package is designed to facilitate querying and retrieving data on minerals and geomaterials from the Mindat API. It provides classes for detailed queries based on various attributes like IMA status, keywords, and specific geomaterial properties.
 
 GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat)
