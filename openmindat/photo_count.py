@@ -47,7 +47,7 @@ class PhotoCountRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

@@ -22,9 +22,11 @@ class StrunzRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'nickel-strunz-10'
     
     def __init__(self):
-        self.end_point = 'nickel-strunz-10'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = '' 
         
@@ -32,7 +34,7 @@ class StrunzRetriever:
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'nickel-strunz-10'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = '' 
         self._params.clear()
@@ -56,7 +58,7 @@ class StrunzRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

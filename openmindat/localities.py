@@ -32,14 +32,16 @@ class LocalitiesRetriever:
     Press q to quit.
     """
 
+    BASE_ENDPOINT = 'localities'
+
     def __init__(self):
         self._params = {}
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT 
         self.verbose_flag = 2
         self._init_params()
 
     def _init_params(self):
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -62,7 +64,7 @@ class LocalitiesRetriever:
             >>> lr.country("USA")
             >>> lr.saveto()
         '''
-        valid_options = ["162173 Ryugu","Abkhazia","Aegean Sea Plate","Afghanistan","Africa","African Plate","Akrotiri and Dhekelia","Albania","Algeria","Altiplano Plate","Amur Plate","Anatolia Plate","Andorra","Angola","Anguilla","Antarctic Meteorites","Antarctic Plate","Antarctica","Antigua and Barbuda","Arabian Peninsula","Arabian Plate","Arctic Ocean","Argentina","Argentina/Chile","Armenia","Asia","Asia/Europe","Atlantic Ocean","Australia","Australian Plate","Austria","Azerbaijan","Bahamas","Bailiwick of Guernsey","Balmoral Reef Plate","Baltic Sea","Baltic Shield (Fennoscandian Shield)","Banda Sea Plate","Bangladesh","Barbados","Belarus","Belgium","Belize","Belize/Guatemala","Benin","Bermuda","Bhutan","Birds Head Plate","Bolivia","Borneo","Bosnia and Herzegovina","Botswana","Brazil","British Virgin Islands","British and Irish Isles","Brunei","Bulgaria","Burkina Faso","Burma Plate","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Caribbean Plate","Caroline Plate","Cayman Islands","Central Africa","Central African Republic","Central America","Central Asia","Ceres","Chad","Channel Islands","Charon","Chile","China","Cocos Plate","Colombia","Comoro Islands","Comoros","Conway Reef Plate","Cook Islands","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Czech Republic/Germany/Poland","Czech Republic/Poland","Czechoslovakia","DR Congo","Denmark","Djibouti","Dominica","Dominican Republic","Earth","East Timor","Easter Plate","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Eurasian Plate","Europa","Europe","Falkland Islands","Faroe Islands","Federated States of Micronesia","Fiji","Finland","Finland/Russia","France","French Polynesia","French Southern and Antarctic Lands","Futuna Plate","Gabon","Galapagos Plate","Gambia","Georgia","Germany","Germany/Belgium","Germany/Czech Republic","Germany/Poland","Ghana","Gibraltar","Greece","Greenland","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Hans Island","Honduras","Hungary","Iberian Peninsula","Iceland","Ilemi Triangle","India","Indian Ocean","Indian Plate (India Plate)","Indonesia","Io","Iran","Iraq","Ireland","Ireland (island)","Island of Cyprus","Isle of Man","Israel","Italy","Ivory Coast","Jamaica","Japan","Jersey","Jordan","Juan Fernandez Plate","Juan de Fuca Plate","Kazakhstan","Kazakhstan/Russia","Kenya","Kiribati","Korea","Korean Peninsula","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malawi/Mozambique/Tanzania","Malaysia","Maldives","Mali","Malta","Manus Plate","Maoke Plate","Mariana Plate","Mars","Marshall Islands","Mauritania","Mauritius","Mercury","Mexico","Middle East","Mimas","Moldova","Molucca Sea Plate","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nazca Plate","Nepal","Netherlands","Netherlands Antilles","New Guinea","New Hebrides Plate","New Zealand","Nicaragua","Niger","Nigeria","Niuafo'ou Plate","Niue","North Africa","North America","North America Plate","North Andes plate","North Atlantic Igneous Province","North Bismarck Plate","North Korea","North Macedonia","North Sea","Northern Cyprus","Northern Mariana Islands","Northwest Africa","Northwest Africa Meteorites","Norway","Okhotsk Plate","Okinawa Plate","Oman","Outer Space","Pacific Ocean","Pacific Plate","Pakistan","Palau","Palestine","Panama","Panama Plate","Papua New Guinea","Paraguay","Persian Gulf","Peru","Philippine Sea Plate","Philippines","Phobos","Pitcairn Islands","Pluto","Poland","Portugal","Puerto Rico","Qatar","Red Sea","Republic of the Congo","Rivera Plate","Romania","Russia","Rwanda","Réunion Island","Saint Helena","Saint Helena， Ascension and Tristan da Cunha","Saint Kitts and Nevis","Saint Lucia","Saint Martin","Saint Vincent and the Grenadines","Samoa","Samoan Islands","San Marino","Sandwich Plate","Saudi Arabia","Scandinavia","Scotia Plate","Senegal","Serbia","Serbia and Montenegro","Seychelles","Shetland Plate","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Solomon Sea Plate","Somali Plate","Somalia","Somaliland","South Africa","South America","South America Plate","South Bismarck Plate","South China Sea","South Georgia and the South Sandwich Islands","South Kordofan Sudan","South Korea","South Ossetia","South Sudan","Southern Africa","Soviet Union (1922-1991)","Spain","Sri Lanka","Sudan","Sunda Plate","Suriname","Swaziland","Sweden","Switzerland","Syria","São Tomé and Príncipe","Taiwan","Tajikistan","Tanzania","Thailand","The Caribbean","The Moon","Timor Plate","Togo","Tonga","Tonga Plate","Trinidad and Tobago","Triton","Tunisia","Turkestan","Turkey","Turkmenistan","Turks and Caicos Islands","Tuvalu","U.S. Virgin Islands","UK","USA","Uganda","Ukraine","United Arab Emirates","United States Minor Outlying Islands","Uruguay","Uzbekistan","Vanuatu","Venezuela","Venus","Vermont","Vietnam","West Africa","Western Sahara","Woodlark Plate","Yangtze Plate","Yellow Sea","Yemen","Zambia","Zimbabwe"]
+        valid_options = ["162173 Ryugu","Abkhazia","Aegean Sea Plate","Afghanistan","Africa","African Plate","Akrotiri and Dhekelia","Albania","Algeria","Altiplano Plate","Amur Plate","Anatolia Plate","Andorra","Angola","Anguilla","Antarctic Meteorites","Antarctic Plate","Antarctica","Antigua and Barbuda","Arabian Peninsula","Arabian Plate","Arctic Ocean","Argentina","Argentina/Chile","Armenia","Asia","Asia/Europe","Atlantic Ocean","Australia","Australian Plate","Austria","Azerbaijan","Bahamas","Bailiwick of Guernsey","Balmoral Reef Plate","Baltic Sea","Baltic Shield (Fennoscandian Shield)","Banda Sea Plate","Bangladesh","Barbados","Belarus","Belgium","Belize","Belize/Guatemala","Benin","Bermuda","Bhutan","Birds Head Plate","Bolivia","Borneo","Bosnia and Herzegovina","Botswana","Brazil","British Virgin Islands","British and Irish Isles","Brunei","Bulgaria","Burkina Faso","Burma Plate","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Caribbean Plate","Caroline Plate","Cayman Islands","Central Africa","Central African Republic","Central America","Central Asia","Ceres","Chad","Channel Islands","Charon","Chile","China","Cocos Plate","Colombia","Comoro Islands","Comoros","Conway Reef Plate","Cook Islands","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Czech Republic/Germany/Poland","Czech Republic/Poland","Czechoslovakia","DR Congo","Denmark","Djibouti","Dominica","Dominican Republic","Earth","East Timor","Easter Plate","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Eurasian Plate","Europa","Europe","Falkland Islands","Faroe Islands","Federated States of Micronesia","Fiji","Finland","Finland/Russia","France","French Polynesia","French Southern and Antarctic Lands","Futuna Plate","Gabon","Galapagos Plate","Gambia","Georgia","Germany","Germany/Belgium","Germany/Czech Republic","Germany/Poland","Ghana","Gibraltar","Greece","Greenland","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Hans Island","Honduras","Hungary","Iberian Peninsula","Iceland","Ilemi Triangle","India","Indian Ocean","Indian Plate (India Plate)","Indonesia","Io","Iran","Iraq","Ireland","Ireland (island)","Island of Cyprus","Isle of Man","Israel","Italy","Ivory Coast","Jamaica","Japan","Jersey","Jordan","Juan Fernandez Plate","Juan de Fuca Plate","Kazakhstan","Kazakhstan/Russia","Kenya","Kiribati","Korea","Korean Peninsula","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malawi/Mozambique/Tanzania","Malaysia","Maldives","Mali","Malta","Manus Plate","Maoke Plate","Mariana Plate","Mars","Marshall Islands","Mauritania","Mauritius","Mercury","Mexico","Middle East","Mimas","Moldova","Molucca Sea Plate","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nazca Plate","Nepal","Netherlands","Netherlands Antilles","New Guinea","New Hebrides Plate","New Zealand","Nicaragua","Niger","Nigeria","Niuafo'ou Plate","Niue","North Africa","North America","North America Plate","North Andes plate","North Atlantic Igneous Province","North Bismarck Plate","North Korea","North Macedonia","North Sea","Northern Cyprus","Northern Mariana Islands","Northwest Africa","Northwest Africa Meteorites","Norway","Okhotsk Plate","Okinawa Plate","Oman","Outer Space","Pacific Ocean","Pacific Plate","Pakistan","Palau","Palestine","Panama","Panama Plate","Papua New Guinea","Paraguay","Persian Gulf","Peru","Philippine Sea Plate","Philippines","Phobos","Pitcairn Islands","Pluto","Poland","Portugal","Puerto Rico","Qatar","Red Sea","Republic of the Congo","Rivera Plate","Romania","Russia","Rwanda","Réunion Island","Saint Helena","Saint Helena, Ascension and Tristan da Cunha","Saint Kitts and Nevis","Saint Lucia","Saint Martin","Saint Vincent and the Grenadines","Samoa","Samoan Islands","San Marino","Sandwich Plate","Saudi Arabia","Scandinavia","Scotia Plate","Senegal","Serbia","Serbia and Montenegro","Seychelles","Shetland Plate","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Solomon Sea Plate","Somali Plate","Somalia","Somaliland","South Africa","South America","South America Plate","South Bismarck Plate","South China Sea","South Georgia and the South Sandwich Islands","South Kordofan Sudan","South Korea","South Ossetia","South Sudan","Southern Africa","Soviet Union (1922-1991)","Spain","Sri Lanka","Sudan","Sunda Plate","Suriname","Swaziland","Sweden","Switzerland","Syria","São Tomé and Príncipe","Taiwan","Tajikistan","Tanzania","Thailand","The Caribbean","The Moon","Timor Plate","Togo","Tonga","Tonga Plate","Trinidad and Tobago","Triton","Tunisia","Turkestan","Turkey","Turkmenistan","Turks and Caicos Islands","Tuvalu","U.S. Virgin Islands","UK","USA","Uganda","Ukraine","United Arab Emirates","United States Minor Outlying Islands","Uruguay","Uzbekistan","Vanuatu","Venezuela","Venus","Vermont","Vietnam","West Africa","Western Sahara","Woodlark Plate","Yangtze Plate","Yellow Sea","Yemen","Zambia","Zimbabwe"]
         
         if COUNTRY_STR is not None:
             if isinstance(COUNTRY_STR, str):
@@ -297,7 +299,7 @@ class LocalitiesRetriever:
             >>> lr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -478,8 +480,10 @@ class LocalitiesIdRetriever:
         id (int): An int to store id parameter.
     """
     
+    BASE_ENDPOINT = 'localities'
+
     def __init__(self):
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         
@@ -489,7 +493,7 @@ class LocalitiesIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self.page_size(1500)
@@ -510,7 +514,7 @@ class LocalitiesIdRetriever:
             >>> lidr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

@@ -8,6 +8,8 @@ class GeomaterialRetriever:
 
     The class allows for setting parameters like birifrigence, cleavage type, color, crystal system, density, diaphaneity, chemical elements inclusion or exclusion, entry types, optical properties, and more. It provides flexibility through method chaining and supports saving the query results either to a specified directory or to the current directory.
 
+    
+
     Usage:
         >>> gr = GeomaterialRetriever()
         >>> gr.cleavagetype('Distinct/Good').colour('blue').crystal_system(["Amorphous", "Hexagonal"]).save()
@@ -15,20 +17,22 @@ class GeomaterialRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'geomaterials'
     
     def __init__(self) -> None:
         self.verbose_flag = 2
-        self.end_point = 'geomaterials'
+        self.end_point = self.BASE_ENDPOINT
         self._params = {}
         self._init_params()
          # Flag to indicate if the geomaterials have been retrieved
 
     def _init_params(self):
         self.verbose_flag = 2
-        self.end_point = 'geomaterials'
+        self.end_point = self.BASE_ENDPOINT
         self._params.clear()
         self._params.update({'format': 'json'})
-        self.page_size(1500)
+        self.page_size(200)
 
     def bi_min(self, MIN):
         '''
@@ -1038,7 +1042,7 @@ class GeomaterialRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -1405,9 +1409,11 @@ class GeomaterialIdRetriever:
     Attributes:
         id (int): An int to store id parameter.
     """
+
+    BASE_ENDPOINT = 'geomaterials' 
     
     def __init__(self):
-        self.end_point = "geomaterials"
+        self.end_point = self.BASE_ENDPOINT
         self.sub_endpoint = ''
         self.variety = False
         self.verbose_flag = 2
@@ -1418,7 +1424,7 @@ class GeomaterialIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
-        self.end_point = "geomaterials"
+        self.end_point = self.BASE_ENDPOINT
         self.sub_endpoint = ''
         self.variety = False
         self.verbose_flag = 2
@@ -1441,7 +1447,7 @@ class GeomaterialIdRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -1638,9 +1644,11 @@ class GeomaterialDictRetriever:
     Attributes:
         id (int): An int to store id parameter.
     """ 
+
+    BASE_ENDPOINT = 'geomaterials/dict'
     
     def __init__(self):
-        self.end_point = 'geomaterials/dict'
+        self.end_point = self.BASE_ENDPOINT
         self.sub_endpoint = ''
         self.verbose_flag = 2
         
@@ -1648,7 +1656,7 @@ class GeomaterialDictRetriever:
         self._init_params()
 
     def _init_params(self):
-        self.end_point = 'geomaterials/dict'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
@@ -1672,7 +1680,7 @@ class GeomaterialDictRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

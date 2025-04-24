@@ -237,10 +237,10 @@ class MindatApi:
                 result_data = response_json
                 break
             except ValueError:
-                if(params['page_size'] < 150):
+                if(params['page-size'] < 150):
                     raise ValueError(str(response.reason))
-                params['page_size'] = int(params['page_size']/2)
-                print("page size too big, reducing and trying again. New size: ", params['page_size'])
+                params['page-size'] = int(params['page-size']/2)
+                print("page size too big, reducing and trying again. New size: ", params['page-size'])
             except:
                 raise ValueError(str(response.reason))
         else:

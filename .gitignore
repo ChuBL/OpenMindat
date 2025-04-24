@@ -168,3 +168,6 @@ mindat_data/
 test/
 .api_key
 .apikey.yaml
+
+openmindat/test.py
+.vscode

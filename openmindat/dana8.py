@@ -21,17 +21,19 @@ class DanaRetriever:
 
     Press q to quit.
     """
-    
+
+    BASE_ENDPOINT = 'dana-8'
+
     def __init__(self):
         self.sub_endpoint = ''
-        self.end_point = 'dana-8'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'dana-8'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
@@ -55,7 +57,7 @@ class DanaRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -186,7 +188,7 @@ class DanaRetriever:
         verbose = self.verbose_flag
         
         if self.sub_endpoint != '':
-            end_point = '/'.join(['dana-8', self.sub_endpoint])
+            end_point = '/'.join([self.BASE_ENDPOINT, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
 
@@ -231,7 +233,7 @@ class DanaRetriever:
         verbose = self.verbose_flag
         
         if self.sub_endpoint != '':
-            end_point = '/'.join(['dana-8', self.sub_endpoint])
+            end_point = '/'.join([self.BASE_ENDPOINT, self.sub_endpoint])
         
         ma = mindat_api.MindatApi()
         results = ma.get_mindat_json(params, end_point, verbose)

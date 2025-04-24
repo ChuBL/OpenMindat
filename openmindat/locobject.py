@@ -17,9 +17,11 @@ class LocobjectRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'locobject'
     
     def __init__(self):
-        self.end_point = 'locobject' 
+        self.end_point = self.BASE_ENDPOINT 
         self.verbose_flag = 2
         self.sub_endpoint = ''
         
@@ -27,7 +29,7 @@ class LocobjectRetriever:
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'locobject' 
+        self.end_point = self.BASE_ENDPOINT 
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()

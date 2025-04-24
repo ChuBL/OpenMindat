@@ -12,14 +12,17 @@ class MineralsIMARetriever:
 
     Press q to quit.
     '''
+
+    BASE_ENDPOINT = 'minerals-ima'
+
     def __init__(self):
-        self.end_point = 'minerals_ima'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params = {}
         self._init_params()
 
     def _init_params(self):
-        self.end_point = 'minerals_ima'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -205,7 +208,7 @@ class MineralsIMARetriever:
             >>> mir.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -387,8 +390,10 @@ class MineralsIdRetriever:
         id (int): An int to store id parameter.
     """
     
+    BASE_ENDPOINT = 'minerals-ima'
+
     def __init__(self):
-        self.end_point = 'minerals_ima'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         
@@ -396,7 +401,7 @@ class MineralsIdRetriever:
         self._init_params()
 
     def _init_params(self):
-        self.end_point = 'minerals_ima'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
@@ -420,7 +425,7 @@ class MineralsIdRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
