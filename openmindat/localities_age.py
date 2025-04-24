@@ -32,7 +32,7 @@ class LocalitiesAgeRetriever:
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
-        self.page_size(200)
+        self.page_size(1500)
         
     def page_size(self, PAGE_SIZE):
         '''
