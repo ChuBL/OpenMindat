@@ -17,16 +17,18 @@ class CountriesListRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'countries'
     
     def __init__(self):
-        self.end_point = 'countries' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'countries' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -73,7 +75,7 @@ class CountriesListRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -192,16 +194,16 @@ class CountriesIdRetriever:
 
     Press q to quit.
     """
-    
+    BASE_ENDPOINT = 'countries' 
     def __init__(self):
-        self.end_point = 'countries' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'countries' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -224,7 +226,7 @@ class CountriesIdRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

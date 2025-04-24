@@ -32,14 +32,16 @@ class LocalitiesRetriever:
     Press q to quit.
     """
 
+    BASE_ENDPOINT = 'localities'
+
     def __init__(self):
         self._params = {}
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT 
         self.verbose_flag = 2
         self._init_params()
 
     def _init_params(self):
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -297,7 +299,7 @@ class LocalitiesRetriever:
             >>> lr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -478,8 +480,10 @@ class LocalitiesIdRetriever:
         id (int): An int to store id parameter.
     """
     
+    BASE_ENDPOINT = 'localities'
+
     def __init__(self):
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         
@@ -489,7 +493,7 @@ class LocalitiesIdRetriever:
     def _init_params(self):
         self._params.clear()
         self._params = {'format': 'json'}
-        self.end_point = 'localities'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self.page_size(1500)
@@ -510,7 +514,7 @@ class LocalitiesIdRetriever:
             >>> lidr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

@@ -17,16 +17,18 @@ class GeoRegionRetriever:
 
     Press q to quit.
     """
-    
+
+    BASE_ENDPOINT = 'locgeoregion2'
+
     def __init__(self):
-        self.end_point = 'locgeoregion2' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'locgeoregion2' 
+        self.end_point = self.BASE_ENDPOINT 
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -48,7 +50,7 @@ class GeoRegionRetriever:
             >>> grr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

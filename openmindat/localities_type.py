@@ -17,16 +17,18 @@ class LocalitiesTypeRetriever:
 
     Press q to quit.
     """
-    
+
+    BASE_ENDPOINT = 'locality-type'   
+
     def __init__(self):
-        self.end_point = 'locality_type' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         
         self._params = {}
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'locality_type' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
@@ -48,7 +50,7 @@ class LocalitiesTypeRetriever:
             >>> ltr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self
@@ -211,9 +213,11 @@ class LocalitiesTypeIdRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'locality-type'   
     
     def __init__(self):
-        self.end_point = 'locality_type' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         
@@ -221,7 +225,7 @@ class LocalitiesTypeIdRetriever:
         self._init_params()
     
     def _init_params(self):
-        self.end_point = 'locality_type' 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         self._params.clear()
@@ -244,7 +248,7 @@ class LocalitiesTypeIdRetriever:
             >>> ltidr.saveto()
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

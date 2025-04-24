@@ -16,18 +16,21 @@ class GeomaterialSearchRetriever:
 
     Press q to quit.
     """
+
+    BASE_ENDPOINT = 'geomaterials-search'
+    
     def __init__(self):
         self._params = {}
-        self.end_point = 'geomaterials_search'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
     
     def _init_params(self):
-        self.end_point = 'geomaterials_search'
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._params.clear()
         self._params = {'format': 'json'}
         self.page_size(1500)
-        
+
     def page_size(self, PAGE_SIZE):
         '''
         Sets the number of results per page.
@@ -45,7 +48,7 @@ class GeomaterialSearchRetriever:
 
         '''
         self._params.update({
-            'page_size': PAGE_SIZE
+            'page-size': PAGE_SIZE
         })
 
         return self

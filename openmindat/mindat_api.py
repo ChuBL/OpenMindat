@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime
 from json import JSONDecodeError
 import getpass
-
+from requests.exceptions import RequestException, ConnectionError, Timeout, HTTPError
 
 def in_notebook():
     '''
@@ -203,7 +203,6 @@ class MindatApi:
             
         return response
     
-        
     def get_mindat_json(self, PARAM_DICT, END_POINT, VERBOSE = 2):
         '''
             get all items in a list
@@ -211,17 +210,26 @@ class MindatApi:
             we need to loop through all pages and save them to a single json file
         '''
         params = PARAM_DICT
-        end_point = END_POINT
+        # result_data = self._safe_initial_request(END_POINT, params)
 
         # Retrieve the first page of data
-        for i in range(4):
-            response = requests.get(self.MINDAT_API_URL+ "/" + end_point + "/",
-                            params=params,
-                            headers=self._headers)
-            
-            if len(response.url) > 4097:
-                raise ValueError("Search query to big, reduce the size of the search and try again.")
-            
+        for attempt in range(4):
+
+            try:
+                response = requests.get(self.MINDAT_API_URL+ "/" + END_POINT + "/",
+                                params=params,
+                                headers=self._headers)
+                response.raise_for_status()
+                if len(response.url) > 4097:
+                    raise ValueError("Search query to big, reduce the size of the search and try again.")
+                
+            except (ConnectionError, Timeout) as net_err:
+                print(f"[Attempt {attempt + 1}] Network error: {net_err}. Retrying...")
+            except HTTPError as http_err:
+                raise RuntimeError(f"HTTP error occurred: {http_err}")
+            except RequestException as req_err:
+                raise RuntimeError(f"Unexpected request error: {req_err}")
+                
             try:
                 response_json = response.json()
                 result_data = response_json["results"]
@@ -237,10 +245,10 @@ class MindatApi:
                 result_data = response_json
                 break
             except ValueError:
-                if(params['page_size'] < 150):
+                if(params['page-size'] < 150):
                     raise ValueError(str(response.reason))
-                params['page_size'] = int(params['page_size']/2)
-                print("page size too big, reducing and trying again. New size: ", params['page_size'])
+                params['page-size'] = int(params['page-size']/2)
+                print("page size too big, reducing and trying again. New size: ", params['page-size'])
             except:
                 raise ValueError(str(response.reason))
         else:
