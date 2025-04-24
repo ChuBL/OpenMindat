@@ -1,9 +1,5 @@
 # OpenMindat: A Python Package for Geomaterial Data Analysis and Retrieval from Mindat API
 
-> [!Caution]
-> We located that some endpoints and features are currently unavailable due to the server-side notation changes, which will be fixed soon. I appreciate your patience.
-> If you wish to bypass this problem urgently, consider manually modifying the underscores in the endpoint names and parameters into hyphens.
-
 The OpenMindat Python package is designed to facilitate querying and retrieving data on minerals and geomaterials from the Mindat API. It provides classes for detailed queries based on various attributes like IMA status, keywords, and specific geomaterial properties.
 
 GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMindat)
@@ -19,7 +15,7 @@ GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMind
     - [4. Retrieve Localities](#4-retrieve-localities)
     - [5. Retrieve Type Localities for IMA-Approved Mineral Species](#5-retrieve-type-localities-for-ima-approved-mineral-species)
     - [6. Retrieve Locality Occurrences for Single Mineral Species](#6-retrieve-locality-occurrences-for-single-mineral-species)
-  - [Documentation and Relevant Links](#documentation-and-relevant-links)
+  - [Documentation and Relevant Links](#documentation-and-links)
   - [Contact Us](#contact-us)
   - [License](#license)
   - [Authors](#authors)
@@ -254,6 +250,13 @@ Ma, X., Ralph, J., Zhang, J., Que, X., Prabhu, A., Morrison, S.M., Hazen, R.M., 
 - This work is supported by NSF, Award #2126315.
 
 ## Upgrade Logs
+
+### 0.1.0
+
+**Release Date:** Apr 23, 2025
+
+- Modified some endpoint names and parameters to be more consistent with the Mindat API documentation (from underscore to hyphen).
+- Revised the downloading logic to handle large content with oversized page sizes. Users can adjust the too-large page size manually to avoid server errors.
 
 ### 0.0.9
 
