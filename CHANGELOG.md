@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- Relax Python requirement to >=3.10
+
+## [0.1.1] - 2025-06-06
+
+### Changed
+
 - Fixed a spelling error in the class name `MindatApiKeyManeger` -> `MindatApiKeyManager`.
 - `MindatApi` and `MindatApiKeyManager` now support an optional `ENDPOINT` parameter to customize the API endpoint.
 
