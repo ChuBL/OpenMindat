@@ -18,7 +18,7 @@ class LocalitiesAgeRetriever:
     Press q to quit.
     """
     
-    BASE_ENDPOINT = 'locality-age'
+    BASE_ENDPOINT = 'v1/locality-age'
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT 
@@ -211,7 +211,7 @@ class LocalitiesAgeIdRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'locality-age'
+    BASE_ENDPOINT = 'v1/locality-age'
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT

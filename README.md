@@ -21,7 +21,7 @@ GitHub Repository: [OpenMindat Python Package](https://github.com/ChuBL/OpenMind
   - [Authors](#authors)
   - [Citations](#citations)
   - [Acknowledgments](#acknowledgments)
-  - [Upgrade Logs](#upgrade-logs)
+  - [Change Logs](#change-logs)
 
 ## Get Started
 
@@ -249,70 +249,6 @@ Ma, X., Ralph, J., Zhang, J., Que, X., Prabhu, A., Morrison, S.M., Hazen, R.M., 
 
 - This work is supported by NSF, Award #2126315.
 
-## Upgrade Logs
+## Change Logs
 
-### 0.1.0
-
-**Release Date:** Apr 23, 2025
-
-- Modified some endpoint names and parameters to be more consistent with the Mindat API documentation (from underscore to hyphen).
-- Revised the downloading logic to handle large content with oversized page sizes. Users can adjust the too-large page size manually to avoid server errors.
-
-### 0.0.9
-
-**Release Date:** Jun 17, 2024
-
-- Introduced a `verbose` function to control the display of save notifications and the progress bar.
-
-> **Usage:** `.verbose(FLAG)` where `FLAG` can be:
-> 
-> - `0`: Silent mode (no notifications)
->
-> - `1`: Show save notifications only
-> 
-> - `2` (default): Show progress bar and notifications
-
-- Enhanced the download logic for handling large content with oversized page sizes.
-
-### 0.0.8
-**Released:** Jun 09, 2024
-
-- Added misspelling checks and messages for the functions in the endpoint classes. Typos in the function names will get error messages of a valid function list.
-- Revised downloading logic with retries and improved stability.
-
-### 0.0.7
-**Released:** Apr 26, 2024
-
-- The Locality country filter is fixed. The endpoint can download the data for specific countries, e.g., 'UK', 'USA', etc.
-
-### 0.0.6
-**Released:** Apr 26, 2024
-
-- Revised a neglected get function for country endpoints.
-
-### 0.0.5
-**Released:** Apr 26, 2024
-
-- The `Internal Server Error` issue in v0.0.4 is fixed from the server side.
-- The get functions are now changed to `get_dict`.
-- Added progress bars for multiple-page queries.
-- Some other minor updates.
-
-
-### 0.0.4
-**Released:** Apr 14, 2024
-
-- Tentative issue: Data queries involving multiple pages might return an `Internal Server Error` due to server-end issues. [Related GitHub issue](https://github.com/ChuBL/OpenMindat/issues/12)
-- Added support to getting list objects of obtained data in addition to saving it to local directories.
-
-### 0.0.3
-**Released:** Apr 11, 2024
-
-- Tentative issue: Data queries involving multiple pages might return an `Internal Server Error` due to server-end issues. 
-- Now supporting more Mindat endpoints. Not fully tested. Feedback is welcome.
-- Revised API key obtaining workflow.
-
-### 0.0.1
-**Released:** Dec 14, 2023
-
-- Initial release of the package.
+[View the full changelog here](https://github.com/ChuBL/OpenMindat/blob/main/CHANGELOG.md)

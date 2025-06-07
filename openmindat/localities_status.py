@@ -18,7 +18,7 @@ class LocalitiesStatusRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'locality-status' 
+    BASE_ENDPOINT = 'v1/locality-status' 
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -215,10 +215,10 @@ class LocalitiesStatusIdRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'locality-status'  
+    BASE_ENDPOINT = 'v1/locality-status'  
 
     def __init__(self):
-        self.end_point = self.BASE_ENDPOINT 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self.sub_endpoint = ''
         

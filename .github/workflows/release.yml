@@ -1,0 +1,59 @@
+name: Build, Release, and Upload Python Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4  # Updated to v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Clean previous builds
+        run: rm -rf dist .venv
+
+      - name: Sync dependencies and install project
+        run: |
+          uv sync
+          uv pip install -e .
+
+      - name: Build package
+        run: uv build
+
+      - name: Extract tag name
+        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Extract changelog for current version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          ./extract_changelog.sh "$VERSION" RELEASE_BODY.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2  # Updated to v2
+        with:
+          files: dist/*
+          name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          body_path: RELEASE_BODY.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}

@@ -18,7 +18,7 @@ class LocalitiesTypeRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'locality-type'   
+    BASE_ENDPOINT = 'v1/locality-type'   
 
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -214,7 +214,7 @@ class LocalitiesTypeIdRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'locality-type'   
+    BASE_ENDPOINT = 'v1/locality-type'   
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT

@@ -17,7 +17,7 @@ class GeomaterialSearchRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'geomaterials-search'
+    BASE_ENDPOINT = 'v1/geomaterials-search'
     
     def __init__(self):
         self._params = {}

@@ -13,7 +13,7 @@ class MineralsIMARetriever:
     Press q to quit.
     '''
 
-    BASE_ENDPOINT = 'minerals-ima'
+    BASE_ENDPOINT = 'v1/minerals-ima'
 
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -93,7 +93,7 @@ class MineralsIMARetriever:
 
         return self
     
-    def id__in(self, ID_IN_LIST):
+    def id_in(self, ID_IN_LIST):
         '''
         Set the IDs for the query.
 
@@ -105,14 +105,14 @@ class MineralsIMARetriever:
 
         Example:
             >>> mir = MineralsIMARetriever()
-            >>> mir.id__in("123,456,789")
+            >>> mir.id_in("123,456,789")
             >>> mir.saveto()
         '''
 
         ids = str(ID_IN_LIST)
 
         self._params.update({
-            'id__in': ids
+            'id_in': ids
         })
 
         return self
@@ -121,27 +121,32 @@ class MineralsIMARetriever:
         '''
             This filter is probably not working as intended. Just ignore it for now.
             Include IMA-approved names only (1) / to be determined(0)
-
+            
             Args:
-                IS_IMA (int): The IMA status to filter the query. 1 for IMA-approved names only, 0 is not clear.
-
+                IS_IMA (int, bool): The IMA status to filter the query.
+                                1/True for IMA-approved names only,
+                                0/False for to be determined.
+            
             Returns:
                 self: The MineralsIMARetriever object.
-
+            
             Example:
             >>> mir = MineralsIMARetriever()
-            >>> mir.ima(1)
+            >>> mir.ima(1)        # Using int
+            >>> mir.ima(True)     # Using bool
+            >>> mir.ima(False)    # Using bool
             >>> mir.saveto()
         '''
-
-        if int(IS_IMA) not in [0, 1]:
-            raise ValueError(f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be either 0 or 1.")
-
-        ima = int(IS_IMA)
+        
+        if IS_IMA in [0, 1, True, False]:
+            ima_value = bool(IS_IMA)
+        else:
+            raise ValueError(f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be 0, 1, True, or False.")
+        
         self._params.update({
-            'ima': ima
+            'ima': ima_value
         })
-
+        
         return self
     
     def omit(self, OMIT_FIELDS):
@@ -390,7 +395,7 @@ class MineralsIdRetriever:
         id (int): An int to store id parameter.
     """
     
-    BASE_ENDPOINT = 'minerals-ima'
+    BASE_ENDPOINT = 'v1/minerals-ima'
 
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT

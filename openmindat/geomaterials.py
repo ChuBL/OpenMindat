@@ -18,7 +18,7 @@ class GeomaterialRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'geomaterials'
+    BASE_ENDPOINT = 'v1/geomaterials'
     
     def __init__(self) -> None:
         self.verbose_flag = 2
@@ -32,7 +32,7 @@ class GeomaterialRetriever:
         self.end_point = self.BASE_ENDPOINT
         self._params.clear()
         self._params.update({'format': 'json'})
-        self.page_size(200)
+        self.page_size(1500)
 
     def bi_min(self, MIN):
         '''
@@ -573,7 +573,7 @@ class GeomaterialRetriever:
         
         return self
     
-    def id__in(self, ID_IN_STRING):
+    def id_in(self, ID_IN_STRING):
         '''
         Set the IDs for the query.
 
@@ -585,7 +585,7 @@ class GeomaterialRetriever:
 
         Example:
             >>> gr = GeomaterialRetriever()
-            >>> gr.id__in("1001,1002,1003")
+            >>> gr.id_in("1001,1002,1003")
             >>> gr.save()
 
         '''
@@ -593,36 +593,41 @@ class GeomaterialRetriever:
         ids = str(ID_IN_STRING)
 
         self._params.update({
-            'id__in': ids
+            'id_in': ids
         })
 
         return self
     
     def ima(self, IS_IMA):
         '''
-        Include IMA-approved names only (true) / exclude IMA-approved (false)
-
-        Args:
-            IS_IMA (bool): The IMA status to filter the query.
-
-        Returns:
-            self: The GeomaterialRetriever object.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.ima(True)
-            >>> gr.save()
-
+            This filter is probably not working as intended. Just ignore it for now.
+            Include IMA-approved names only (1) / to be determined(0)
+            
+            Args:
+                IS_IMA (int, bool): The IMA status to filter the query.
+                                1/True for IMA-approved names only,
+                                0/False for to be determined.
+            
+            Returns:
+                self: The MineralsIMARetriever object.
+            
+            Example:
+            >>> mir = MineralsIMARetriever()
+            >>> mir.ima(1)        # Using int
+            >>> mir.ima(True)     # Using bool
+            >>> mir.ima(False)    # Using bool
+            >>> mir.saveto()
         '''
-
-        if not isinstance(IS_IMA, bool):
-            raise ValueError(f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be a boolean.")
-
-        ima = IS_IMA
+        
+        if IS_IMA in [0, 1, True, False]:
+            ima_value = bool(IS_IMA)
+        else:
+            raise ValueError(f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be 0, 1, True, or False.")
+        
         self._params.update({
-            'ima': ima
+            'ima': ima_value
         })
-
+        
         return self
         
     def ima_notes(self, IMA_NOTES):
@@ -1322,7 +1327,7 @@ class GeomaterialRetriever:
         '''
        
         params = self._params
-        end_point = 'geomaterials'
+        end_point = self.end_point
         outdir = OUTDIR
         file_name = FILE_NAME
         verbose = self.verbose_flag
@@ -1410,7 +1415,7 @@ class GeomaterialIdRetriever:
         id (int): An int to store id parameter.
     """
 
-    BASE_ENDPOINT = 'geomaterials' 
+    BASE_ENDPOINT = 'v1/geomaterials' 
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -1645,7 +1650,7 @@ class GeomaterialDictRetriever:
         id (int): An int to store id parameter.
     """ 
 
-    BASE_ENDPOINT = 'geomaterials/dict'
+    BASE_ENDPOINT = 'v1/geomaterials/dict'
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -1802,4 +1807,4 @@ class GeomaterialDictRetriever:
 if __name__ == '__main__':
     gr = GeomaterialRetriever()
     # gr.cleavagetype('Distinct/Good').colour('blue').crystal_system(["Amorphous", "Hexagonal"]).save()
-    gr.id__in("3337, 114").save()
+    gr.id_in("3337, 114").save()

@@ -1,6 +1,0 @@
-include README.md
-exclude cached_api_key
-recursive-exclude mindat_data *
-recursive-exclude test *
-exclude .api_key
-exclude .apikey.yaml

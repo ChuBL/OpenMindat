@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openmindat"
+version = "0.1.1"
+description = "An alpha version for OpenMindat package"
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [
+  {name = "Jiyin Zhang", email = "jiyinz@uidaho.edu"}
+]
+keywords = ["mindat", "openmindat", "mineral", "data", "python", "api"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Scientific/Engineering :: Information Analysis"
+]
+dependencies = [
+  "requests",
+  "PyYAML",
+  "tqdm"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["openmindat"]

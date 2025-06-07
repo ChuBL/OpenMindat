@@ -21,8 +21,8 @@ class DanaRetriever:
 
     Press q to quit.
     """
-
-    BASE_ENDPOINT = 'dana-8'
+    
+    BASE_ENDPOINT = 'v1/dana-8'
 
     def __init__(self):
         self.sub_endpoint = ''

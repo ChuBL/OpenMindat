@@ -21,7 +21,7 @@ class LocalitiesRetriever:
         elements_inc(ELEMENTS_INC): Includes certain chemical elements in the query.
         expand(EXPAND_FIELDS): Expands the query to include additional fields.
         fields(FIELDS): Specifies the fields to be retrieved in the query.
-        id__in(ID_IN_STR): Sets specific IDs for the query.
+        id_in(ID_IN_STR): Sets specific IDs for the query.
         omit(OMIT_FIELDS): Omits certain fields from the query results.
         page_size(PAGE_SIZE): Sets the number of results per page.
         txt(TXT_STR): Sets a locality name filter for the query.
@@ -32,11 +32,11 @@ class LocalitiesRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'localities'
+    BASE_ENDPOINT = 'v1/localities'
 
     def __init__(self):
         self._params = {}
-        self.end_point = self.BASE_ENDPOINT 
+        self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         self._init_params()
 
@@ -232,7 +232,7 @@ class LocalitiesRetriever:
 
         return self
     
-    def id__in(self, ID_IN_STR):
+    def id_in(self, ID_IN_STR):
         '''
         Set the IDs for the query.
 
@@ -244,14 +244,14 @@ class LocalitiesRetriever:
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> lr.id__in("123,456,789")
+            >>> lr.id_in("123,456,789")
             >>> lr.saveto()
         '''
 
         ids = str(ID_IN_STR)
 
         self._params.update({
-            'id__in': ids
+            'id_in': ids
         })
 
         return self
@@ -480,7 +480,7 @@ class LocalitiesIdRetriever:
         id (int): An int to store id parameter.
     """
     
-    BASE_ENDPOINT = 'localities'
+    BASE_ENDPOINT = 'v1/localities'
 
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT

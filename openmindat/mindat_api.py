@@ -29,9 +29,13 @@ if in_notebook():
 else:
     from tqdm import tqdm
 
-class MindatApiKeyManeger:
-    def __init__(self):
-        pass
+class MindatApiKeyManager:
+    
+    MINDAT_API_URL = "https://api.mindat.org"
+    DEFAULT_ENDPOINT = "v1/geomaterials"
+    
+    def __init__(self, ENDPOINT: str = None):
+        self.endpoint = ENDPOINT if ENDPOINT else self.DEFAULT_ENDPOINT
 
     def inspect_stored_api_key(self):
         try:
@@ -114,32 +118,36 @@ class MindatApiKeyManeger:
             pass
         return True
 
-    def get_api_key_status(self, API_KEY):
-        # test if api key is valid
-        test_api_key = API_KEY
-        MINDAT_API_URL = "https://api.mindat.org"
-        test_headers = {'Authorization': 'Token '+ test_api_key}
-        test_params = {'format': 'json'}
-        test_response = requests.get(MINDAT_API_URL+"/geomaterials/",
-                                params=test_params,
-                                headers=test_headers)
-        
-        return test_response.status_code
+    def get_api_key_status(self, api_key: str) -> int:
+        try:
+            response = requests.get(
+                f"{self.MINDAT_API_URL}/{self.endpoint}/",
+                headers={'Authorization': f'Token {api_key}'},
+                params={'format': 'json'},
+                timeout=5
+            )
+            return response.status_code
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
+            return -1 
 
 
 class MindatApi:
     '''The main class for openmindat API'''
-    def __init__(self):
+    def __init__(self, ENDPOINT: str = None):
         self._api_key = None
+        self.endpoint = ENDPOINT or ""
         self._prepare_api_key()
-
+        
         self.MINDAT_API_URL = "https://api.mindat.org"
         self._headers = {'Authorization': 'Token '+ self._api_key}
         self.params = {'format': 'json'}
         self.data_dir = './mindat_data/'
+        
+        
 
     def _prepare_api_key(self):
-        mam = MindatApiKeyManeger()
+        mam = MindatApiKeyManager(self.endpoint)
 
         if False == mam.inspect_stored_api_key():
             mam.get_api_key_input()

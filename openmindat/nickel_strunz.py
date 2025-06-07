@@ -23,7 +23,7 @@ class StrunzRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'nickel-strunz-10'
+    BASE_ENDPOINT = 'v1/nickel-strunz-10'
     
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
