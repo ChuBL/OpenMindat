@@ -37,10 +37,12 @@ jobs:
       - name: Extract tag name
         run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Extract changelog for current version
+      - name: Create release body
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
-          ./extract_changelog.sh "$VERSION" RELEASE_BODY.md
+          echo "Release $VERSION" > RELEASE_BODY.md
+          echo "" >> RELEASE_BODY.md
+          echo "Automated release from tag ${{ env.TAG_NAME }}" >> RELEASE_BODY.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2  # Updated to v2
