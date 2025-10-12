@@ -179,7 +179,7 @@ gr.saveto("./mindat_data")
 
 - [Get your Mindat API Key](https://www.mindat.org/a/how_to_get_my_mindat_api_key)
 - [GitHub Wiki](https://github.com/ChuBL/OpenMindat/wiki)
-- [API Documentation](https://api.mindat.org/schema/redoc)
+- [API Documentation](https://api.mindat.org/v1/schema/redoc/)
 - [Geomaterial Fields Definition](https://github.com/smrgeoinfo/How-to-Use-Mindat-API/blob/main/geomaterialfields.csv)
 - [R package for OpenMindat](https://github.com/quexiang/OpenMindat)
 
@@ -253,5 +253,6 @@ Ma, X., Ralph, J., Zhang, J., Que, X., Prabhu, A., Morrison, S.M., Hazen, R.M., 
 - This work is supported by NSF, Award #2126315.
 
 ## Change Logs
+
 
 [View the full changelog here](https://github.com/ChuBL/OpenMindat/blob/main/CHANGELOG.md)
