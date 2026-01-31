@@ -21,10 +21,10 @@ Attributes:
     LocObjectRetriever (class): A class for querying locality object data based on id.
     CountriesListRetriever (class): A class for querying country data from OpenMindat.
     CountriesIdRetriever (class): A class for querying country data based on id.
-    DanaRetriever (class): A class for querying dana-8 group and subgroup data. 
+    DanaRetriever (class): A class for querying dana-8 group and subgroup data.
     StrunzRetriever (class): A class for querying different types of nickel-strunz-10 data.
     PhotoCountRetriever(class): A class to facilitate the retrieval of photo count data from the Mindat API.
-    
+
 
 Todo:
     * Expand the module with additional classes and functions as needed.
@@ -52,9 +52,10 @@ Examples:
         >>> gr.density_min(2.0).density_max(5.0).crystal_system("Hexagonal")
         >>> gr.elements_exc("Au,Ag")
         >>> gr.saveto("/path/to/geomaterials_data")
-        
+
 Press q to quit.
 """
+
 from .mindat_api import MindatApi, MindatApiKeyManager
 from .minerals_ima import MineralsIMARetriever
 from .minerals_ima import MineralsIdRetriever
@@ -70,6 +71,7 @@ from .localities_status import LocalitiesStatusRetriever
 from .localities_status import LocalitiesStatusIdRetriever
 from .localities_type import LocalitiesTypeRetriever
 from .localities_type import LocalitiesTypeIdRetriever
+
 # from .locgeoregion2 import GeoRegionRetriever
 # from .locobject import LocobjectRetriever
 # from .countries import CountriesListRetriever
@@ -81,7 +83,7 @@ from .nickel_strunz import StrunzRetriever
 if __name__ == "__main__":
     # --------------------------------------------
     # Use case 1: Search for a geomaterial by name
-    
+
     # Check the docstring for GeomaterialSearchRetriever for more information
     help(MineralsIMARetriever)
 
@@ -125,7 +127,8 @@ if __name__ == "__main__":
     gr.crystal_system("Hexagonal")
 
     # Optionally exclude certain elements
-    gr.elements_exc("Au,Ag")
+    gr.el_exc("Au,Ag")
 
     # Execute the query and save the results to a specified directory
     gr.saveto("/path/to/geomaterials_data")
+

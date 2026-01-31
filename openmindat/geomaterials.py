@@ -1,14 +1,15 @@
 from . import mindat_api
 from datetime import datetime
 
+
 class GeomaterialRetriever:
     """
     This module provides the GeomaterialRetriever class for retrieving geomaterial data from the Mindat API. This class offers various methods to specify query parameters for filtering and retrieving detailed information about geomaterials, such as minerals and rocks.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials
 
-    The class allows for setting parameters like birifrigence, cleavage type, color, crystal system, density, diaphaneity, chemical elements inclusion or exclusion, entry types, optical properties, and more. It provides flexibility through method chaining and supports saving the query results either to a specified directory or to the current directory.
+    The class allows for setting parameters like birifrigence, cleavage type, color, crystal system, density, diapheny, chemical elements inclusion or exclusion, entry types, optical properties, and more. It provides flexibility through method chaining and supports saving the query results either to a specified directory or to the current directory.
 
-    
+
 
     Usage:
         >>> gr = GeomaterialRetriever()
@@ -18,24 +19,24 @@ class GeomaterialRetriever:
     Press q to quit.
     """
 
-    BASE_ENDPOINT = 'v1/geomaterials'
-    
+    BASE_ENDPOINT = "v1/geomaterials"
+
     def __init__(self) -> None:
         self.verbose_flag = 2
         self.end_point = self.BASE_ENDPOINT
         self._params = {}
         self._init_params()
-         # Flag to indicate if the geomaterials have been retrieved
+        # Flag to indicate if the geomaterials have been retrieved
 
     def _init_params(self):
         self.verbose_flag = 2
         self.end_point = self.BASE_ENDPOINT
         self._params.clear()
-        self._params.update({'format': 'json'})
+        self._params.update({"format": "json"})
         self.page_size(1500)
 
     def bi_min(self, MIN):
-        '''
+        """
         Sets the minimum value of birifrigence for filtering minerals.
 
         Args:
@@ -48,16 +49,14 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.bi_min("0.01")
             >>> gr.save()
-        '''
+        """
 
-        self._params.update({
-            'bi_min': str(MIN)
-        })
+        self._params.update({"bi_min": str(MIN)})
 
         return self
 
     def bi_max(self, MAX):
-        '''
+        """
         Sets the maximum value of birifrigence for filtering minerals.
 
         Args:
@@ -70,16 +69,14 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.bi_max("0.05")
             >>> gr.save()
-        '''
+        """
 
-        self._params.update({
-            'bi_max': str(MAX)
-        })
+        self._params.update({"bi_max": str(MAX)})
 
         return self
-    
+
     def cleavagetype(self, CLEAVAGETYPE):
-        '''
+        """
         Sets the cleavage type for filtering minerals.
 
         Args:
@@ -100,32 +97,39 @@ class GeomaterialRetriever:
             >>> gr.cleavagetype("Perfect")
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(CLEAVAGETYPE, str):
-            cleavage_types = [CLEAVAGETYPE]
+            cleavagetype = [CLEAVAGETYPE]
         else:
-            cleavage_types = CLEAVAGETYPE
-        
-        if cleavage_types is not None:
-            valid_cleavage_types = ["Distinct/Good", "Imperfect/Fair", "None Observed", "Perfect", "Poor/Indistinct", "Very Good"]
-            invalid_cleavage_types = [ct for ct in cleavage_types if ct not in valid_cleavage_types]
-            
+            cleavagetype = CLEAVAGETYPE
+
+        if cleavagetype is not None:
+            valid_cleavage_types = [
+                "Distinct/Good",
+                "Imperfect/Fair",
+                "None Observed",
+                "Perfect",
+                "Poor/Indistinct",
+                "Very Good",
+            ]
+            invalid_cleavage_types = [
+                ct for ct in cleavagetype if ct not in valid_cleavage_types
+            ]
+
             if invalid_cleavage_types:
-                print(f"Possible Invalid cleavage types: {', '.join(invalid_cleavage_types)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
-                
-            self._params.update({
-                'cleavage_type': cleavage_types
-            })
+                print(
+                    f"Possible Invalid cleavage types: {', '.join(invalid_cleavage_types)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                )
+
+            self._params.update({"cleavagetype": cleavagetype})
         else:
-            self._params.update({
-                'cleavage_type': None
-            })
-        
+            self._params.update({"cleavagetype": None})
+
         return self
-    
+
     def colour(self, COLOUR):
-        '''
+        """
         Sets the colour for filtering minerals.
 
         Args:
@@ -140,22 +144,18 @@ class GeomaterialRetriever:
             >>> gr.colour("green")
             >>> gr.save()
 
-        '''
-        
+        """
+
         colour = COLOUR
         if colour is not None:
-            self._params.update({
-                'colour': colour
-            })
+            self._params.update({"colour": colour})
         else:
-            self._params.update({
-                'colour': None
-            })
-        
+            self._params.update({"colour": None})
+
         return self
-    
+
     def color(self, COLOR):
-        '''
+        """
         Sets the color for filtering minerals.
 
         Args:
@@ -170,12 +170,12 @@ class GeomaterialRetriever:
             >>> gr.color("green")
             >>> gr.save()
 
-        '''
-        
+        """
+
         return self.colour(COLOR)
-    
+
     def crystal_system(self, CRYSTAL_SYSTEM):
-        '''
+        """
         Sets the crystal system for filtering minerals.
         Crystal system (csystem): multiple choice (OR)
 
@@ -191,37 +191,47 @@ class GeomaterialRetriever:
             >>> gr.crystal_system("Hexagonal")
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(CRYSTAL_SYSTEM, str):
             crystal_systems = [CRYSTAL_SYSTEM]
         else:
             crystal_systems = CRYSTAL_SYSTEM
-        
+
         if crystal_systems is not None:
-            valid_crystal_systems = ["Amorphous", "Hexagonal", "Icosahedral", "Isometric", "Monoclinic", "Orthorhombic", "Tetragonal", "Triclinic", "Trigonal"]
-            invalid_crystal_systems = [cs for cs in crystal_systems if cs not in valid_crystal_systems]
-            
+            valid_crystal_systems = [
+                "Amorphous",
+                "Hexagonal",
+                "Icosahedral",
+                "Isometric",
+                "Monoclinic",
+                "Orthorhombic",
+                "Tetragonal",
+                "Triclinic",
+                "Trigonal",
+            ]
+            invalid_crystal_systems = [
+                cs for cs in crystal_systems if cs not in valid_crystal_systems
+            ]
+
             if invalid_crystal_systems:
-                 print(f"Possible Invalid crystal system(s) found: {', '.join(invalid_crystal_systems)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
-            self._params.update({
-                'crystal_system': crystal_systems
-            })
+                print(
+                    f"Possible Invalid crystal system(s) found: {', '.join(invalid_crystal_systems)}. You can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                )
+            self._params.update({"crystal_system": crystal_systems})
         else:
-            self._params.update({
-                'crystal_system': None
-            })
-        
+            self._params.update({"crystal_system": None})
+
         return self
-    
+
     def density_max(self, MAX):
-        '''
+        """
         Density measured, to (dmeas<=).
         Get all minerals with density less than or equal to MAX.
-        
+
         Args:
             MAX (float): The maximum value of density.
-            
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -230,23 +240,21 @@ class GeomaterialRetriever:
             >>> gr.density_max(5.0)
             >>> gr.save()
 
-        '''
+        """
 
         density_max = float(MAX)
-        self._params.update({
-            'density_max': density_max
-        })
-        
+        self._params.update({"density_max": density_max})
+
         return self
-    
+
     def density_min(self, MIN):
-        '''
+        """
         Density measured, from (dmeas2>=).
         Get all minerals with density greater than or equal to MIN.
-        
+
         Args:
             MIN (float): The minimum value of density.
-            
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -255,51 +263,59 @@ class GeomaterialRetriever:
             >>> gr.density_min(2.0)
             >>> gr.save()
 
-        '''
+        """
 
         density_min = float(MIN)
-        self._params.update({
-            'density_min': density_min
-        })
-        
+        self._params.update({"density_min": density_min})
+
         return self
-    
-    def diaphaneity(self, DIAPHANEITY):
-        '''
-        Diaphaneity (transparency): multiple choice (AND)
+
+    # --- Diapheny (Renamed from Diaphaneity) ---
+    def diapheny(self, DIAPHENY):
+        """
+        Diapheny (transparency): multiple choice (AND)
 
         Args:
-            DIAPHANEITY (str or list[str]): The diaphaneity options. Can be a string or a list of strings representing the diaphaneity options. Valid options are "Opaque", "Translucent", and "Transparent".
+            DIAPHENY (str or list[str]): The diapheny options. Can be a string or a list of strings representing the diapheny options. Valid options are "Opaque", "Translucent", and "Transparent".
 
         Returns:
             self: The GeomaterialRetriever object.
-        
+
         Example:
             >>> gr = GeomaterialRetriever()
-            >>> gr.diaphaneity("Transparent")
+            >>> gr.diapheny("Transparent")
             >>> gr.save()
 
-        '''
+        """
 
-        if isinstance(DIAPHANEITY, str):
-            diaphaneity_options = [DIAPHANEITY]
+        if isinstance(DIAPHENY, str):
+            diapheny_options = [DIAPHENY]
         else:
-            diaphaneity_options = DIAPHANEITY
+            diapheny_options = DIAPHENY
 
         valid_options = ["Opaque", "Translucent", "Transparent"]
-        invalid_options = [option for option in diaphaneity_options if option not in valid_options]
+        invalid_options = [
+            option for option in diapheny_options if option not in valid_options
+        ]
 
         if invalid_options:
-            print(f"Possible Invalid diaphaneity options: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Possible Invalid diapheny options: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-        self._params.update({
-            'diaphaneity': diaphaneity_options
-        })
+        self._params.update({"diapheny": diapheny_options})
 
         return self
-    
-    def elements_exc(self, ELEMENTS_EXC):
-        '''
+
+    def diaphaneity(self, diapheny_options):
+        """
+        Sets the diaphaneity.
+        (Maintained for backward compatibility).
+        """
+        return self.diapheny(diapheny_options)
+
+    def el_exc(self, ELEMENTS_EXC):
+        """
         Exclude chemical elements.
 
         Args:
@@ -307,23 +323,30 @@ class GeomaterialRetriever:
 
         Returns:
             self: The GeomaterialRetriever object.
-        
+
         Example:
             >>> gr = GeomaterialRetriever()
             >>> gr.elements_exc("Au,Ag")
             >>> gr.save()
 
-        '''
+        """
 
         elements_exc = ELEMENTS_EXC
-        self._params.update({
-            'elements_exc': elements_exc
-        })
+        self._params.update({"el_exc": elements_exc})
 
         return self
-    
-    def elements_inc(self, ELEMENTS_INC):
-        '''
+
+    # --- Old Style Method (Alias) ---
+    def elements_exc(self, elements_string):
+        """
+        Exclude minerals containing these elements.
+        (Maintained for backward compatibility).
+        """
+        # We simply route this to the new logic
+        return self.el_exc(elements_string)
+
+    def el_inc(self, ELEMENTS_INC):
+        """
         Include chemical elements.
 
         Args:
@@ -331,23 +354,42 @@ class GeomaterialRetriever:
 
         Returns:
             self: The GeomaterialRetriever object.
-        
+
         Example:
             >>> gr = GeomaterialRetriever()
             >>> gr.elements_inc("Fe,Cu")
             >>> gr.save()
 
-        '''
+        """
 
         elements_inc = ELEMENTS_INC
-        self._params.update({
-            'elements_inc': elements_inc
-        })
+        self._params.update({"el_inc": elements_inc})
 
         return self
-    
+
+    # --- Old Style Method (Alias) ---
+    def elements_inc(self, elements_string):
+        """
+        Include minerals containing these elements.
+        (Maintained for backward compatibility).
+        """
+        return self.el_inc(elements_string)
+
+    def el_essential(self, is_essential):
+        """
+        Chemsearch: include essential elements only?
+
+        Args:
+            is_essential (bool): If True, restricts the search to essential elements only.
+
+        Returns:
+            self: The GeomaterialRetriever object.
+        """
+        self._params.update({"el_essential": bool(is_essential)})
+        return self
+
     def entrytype(self, ENTRYTYPE):
-        '''
+        """
         Set the entry type for the query.
 
         Args:
@@ -370,24 +412,36 @@ class GeomaterialRetriever:
             >>> gr.entrytype(0)  # 0 for mineral
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(ENTRYTYPE, int):
             entry_type = [ENTRYTYPE]
-        elif isinstance(ENTRYTYPE, list) and all(isinstance(item, int) for item in ENTRYTYPE):
+        elif isinstance(ENTRYTYPE, list) and all(
+            isinstance(item, int) for item in ENTRYTYPE
+        ):
             entry_type = ENTRYTYPE
         else:
-            valid_options = ["0 - mineral", "1 - synonym", "2 - variety", "3 - mixture", "4 - series", "5 - grouplist", "6 - polytype", "7 - rock", "8 - commodity"]
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            valid_options = [
+                "0 - mineral",
+                "1 - synonym",
+                "2 - variety",
+                "3 - mixture",
+                "4 - series",
+                "5 - grouplist",
+                "6 - polytype",
+                "7 - rock",
+                "8 - commodity",
+            ]
+            raise ValueError(
+                f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-        self._params.update({
-            'entry_type': entry_type
-        })
+        self._params.update({"entrytype": entry_type})
 
         return self
-    
+
     def expand(self, EXPAND_FIELDS):
-        '''
+        """
         Expand the query to include related minerals and select specific fields to expand.
 
         Args:
@@ -402,39 +456,51 @@ class GeomaterialRetriever:
 
         Returns:
             self: The GeomaterialRetriever object.
-        
+
         Example:
             >>> gr = GeomaterialRetriever()
             >>> gr.expand("description")
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(EXPAND_FIELDS, str):
             expand_fields = [EXPAND_FIELDS]
         elif isinstance(EXPAND_FIELDS, list):
             expand_fields = EXPAND_FIELDS
         else:
-            raise ValueError("Invalid EXPAND_FIELDS: must be a string or a list of strings")
+            raise ValueError(
+                "Invalid EXPAND_FIELDS: must be a string or a list of strings"
+            )
 
-        valid_options = ["description", "type_localities", "locality", "relations", "minstats", "~all", "*"]
-        invalid_options = [field for field in expand_fields if field not in valid_options]
+        valid_options = [
+            "description",
+            "type_localities",
+            "locality",
+            "relations",
+            "minstats",
+            "~all",
+            "*",
+        ]
+        invalid_options = [
+            field for field in expand_fields if field not in valid_options
+        ]
 
-        #Changes * to "*" and from a list to a string since this is what the param will read without failing.
-        expand_fields = [w.replace('*', '"*"') for w in expand_fields]
-        expand_fields_string = ','.join(expand_fields)
+        # Changes * to "*" and from a list to a string since this is what the param will read without failing.
+        expand_fields = [w.replace("*", '"*"') for w in expand_fields]
+        expand_fields_string = ",".join(expand_fields)
 
         if invalid_options:
-            print(f"Potentially Invalid FIELDS: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list\nExample: \"['description', 'relations']\"")
+            print(
+                f"Potentially Invalid FIELDS: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list\nExample: \"['description', 'relations']\""
+            )
 
-        self._params.update({
-            'expand': expand_fields_string
-        })
+        self._params.update({"expand": expand_fields_string})
 
         return self
 
     def fields(self, FIELDS):
-        '''
+        """
         Specify the selected fields to be retrieved for each geomaterial.
         Please check the API documentation for the list of available fields.
         https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list
@@ -452,16 +518,14 @@ class GeomaterialRetriever:
             >>> gr.fields("id,name,ima_formula")
             >>> gr.save()
 
-        '''
+        """
 
-        self._params.update({
-            'fields': FIELDS
-        })
+        self._params.update({"fields": FIELDS})
 
         return self
-    
+
     def fracturetype(self, FRACTURETYPE):
-        '''
+        """
         Fracture type: multiple choice (AND)
 
         Args:
@@ -475,7 +539,7 @@ class GeomaterialRetriever:
             >>> gr.fracturetype("Conchoidal")
             >>> gr.save()
 
-        '''
+        """
 
         if FRACTURETYPE is None:
             fracture_types = None
@@ -484,20 +548,32 @@ class GeomaterialRetriever:
         else:
             fracture_types = FRACTURETYPE
 
-        valid_options = ["Conchoidal", "Fibrous", "Hackly", "Irregular/Uneven", "Micaceous", "None observed", "Splintery", "Step-Like", "Sub-Conchoidal"]
-        invalid_options = [option for option in fracture_types if option not in valid_options]
+        valid_options = [
+            "Conchoidal",
+            "Fibrous",
+            "Hackly",
+            "Irregular/Uneven",
+            "Micaceous",
+            "None observed",
+            "Splintery",
+            "Step-Like",
+            "Sub-Conchoidal",
+        ]
+        invalid_options = [
+            option for option in fracture_types if option not in valid_options
+        ]
 
         if invalid_options:
-            print(f"Invalid fracture types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Invalid fracture types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-        self._params.update({
-            'fracture_type': fracture_types
-        })
+        self._params.update({"fracturetype": fracture_types})
 
         return self
-    
+
     def groupid(self, GROUPID):
-        '''
+        """
         Set the group ID for the query.
 
         Args:
@@ -511,26 +587,24 @@ class GeomaterialRetriever:
             >>> gr.groupid(12)
             >>> gr.save()
 
-        '''
+        """
 
         if not isinstance(GROUPID, int):
             raise ValueError(f"Invalid GROUPID: {GROUPID}\nGROUPID must be an integer.")
 
         groupid = GROUPID
-        self._params.update({
-            'groupid': groupid
-        })
+        self._params.update({"groupid": groupid})
 
         return self
-    
+
     def hardness_max(self, MAX):
-        '''
+        """
         Hardness.
         get all minerals with hardness less than MAX
-        
+
         Args:
             MAX (float): The maximum value of hardness.
-        
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -539,23 +613,21 @@ class GeomaterialRetriever:
             >>> gr.hardness_max(7.0)
             >>> gr.save()
 
-        '''
+        """
 
         hardness_max = float(MAX)
-        self._params.update({
-            'hardness_max': hardness_max
-        })
-        
+        self._params.update({"hardness_max": hardness_max})
+
         return self
-    
+
     def hardness_min(self, MIN):
-        '''
+        """
         Hardness.
         get all minerals with hardness greater than MIN
-        
+
         Args:
             MIN (float): The minimum value of hardness.
-        
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -564,17 +636,15 @@ class GeomaterialRetriever:
             >>> gr.hardness_min(3.0)
             >>> gr.save()
 
-        '''
+        """
 
         hardness_min = float(MIN)
-        self._params.update({
-            'hardness_min': hardness_min
-        })
-        
+        self._params.update({"hardness_min": hardness_min})
+
         return self
-    
+
     def id_in(self, ID_IN_STRING):
-        '''
+        """
         Set the IDs for the query.
 
         Args:
@@ -588,50 +658,84 @@ class GeomaterialRetriever:
             >>> gr.id_in("1001,1002,1003")
             >>> gr.save()
 
-        '''
+        """
 
         ids = str(ID_IN_STRING)
 
-        self._params.update({
-            'id_in': ids
-        })
+        self._params.update({"id_in": ids})
 
         return self
-    
+
+    def id_min(self, min_id):
+        """
+        Set the minimum ID for the query range.
+
+        Args:
+            min_id (int): The starting ID of the range.
+
+        Returns:
+            self: The GeomaterialRetriever object.
+        """
+        try:
+            val = int(min_id)
+        except ValueError:
+            raise ValueError("id_min must be an integer.")
+
+        self._params.update({"id_min": val})
+        return self
+
+    def id_max(self, max_id):
+        """
+        Set the maximum ID for the query range.
+
+        Args:
+            max_id (int): The ending ID of the range.
+
+        Returns:
+            self: The GeomaterialRetriever object.
+        """
+        try:
+            val = int(max_id)
+        except ValueError:
+            raise ValueError("id_max must be an integer.")
+
+        self._params.update({"id_max": val})
+        return self
+
     def ima(self, IS_IMA):
-        '''
-            This filter is probably not working as intended. Just ignore it for now.
-            Include IMA-approved names only (1) / to be determined(0)
-            
-            Args:
-                IS_IMA (int, bool): The IMA status to filter the query.
-                                1/True for IMA-approved names only,
-                                0/False for to be determined.
-            
-            Returns:
-                self: The MineralsIMARetriever object.
-            
-            Example:
-            >>> mir = MineralsIMARetriever()
-            >>> mir.ima(1)        # Using int
-            >>> mir.ima(True)     # Using bool
-            >>> mir.ima(False)    # Using bool
-            >>> mir.saveto()
-        '''
-        
+        """
+        This filter is probably not working as intended. Just ignore it for now.
+        Include IMA-approved names only (1) / to be determined(0)
+
+        Args:
+            IS_IMA (int, bool): The IMA status to filter the query.
+                            1/True for IMA-approved names only,
+                            0/False for to be determined.
+
+        Returns:
+            self: The MineralsIMARetriever object.
+
+        Example:
+        >>> mir = MineralsIMARetriever()
+        >>> mir.ima(1)        # Using int
+        >>> mir.ima(True)     # Using bool
+        >>> mir.ima(False)    # Using bool
+        >>> mir.saveto()
+        """
+
         if IS_IMA in [0, 1, True, False]:
             ima_value = bool(IS_IMA)
         else:
-            raise ValueError(f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be 0, 1, True, or False.")
-        
-        self._params.update({
-            'ima': ima_value
-        })
-        
+            raise ValueError(
+                f"Invalid IS_IMA: {IS_IMA}\nIS_IMA must be 0, 1, True, or False."
+            )
+
+        self._params.update({"ima": ima_value})
+
         return self
-        
+
     def ima_notes(self, IMA_NOTES):
-        '''
+        """
         Set the IMA notes for the query.
 
         Args:
@@ -645,30 +749,45 @@ class GeomaterialRetriever:
             >>> gr.ima_notes(["PENDING_APPROVAL", "REJECTED"])
             >>> gr.save()
 
-        '''
+        """
         if IMA_NOTES is None:
             ima_notes = None
         elif isinstance(IMA_NOTES, str):
             ima_notes = [IMA_NOTES]
         elif not isinstance(IMA_NOTES, list):
-            raise ValueError(f"Invalid IMA_NOTES: {IMA_NOTES}\nIMA_NOTES must be a list of strings.")
+            raise ValueError(
+                f"Invalid IMA_NOTES: {IMA_NOTES}\nIMA_NOTES must be a list of strings."
+            )
         else:
             ima_notes = IMA_NOTES
-            
-        valid_options = ["GROUP", "INTERMEDIATE", "NAMED_AMPHIBOLE", "PENDING_APPROVAL", "PUBLISHED_WITHOUT_APPROVAL", "REDEFINED", "REJECTED", "RENAMED", "UNNAMED_INVALID", "UNNAMED_VALID"]
-        invalid_options = [option for option in ima_notes if option not in valid_options]
+
+        valid_options = [
+            "GROUP",
+            "INTERMEDIATE",
+            "NAMED_AMPHIBOLE",
+            "PENDING_APPROVAL",
+            "PUBLISHED_WITHOUT_APPROVAL",
+            "REDEFINED",
+            "REJECTED",
+            "RENAMED",
+            "UNNAMED_INVALID",
+            "UNNAMED_VALID",
+        ]
+        invalid_options = [
+            option for option in ima_notes if option not in valid_options
+        ]
 
         if invalid_options:
-            print(f"Possible Invalid note: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Possible Invalid note: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-        self._params.update({
-            'ima_notes': ima_notes
-        })
+        self._params.update({"ima_notes": ima_notes})
 
         return self
-    
+
     def ima_status(self, IMA_STATUS):
-        '''
+        """
         Set the IMA status for the query.
 
         Args:
@@ -682,31 +801,40 @@ class GeomaterialRetriever:
             >>> gr.ima_status(["APPROVED", "QUESTIONABLE"])
             >>> gr.save()
 
-        '''
+        """
         if IMA_STATUS is None:
             ima_status = None
         elif isinstance(IMA_STATUS, str):
             ima_status = [IMA_STATUS]
         elif not isinstance(IMA_STATUS, list):
-            raise ValueError(f"Invalid IMA_STATUS: {IMA_STATUS}\nIMA_STATUS must be a list of strings.")
+            raise ValueError(
+                f"Invalid IMA_STATUS: {IMA_STATUS}\nIMA_STATUS must be a list of strings."
+            )
         else:
             ima_status = IMA_STATUS
-            
-        valid_options = ["APPROVED", "DISCREDITED", "GRANDFATHERED", "PENDING_PUBLICATION", "QUESTIONABLE"]
-        invalid_options = [option for option in ima_status if option not in valid_options]
+
+        valid_options = [
+            "APPROVED",
+            "DISCREDITED",
+            "GRANDFATHERED",
+            "PENDING_PUBLICATION",
+            "QUESTIONABLE",
+        ]
+        invalid_options = [
+            option for option in ima_status if option not in valid_options
+        ]
 
         if invalid_options:
-            print(f"Invalid status: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Invalid status: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-
-        self._params.update({
-            'ima_status': ima_status
-        })
+        self._params.update({"ima_status": ima_status})
 
         return self
-    
+
     def lustretype(self, LUSTRETYPE):
-        '''
+        """
         Set the lustre type for the query.
 
         Args:
@@ -720,30 +848,48 @@ class GeomaterialRetriever:
             >>> gr.lustretype("Metallic")
             >>> gr.save()
 
-        '''
+        """
         if LUSTRETYPE is None:
             lustre_type = None
         elif isinstance(LUSTRETYPE, str):
             lustre_type = [LUSTRETYPE]
         elif not isinstance(LUSTRETYPE, list):
-            raise ValueError(f"Invalid LUSTRETYPE: {LUSTRETYPE}\nLUSTRETYPE must be a list of strings.")
+            raise ValueError(
+                f"Invalid LUSTRETYPE: {LUSTRETYPE}\nLUSTRETYPE must be a list of strings."
+            )
         else:
             lustre_type = LUSTRETYPE
 
-        self._params.update({
-            'lustretype': lustre_type
-        })
+        self._params.update({"lustretype": lustre_type})
 
-        valid_options = ["Adamantine", "Dull", "Earthy", "Greasy", "Metallic", "Pearly", "Resinous", "Silky", "Sub-Adamantine", "Sub-Metallic", "Sub-Vitreous", "Vitreous", "Waxy"]
-        invalid_options = [option for option in lustre_type if option not in valid_options]
+        valid_options = [
+            "Adamantine",
+            "Dull",
+            "Earthy",
+            "Greasy",
+            "Metallic",
+            "Pearly",
+            "Resinous",
+            "Silky",
+            "Sub-Adamantine",
+            "Sub-Metallic",
+            "Sub-Vitreous",
+            "Vitreous",
+            "Waxy",
+        ]
+        invalid_options = [
+            option for option in lustre_type if option not in valid_options
+        ]
 
         if invalid_options:
-            print(f"Possible Invalid Lustre types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Possible Invalid Lustre types: {', '.join(invalid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
         return self
 
     def meteoritical_code(self, METEORITICAL_CODE):
-        '''
+        """
         Set the meteoritical code for the query.
 
         Args:
@@ -757,16 +903,14 @@ class GeomaterialRetriever:
             >>> gr.meteoritical_code("L5")
             >>> gr.save()
 
-        '''
+        """
         meteoritical_code = METEORITICAL_CODE
-        self._params.update({
-            'meteoritical_code': meteoritical_code
-        })
+        self._params.update({"meteoritical_code": meteoritical_code})
 
         return self
 
-    def meteoritical_code_exists(self, IS_METEORITICAL_CODE_EXISTS): 
-        '''	
+    def meteoritical_code_exists(self, IS_METEORITICAL_CODE_EXISTS):
+        """
         Set whether to include geomaterials with meteoritical code or only include empty meteoritical codes.
 
         Args:
@@ -779,15 +923,13 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.meteoritical_code_exists(True)
 
-        '''   
-        self._params.update({
-            'meteoritical_code_exists': IS_METEORITICAL_CODE_EXISTS
-        })
+        """
+        self._params.update({"meteoritical_code_exists": IS_METEORITICAL_CODE_EXISTS})
 
         return self
-    
+
     def name(self, NAME):
-        '''
+        """
         Set the name for the query.
 
         Args:
@@ -801,16 +943,14 @@ class GeomaterialRetriever:
             >>> gr.name("Quartz")
             >>> gr.save()
 
-        '''
+        """
         name = NAME
-        self._params.update({
-            'name': name
-        })
+        self._params.update({"name": name})
 
         return self
-    
+
     def non_utf(self, IS_NON_UTF):
-        '''
+        """
         Set whether to include non-UTF mineral names in the query.
 
         Args:
@@ -824,19 +964,17 @@ class GeomaterialRetriever:
             >>> gr.non_utf(True)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'non_utf': IS_NON_UTF
-        })
+        """
+        self._params.update({"non_utf": IS_NON_UTF})
 
         return self
-    
+
     def omit(self, OMIT_FIELDS):
-        '''
+        """
         Set the fields to omit from the query.
 
         Args:
-            OMIT_FIELDS (str): The fields to omit, separated by commas. 
+            OMIT_FIELDS (str): The fields to omit, separated by commas.
             Please check the API documentation for the list of available fields.
             https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list
         Returns:
@@ -847,23 +985,21 @@ class GeomaterialRetriever:
             >>> gr.omit("id,name")
             >>> gr.save()
 
-        '''
+        """
 
         omit_fields = OMIT_FIELDS
-        self._params.update({
-            'omit': omit_fields
-        })
+        self._params.update({"omit": omit_fields})
 
         return self
-    
+
     def optical2v_max(self, MAX):
-        '''
+        """
         Optical 2V.
         get all minerals with optical 2V less than MAX
-        
+
         Args:
             MAX (str or float): The maximum value of optical 2V.
-        
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -872,29 +1008,29 @@ class GeomaterialRetriever:
             >>> gr.optical2v_max("60")
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(MAX, str):
             try:
                 MAX = float(MAX)
             except ValueError:
-                raise ValueError("Invalid input. MAX must be a valid float or convertible to float.")
-        
+                raise ValueError(
+                    "Invalid input. MAX must be a valid float or convertible to float."
+                )
+
         optical2v_max = str(MAX)
-        self._params.update({
-            'optical2v_max': optical2v_max
-        })
-        
+        self._params.update({"optical2v_max": optical2v_max})
+
         return self
-    
+
     def optical2v_min(self, MIN):
-        '''
+        """
         Optical 2V.
         get all minerals with optical 2V greater than MIN
-        
+
         Args:
             MIN (str or float): The minimum value of optical 2V.
-        
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -903,28 +1039,28 @@ class GeomaterialRetriever:
             >>> gr.optical2v_min("30")
             >>> gr.save()
 
-        '''
+        """
 
         if isinstance(MIN, str):
             try:
                 MIN = float(MIN)
             except ValueError:
-                raise ValueError("Invalid input. MIN must be a valid float or convertible to float.")
-        
+                raise ValueError(
+                    "Invalid input. MIN must be a valid float or convertible to float."
+                )
+
         optical2v_min = str(MIN)
-        self._params.update({
-            'optical2v_min': optical2v_min
-        })
-        
+        self._params.update({"optical2v_min": optical2v_min})
+
         return self
-    
+
     def opticalsign(self, OPTICALSIGN):
-        '''	
+        """
         Optical sign: single choice
-        
+
         Args:
             OPTICALSIGN (str): The optical sign of the geomaterial. Valid values are "+", "+/-", "-", or "".
-            
+
         Returns:
             self: The GeomaterialRetriever object.
 
@@ -933,25 +1069,25 @@ class GeomaterialRetriever:
             >>> gr.opticalsign("+")
             >>> gr.save()
 
-        '''
+        """
         valid_options = ["+", "+/-", "-", None]
-        
+
         if OPTICALSIGN not in valid_options:
-            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
-        
-        self._params.update({
-            'opticalsign': OPTICALSIGN
-        })
-        
+            print(
+                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
+
+        self._params.update({"opticalsign": OPTICALSIGN})
+
         return self
-    
+
     def opticaltype(self, OPTICALTYPE):
-        '''
+        """
         Sets the optical type of the geomaterial.
 
         Parameters:
-            OPTICALTYPE (str or list): The optical type(s) of the geomaterial. 
-                Valid options are "Biaxial", "Isotropic", and "Uniaxial". 
+            OPTICALTYPE (str or list): The optical type(s) of the geomaterial.
+                Valid options are "Biaxial", "Isotropic", and "Uniaxial".
                 If a single string is provided, it will be converted to a list.
 
         Returns:
@@ -964,24 +1100,24 @@ class GeomaterialRetriever:
             >>> gr.opticaltype("Biaxial")
             >>> gr.save()
 
-        '''
-        
+        """
+
         valid_options = ["Biaxial", "Isotropic", "Uniaxial"]
-        
+
         if isinstance(OPTICALTYPE, str):
             OPTICALTYPE = [OPTICALTYPE]  # Convert single string input to list
-        
+
         if not all(opt in valid_options for opt in OPTICALTYPE):
-            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
-        
-        self._params.update({
-            'opticaltype': OPTICALTYPE
-        })
-        
+            print(
+                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
+
+        self._params.update({"opticaltype": OPTICALTYPE})
+
         return self
-    
+
     def ordering(self, ORDERING):
-        '''
+        """
         Order the response by a field. Prepend "-" to the field name for descending order.
 
         Args:
@@ -995,21 +1131,35 @@ class GeomaterialRetriever:
             >>> gr.ordering("name")
             >>> gr.save()
 
-        '''
-        valid_options = ["approval_year", "id", "minstats__ms_locentries", "minstats__ms_photos", "name", "updttime", "weighting", "-approval_year", "-id", "-minstats__ms_locentries", "-minstats__ms_photos", "-name", "-updttime", "-weighting"]
-
+        """
+        valid_options = [
+            "approval_year",
+            "id",
+            "minstats__ms_locentries",
+            "minstats__ms_photos",
+            "name",
+            "updttime",
+            "weighting",
+            "-approval_year",
+            "-id",
+            "-minstats__ms_locentries",
+            "-minstats__ms_photos",
+            "-name",
+            "-updttime",
+            "-weighting",
+        ]
 
         if ORDERING not in valid_options:
-            print(f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+            print(
+                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+            )
 
-        self._params.update({
-            'ordering': ORDERING
-        })
+        self._params.update({"ordering": ORDERING})
 
         return self
 
     def page(self, PAGE):
-        '''
+        """
         Sets the page number within the paginated result set.
 
         Args:
@@ -1023,15 +1173,13 @@ class GeomaterialRetriever:
             >>> gr.page(2)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'page': PAGE
-        })
+        """
+        self._params.update({"page": PAGE})
 
         return self
 
     def page_size(self, PAGE_SIZE):
-        '''
+        """
         Sets the number of results per page.
 
         Args:
@@ -1045,15 +1193,13 @@ class GeomaterialRetriever:
             >>> gr.page_size(50)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
+        """
+        self._params.update({"page-size": PAGE_SIZE})
 
         return self
-    
+
     def polytypeof(self, POLYTYPEOF):
-        '''
+        """
         Sets the polytype of the geomaterial.
 
         Args:
@@ -1061,21 +1207,19 @@ class GeomaterialRetriever:
 
         Returns:
             self: The GeomaterialRetriever object.
-        
+
         Example:
             >>> gr = GeomaterialRetriever()
             >>> gr.polytypeof(3)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'polytypeof': int(POLYTYPEOF)
-        })
+        """
+        self._params.update({"polytypeof": int(POLYTYPEOF)})
 
         return self
-    
+
     def q(self, SEARCHING_KEYWORDS):
-        '''
+        """
         Sets the keywords to search for.
 
         Args:
@@ -1089,15 +1233,13 @@ class GeomaterialRetriever:
             >>> gr.q("gemstone")
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'q': SEARCHING_KEYWORDS
-        })
+        """
+        self._params.update({"q": SEARCHING_KEYWORDS})
 
         return self
-    
+
     def ri_max(self, MAX):
-        '''
+        """
         Sets the maximum refractive index for the geomaterial.
 
         Args:
@@ -1111,15 +1253,13 @@ class GeomaterialRetriever:
             >>> gr.ri_max(1.8)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'ri_max': float(MAX)
-        })
+        """
+        self._params.update({"ri_max": float(MAX)})
 
         return self
-        
+
     def ri_min(self, MIN):
-        '''
+        """
         Sets the minimum refractive index for the geomaterial.
 
         Args:
@@ -1133,15 +1273,13 @@ class GeomaterialRetriever:
             >>> gr.ri_min(1.4)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'ri_min': float(MIN)
-        })
+        """
+        self._params.update({"ri_min": float(MIN)})
 
         return self
-    
+
     def streak(self, STREAK):
-        '''
+        """
         Sets the streak for the geomaterial query.
 
         Args:
@@ -1155,15 +1293,13 @@ class GeomaterialRetriever:
             >>> gr.streak("white")
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'streak': STREAK
-        })
+        """
+        self._params.update({"streak": STREAK})
 
         return self
-    
+
     def synid(self, SYNID):
-        '''
+        """
         Sets the synonym ID for the geomaterial query.
 
         Args:
@@ -1177,15 +1313,13 @@ class GeomaterialRetriever:
             >>> gr.synid(123)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'synid': SYNID
-        })
+        """
+        self._params.update({"synid": SYNID})
 
         return self
-    
+
     def tenacity(self, TENACITY):
-        '''
+        """
         Sets the tenacity for the geomaterial query.
 
         Args:
@@ -1212,9 +1346,19 @@ class GeomaterialRetriever:
             >>> gr.tenacity("brittle")
             >>> gr.save()
 
-        '''
-        
-        valid_options = ["brittle", "elastic", "flexible", "fragile", "malleable", "sectile", "very brittle", "waxy", None]
+        """
+
+        valid_options = [
+            "brittle",
+            "elastic",
+            "flexible",
+            "fragile",
+            "malleable",
+            "sectile",
+            "very brittle",
+            "waxy",
+            None,
+        ]
         if TENACITY is not None:
             if isinstance(TENACITY, str):
                 tenacity_list = [TENACITY]  # Convert the string to a list
@@ -1225,45 +1369,45 @@ class GeomaterialRetriever:
 
             for option in tenacity_list:
                 if option not in valid_options:
-                    print(f"Possible Invalid tenacity option: {option}.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list")
+                    print(
+                        f"Possible Invalid tenacity option: {option}.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                    )
 
-            self._params.update({
-                'tenacity': tenacity_list
-            })
+            self._params.update({"tenacity": tenacity_list})
 
         return self
-    
+
     def updated_at(self, DATE_STR):
-        '''	
-            Sets the last updated datetime for the geomaterial query.
+        """
+        Sets the last updated datetime for the geomaterial query.
 
-            Args:
-                DATE_STR (str): The last updated datetime in the format %Y-%m-%d %H:%M:%S.
+        Args:
+            DATE_STR (str): The last updated datetime in the format %Y-%m-%d %H:%M:%S.
 
-            Returns:
-                self: The GeomaterialRetriever object.
+        Returns:
+            self: The GeomaterialRetriever object.
 
-            Raises:
-                ValueError: If the provided DATE_STR is not a valid datetime string.
+        Raises:
+            ValueError: If the provided DATE_STR is not a valid datetime string.
 
-            Example:
-                >>> retriever = GeomaterialRetriever()
-                >>> retriever.updated_at('2022-01-01 12:00:00')
-                >>> retriever.save()
-        '''
+        Example:
+            >>> retriever = GeomaterialRetriever()
+            >>> retriever.updated_at('2022-01-01 12:00:00')
+            >>> retriever.save()
+        """
         try:
-            datetime.strptime(DATE_STR, '%Y-%m-%d %H:%M:%S')
+            datetime.strptime(DATE_STR, "%Y-%m-%d %H:%M:%S")
         except ValueError:
-            raise ValueError("Invalid datetime format. Please provide the datetime in the format %Y-%m-%d %H:%M:%S.")
+            raise ValueError(
+                "Invalid datetime format. Please provide the datetime in the format %Y-%m-%d %H:%M:%S."
+            )
 
-        self._params.update({
-            'updated_at': DATE_STR
-        })
+        self._params.update({"updated_at": DATE_STR})
 
         return self
-    
+
     def varietyof(self, VARIETYOF):
-        '''
+        """
         Sets the variety of the geomaterial query.
 
         Args:
@@ -1277,15 +1421,13 @@ class GeomaterialRetriever:
             >>> gr.varietyof(456)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'varietyof': VARIETYOF
-        })
+        """
+        self._params.update({"varietyof": VARIETYOF})
 
         return self
-    
+
     def verbose(self, FLAG):
-        '''
+        """
         Determinse the verbose mode of the query.
 
         Args:
@@ -1298,19 +1440,19 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.density_min(3.25).verbose(0).saveto("/path/to/directory")
 
-        '''
-        
+        """
+
         if isinstance(FLAG, int):
             flag = FLAG
         else:
             raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
+
         self.verbose_flag = flag
-        
+
         return self
 
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
-        '''
+    def saveto(self, OUTDIR="", FILE_NAME=""):
+        """
         Executes the query to retrieve the list of geomaterials and saves the results to a specified directory.
 
         Args:
@@ -1324,8 +1466,8 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.density_min(3.25).saveto("/path/to/directory")
 
-        '''
-       
+        """
+
         params = self._params
         end_point = self.end_point
         outdir = OUTDIR
@@ -1338,8 +1480,8 @@ class GeomaterialRetriever:
         # reset the query parameters in case the user wants to make another query
         self._init_params()
 
-    def save(self, FILE_NAME = ''):
-        '''
+    def save(self, FILE_NAME=""):
+        """
         Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
         Args:
@@ -1352,14 +1494,13 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> gr.density_min(3.25).save()
 
-        '''
+        """
         file_name = FILE_NAME
-        
-        self.saveto('', file_name)
-        
+
+        self.saveto("", file_name)
 
     def get_dict(self):
-        '''
+        """
         Executes the query to retrieve the list of geomaterials and returns the json object.
 
         Returns:
@@ -1369,36 +1510,46 @@ class GeomaterialRetriever:
             >>> gr = GeomaterialRetriever()
             >>> geoObject = gr.density_min(3.25).get_dict()
 
-        '''
-       
+        """
+
         params = self._params
         end_point = self.end_point
         verbose = self.verbose_flag
-        
+
         ma = mindat_api.MindatApi()
         results = ma.get_mindat_json(params, end_point, verbose)
-        
+
         self._init_params()
         return results
-    
+
     def available_methods(self):
-        '''
+        """
         Prints the available methods of the class.
 
         Example:
             >>> gr = GeomaterialRetriever()
             >>> gr.available_methods()
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         print("Available methods:", methods)
 
     def __getattr__(self, name):
-        '''
+        """
         Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
+            )
         return object.__getattribute__(self, name)
 
 
@@ -1415,28 +1566,28 @@ class GeomaterialIdRetriever:
         id (int): An int to store id parameter.
     """
 
-    BASE_ENDPOINT = 'v1/geomaterials' 
-    
+    BASE_ENDPOINT = "v1/geomaterials"
+
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
-        self.sub_endpoint = ''
+        self.sub_endpoint = ""
         self.variety = False
         self.verbose_flag = 2
-        
+
         self._params = {}
         self._init_params()
 
     def _init_params(self):
         self._params.clear()
-        self._params = {'format': 'json'}
+        self._params = {"format": "json"}
         self.end_point = self.BASE_ENDPOINT
-        self.sub_endpoint = ''
+        self.sub_endpoint = ""
         self.variety = False
         self.verbose_flag = 2
         self.page_size(1500)
-        
+
     def page_size(self, PAGE_SIZE):
-        '''
+        """
         Sets the number of results per page.
 
         Args:
@@ -1450,15 +1601,13 @@ class GeomaterialIdRetriever:
             >>> gr.page_size(50)
             >>> gr.save()
 
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
+        """
+        self._params.update({"page-size": PAGE_SIZE})
 
         return self
 
     def id(self, ID):
-        '''
+        """
         Returns locality with matching id
 
         Args:
@@ -1472,21 +1621,21 @@ class GeomaterialIdRetriever:
             >>> gir = GeomaterialIdRetriever()
             >>> gir.id(2)
             >>> gir.save()
-        '''
-        
+        """
+
         try:
             ID = int(ID)
         except ValueError:
             raise ValueError("Invalid input. ID must be a valid integer.")
-        
+
         id = str(ID)
-        
+
         self.sub_endpoint = id
-        
+
         return self
-    
+
     def varieties(self, VARIETIES):
-        '''
+        """
         Toggles varieties for the id
 
         Args:
@@ -1500,22 +1649,23 @@ class GeomaterialIdRetriever:
             >>> gir = GeomaterialIdRetriever()
             >>> gir.id(2).varieties(True)
             >>> gir.save()
-        '''
+        """
         varieties = VARIETIES
-        
+
         if type(varieties) is bool:
             if varieties:
                 self.variety = True
             else:
                 self.variety = False
         else:
-            raise TypeError("Invalid option: ", varieties, "varieties() only accepts True or False.")
-            
-        
+            raise TypeError(
+                "Invalid option: ", varieties, "varieties() only accepts True or False."
+            )
+
         return self
-    
+
     def verbose(self, FLAG):
-        '''
+        """
         Determinse the verbose mode of the query.
 
         Args:
@@ -1528,39 +1678,38 @@ class GeomaterialIdRetriever:
             >>> gidr = GeomaterialIdRetriever()
             >>> gidr.id(3).verbose(0).saveto("/path/to/directory")
 
-        '''
+        """
         if isinstance(FLAG, int):
             flag = FLAG
         else:
             raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
+
         self.verbose_flag = flag
-        
+
         return self
-    
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
 
-            Args:
-                OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+    def saveto(self, OUTDIR="", FILE_NAME=""):
+        """
+        Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
 
-            Returns:
-                None
+        Args:
+            OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
-            Example:
-                >>> gir = GeomaterialIdRetriever()
-                >>> gir.id(5).saveto("/path/to/directory", "geo5")
-        '''
+        Returns:
+            None
 
-        
+        Example:
+            >>> gir = GeomaterialIdRetriever()
+            >>> gir.id(5).saveto("/path/to/directory", "geo5")
+        """
+
         if self.variety:
-            sub_endpoint = '/'.join([self.sub_endpoint, "varieties"])
+            sub_endpoint = "/".join([self.sub_endpoint, "varieties"])
         else:
             sub_endpoint = self.sub_endpoint
-        
-        end_point = '/'.join([self.end_point, sub_endpoint])
+
+        end_point = "/".join([self.end_point, sub_endpoint])
         outdir = OUTDIR
         file_name = FILE_NAME
         params = self._params
@@ -1572,27 +1721,27 @@ class GeomaterialIdRetriever:
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
-    
-    def save(self, FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
-            Args:
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-            
-            Returns:
-                None
+    def save(self, FILE_NAME=""):
+        """
+        Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
-            Example:
-                >>> gir = GeomaterialIdRetriever()
-                >>> gir.id(5).save()
-        '''
+        Args:
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+        Returns:
+            None
+
+        Example:
+            >>> gir = GeomaterialIdRetriever()
+            >>> gir.id(5).save()
+        """
         file_name = FILE_NAME
-        
-        self.saveto('', file_name)
-        
+
+        self.saveto("", file_name)
+
     def get_dict(self):
-        '''
+        """
         Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
 
         Returns:
@@ -1602,41 +1751,50 @@ class GeomaterialIdRetriever:
             >>> gir = GeomaterialIdRetriever()
             >>> geo5 = gir.id(5).get_dict()
 
-        '''
-       
+        """
+
         params = self._params
         verbose = self.verbose_flag
-        end_point = '/'.join([self.end_point, self.sub_endpoint])
-        
+        end_point = "/".join([self.end_point, self.sub_endpoint])
+
         ma = mindat_api.MindatApi()
         results = ma.get_mindat_json(params, end_point, verbose)
-        
+
         self._init_params()
         return results
 
     def available_methods(self):
-        '''
+        """
         Prints the available methods of the class.
 
         Example:
             >>> gidr = GeomaterialIdRetriever()
             >>> gidr.available_methods()
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         print("Available methods:", methods)
 
     def __getattr__(self, name):
-        '''
+        """
         Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
+            )
         return object.__getattribute__(self, name)
-        
-        
-        
-#NOT YET WORKING, check in to see if it returns list vs item
+
+
+# NOT YET WORKING, check in to see if it returns list vs item
 class GeomaterialDictRetriever:
     """
     This module provides the GeomaterialDictRetriever class for returning geomaterial Dictionaries
@@ -1648,28 +1806,28 @@ class GeomaterialDictRetriever:
 
     Attributes:
         id (int): An int to store id parameter.
-    """ 
+    """
 
-    BASE_ENDPOINT = 'v1/geomaterials/dict'
-    
+    BASE_ENDPOINT = "v1/geomaterials/dict"
+
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
-        self.sub_endpoint = ''
+        self.sub_endpoint = ""
         self.verbose_flag = 2
-        
+
         self._params = {}
         self._init_params()
 
     def _init_params(self):
         self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
-        self.sub_endpoint = ''
+        self.sub_endpoint = ""
         self._params.clear()
-        self._params = {'format': 'json'}
+        self._params = {"format": "json"}
         self.page_size(1500)
-        
+
     def page_size(self, PAGE_SIZE):
-        '''
+        """
         Sets the number of results per page.
 
         Args:
@@ -1683,15 +1841,13 @@ class GeomaterialDictRetriever:
             >>> gdr.page_size(50)
             >>> gdr.save()
 
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
+        """
+        self._params.update({"page-size": PAGE_SIZE})
 
         return self
-    
+
     def verbose(self, FLAG):
-        '''
+        """
         Determinse the verbose mode of the query.
 
         Args:
@@ -1704,31 +1860,31 @@ class GeomaterialDictRetriever:
             >>> gdr = GeomaterialDictRetriever()
             >>> gdr.verbose(0).saveto("/path/to/directory")
 
-        '''
+        """
         if isinstance(FLAG, int):
             flag = FLAG
         else:
             raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
+
         self.verbose_flag = flag
-        
+
         return self
-    
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
 
-            Args:
-                OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+    def saveto(self, OUTDIR="", FILE_NAME=""):
+        """
+        Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
 
-            Returns:
-                None
+        Args:
+            OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
 
-            Example:
-                >>> gdr = GeomaterialDictRetriever()
-                >>> gdr.saveto("/path/to/directory", "geoDict")
-        '''
+        Returns:
+            None
+
+        Example:
+            >>> gdr = GeomaterialDictRetriever()
+            >>> gdr.saveto("/path/to/directory", "geoDict")
+        """
 
         params = self._params
         end_point = self.end_point
@@ -1741,27 +1897,27 @@ class GeomaterialDictRetriever:
 
         # reset the query parameters in case the user wants to make another query
         self._init_params()
-    
-    def save(self, FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
-            Args:
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-            
-            Returns:
-                None
+    def save(self, FILE_NAME=""):
+        """
+        Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
 
-            Example:
-                >>> gdr = GeomaterialDictRetriever()
-                >>> gdr.save()
-        '''
+        Args:
+            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+
+        Returns:
+            None
+
+        Example:
+            >>> gdr = GeomaterialDictRetriever()
+            >>> gdr.save()
+        """
         file_name = FILE_NAME
-        
-        self.saveto('', file_name)   
-        
+
+        self.saveto("", file_name)
+
     def get_dict(self):
-        '''
+        """
         Executes the query to retrieve the dictionary of geomaterials.
 
         Returns:
@@ -1771,40 +1927,50 @@ class GeomaterialDictRetriever:
             >>> gdr = GeomaterialDictRetriever()
             >>> geoDict = gdr.get_dict()
 
-        '''
-       
+        """
+
         params = self._params
         end_point = self.end_point
         verbose = self.verbose_flag
 
         ma = mindat_api.MindatApi()
         results = ma.get_mindat_json(params, end_point, verbose)
-        
+
         self._init_params()
         return results
-    
+
     def available_methods(self):
-        '''
+        """
         Prints the available methods of the class.
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
             >>> gdr.available_methods()
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         print("Available methods:", methods)
 
     def __getattr__(self, name):
-        '''
+        """
         Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+        """
+        methods = [
+            func
+            for func in dir(self)
+            if callable(getattr(self, func)) and not func.startswith("__")
+        ]
         if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
+            )
         return object.__getattribute__(self, name)
-        
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     gr = GeomaterialRetriever()
     # gr.cleavagetype('Distinct/Good').colour('blue').crystal_system(["Amorphous", "Hexagonal"]).save()
-    gr.id_in("3337, 114").save()
+    gr.el_inc("Co").el_exc("Cl").ima(True).save()
