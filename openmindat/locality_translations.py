@@ -1,9 +1,10 @@
 from datetime import date, datetime
+from typing import Any
 
 from . import (
     mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
 )
-from ._base import _as_int, _IdRetriever, _PagedRetriever
+from ._base import _R, _as_int, _IdRetriever, _PagedRetriever
 
 
 class LocalityTranslationsRetriever(_PagedRetriever):
@@ -29,7 +30,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
 
     BASE_ENDPOINT = 'v1/locality-translations'
 
-    def lt_loc(self, LOCALITY_IDS):
+    def lt_loc(self: _R, LOCALITY_IDS: int | str | list[int] | tuple[int, ...]) -> _R:
         '''
         Returns translations of the given locality ids.
 
@@ -43,6 +44,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
             >>> ltr = LocalityTranslationsRetriever()
             >>> ltr.lt_loc([14090, 14244]).get_dict()
         '''
+        ids: list[Any]
         if isinstance(LOCALITY_IDS, str):
             ids = [part.strip() for part in LOCALITY_IDS.split(",") if part.strip()]
         elif isinstance(LOCALITY_IDS, (list, tuple, set)):
@@ -55,7 +57,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
         self._params.update({"lt_loc": loc_string})
         return self
 
-    def lt_iso(self, LANGUAGE):
+    def lt_iso(self: _R, LANGUAGE: str) -> _R:
         '''
         Returns translations in the given language code.
 
@@ -72,7 +74,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
         self._params.update({"lt_iso": LANGUAGE})
         return self
 
-    def lt_text(self, TEXT):
+    def lt_text(self: _R, TEXT: str) -> _R:
         '''
         Returns translations whose text contains TEXT.
 
@@ -89,7 +91,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
         self._params.update({"lt_text": TEXT})
         return self
 
-    def lt_important(self, FLAG):
+    def lt_important(self: _R, FLAG: int) -> _R:
         '''
         Filters on the translation's "important" flag.
 
@@ -106,7 +108,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
         self._params.update({"lt_important": _as_int(FLAG, "FLAG")})
         return self
 
-    def lt_datetime_gte(self, DATETIME):
+    def lt_datetime_gte(self: _R, DATETIME: str | datetime | date) -> _R:
         '''
         Returns translations added or changed at or after DATETIME.
 
@@ -139,7 +141,7 @@ class LocalityTranslationsRetriever(_PagedRetriever):
         self._params.update({"lt_datetime_gte": value})
         return self
 
-    def ordering(self, ORDERING):
+    def ordering(self: _R, ORDERING: str) -> _R:
         '''
         Orders the results by a field; prefix with "-" for descending order.
 

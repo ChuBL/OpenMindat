@@ -1,7 +1,7 @@
 from . import (
     mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
 )
-from ._base import _as_int, _BaseRetriever
+from ._base import _R, _as_int, _BaseRetriever
 
 
 class GeomaterialSearchRetriever(_BaseRetriever):
@@ -23,7 +23,7 @@ class GeomaterialSearchRetriever(_BaseRetriever):
 
     BASE_ENDPOINT = 'v1/geomaterials-search'
     
-    def geomaterials_search(self, KEYWORDS):
+    def geomaterials_search(self: _R, KEYWORDS: str) -> _R:
         '''
         Updates the query parameters to search for geomaterials based on specified keywords.
 
@@ -42,7 +42,7 @@ class GeomaterialSearchRetriever(_BaseRetriever):
         self._params.update({'q': keywords})
         return self
 
-    def e(self, EXACT):
+    def e(self: _R, EXACT: int) -> _R:
         '''
         Returns only exact name matches when set to 1 (or True).
 
@@ -59,7 +59,7 @@ class GeomaterialSearchRetriever(_BaseRetriever):
         self._params.update({"e": _as_int(EXACT, "EXACT")})
         return self
 
-    def ima(self, IMA):
+    def ima(self: _R, IMA: int) -> _R:
         '''
         Returns only IMA-approved minerals when set to 1 (or True).
 
@@ -76,7 +76,7 @@ class GeomaterialSearchRetriever(_BaseRetriever):
         self._params.update({"ima": _as_int(IMA, "IMA")})
         return self
 
-    def size(self, SIZE):
+    def size(self: _R, SIZE: int) -> _R:
         '''
         Limits the number of records when a fuzzy search applies (Mindat API default: 12).
 

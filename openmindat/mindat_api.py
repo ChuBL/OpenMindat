@@ -1,16 +1,18 @@
+import getpass
+import json
+import logging
 import os
 import re
-import sys
-import json
-import yaml
-import requests
+import sys  # noqa: F401  (kept for code that patches openmindat.mindat_api.*)
 import time
-from pathlib import Path
 from datetime import datetime
-from json import JSONDecodeError
+from json import JSONDecodeError  # noqa: F401  (kept: public module attribute)
+from pathlib import Path
+from typing import Any
 from urllib.parse import parse_qsl, urlsplit, urlunsplit
-import getpass
-import logging
+
+import requests
+import yaml  # noqa: F401  (kept for code that patches openmindat.mindat_api.yaml)
 
 from . import _credentials
 from .exceptions import (
@@ -29,7 +31,7 @@ _SERVER_SIDE_NOTE = (
 )
 
 
-def in_notebook():
+def in_notebook() -> bool:
     '''
         Check if the package is running in notebook, e.g., Jupyter or Colab
         return type: Bool
@@ -62,7 +64,7 @@ _SOURCE_LABELS = {
 }
 
 
-def _ask_for_key(prompt):
+def _ask_for_key(prompt: str) -> str:
     '''getpass, but a missing console (scripts, cron, CI) becomes a helpful error instead of EOFError.'''
     try:
         return getpass.getpass(prompt)
@@ -86,10 +88,10 @@ class MindatApiKeyManager:
     # (connect, read) seconds for the key check.
     STATUS_TIMEOUT = (5, 10)
 
-    def __init__(self, ENDPOINT: str = None):
+    def __init__(self, ENDPOINT: str | None = None):
         self.endpoint = ENDPOINT if ENDPOINT else self.DEFAULT_ENDPOINT
 
-    def inspect_stored_api_key(self):
+    def inspect_stored_api_key(self) -> bool:
         '''
             Look for a usable stored key and make it this session's key.
             A key the Mindat API rejects (401/403) is skipped with a warning; a key that
@@ -117,7 +119,7 @@ class MindatApiKeyManager:
             return True
         return False
 
-    def get_api_key_input(self):
+    def get_api_key_input(self) -> None:
         api_key = _ask_for_key("Input or get your Mindat API key at https://www.mindat.org/a/how_to_get_my_mindat_api_key: ")
 
         while False == self.is_valid_key_format(api_key):
@@ -141,7 +143,7 @@ class MindatApiKeyManager:
             _credentials.set_explicit(api_key)
             self._activate(api_key, "explicit")
 
-    def is_valid_key_format(self, KEY_INPUT):
+    def is_valid_key_format(self, KEY_INPUT: str) -> bool:
         """
         Checks if the input string is exactly 32 characters long and consists only of letters and digits.
         
@@ -154,7 +156,7 @@ class MindatApiKeyManager:
         pattern = r'^[A-Za-z0-9]{32}$'
         return bool(re.match(pattern, KEY_INPUT))
         
-    def _save_valid_api_key(self, VALID_KEY):
+    def _save_valid_api_key(self, VALID_KEY: str) -> bool:
         _credentials._validation[VALID_KEY] = "valid"
         self._activate(VALID_KEY, "explicit")
         _credentials.set_explicit(VALID_KEY)
@@ -173,7 +175,7 @@ class MindatApiKeyManager:
         )
         return True
 
-    def load_api_key(self):
+    def load_api_key(self) -> str:
         active = _credentials._session.get("active")
         if active:
             return active
@@ -181,7 +183,7 @@ class MindatApiKeyManager:
             return key
         raise MindatApiKeyNotFoundError(_NO_KEY_HELP)
 
-    def reset_api_key(self):
+    def reset_api_key(self) -> bool:
         try:
             del os.environ["MINDAT_API_KEY"]
         except KeyError:
@@ -209,7 +211,7 @@ class MindatApiKeyManager:
             logger.warning("Mindat API key check failed: %s", e)
             return -1
 
-    def _validate_once(self, key):
+    def _validate_once(self, key: str) -> str:
         '''Check a key with the Mindat API once per session: valid, invalid or unverified.'''
         state = _credentials._validation.get(key)
         if state is None:
@@ -223,13 +225,13 @@ class MindatApiKeyManager:
             _credentials._validation[key] = state
         return state
 
-    def _activate(self, key, source):
+    def _activate(self, key: str, source: str) -> None:
         _credentials._session["active"] = key
         _credentials._session["active_source"] = source
         # openmindat <= 0.1.3 exposed the key in-process this way; kept for existing code.
         os.environ["MINDAT_API_KEY"] = key
 
-    def _migrate_legacy_key(self, key):
+    def _migrate_legacy_key(self, key: str) -> None:
         '''Copy a key found in ./.apikey.yaml to the per-user file, once. The old file is left alone.'''
         if _credentials.read_config_key() == key:
             return
@@ -249,7 +251,7 @@ class MindatApiKeyManager:
         )
 
 
-def set_api_key(api_key, persist=False):
+def set_api_key(api_key: str, persist: bool = False) -> _credentials.ApiKeyStatus:
     '''
         Use this Mindat API key for the rest of the session.
 
@@ -281,7 +283,7 @@ def set_api_key(api_key, persist=False):
     return api_key_status()
 
 
-def api_key_status():
+def api_key_status() -> _credentials.ApiKeyStatus:
     '''
         Report which Mindat API key would be used and whether the Mindat API accepts it.
         Never prompts. Returns an ApiKeyStatus (source, state, masked_key, config_path).
@@ -292,7 +294,7 @@ def api_key_status():
         key = _credentials._session["active"]
         return _credentials.ApiKeyStatus(
             source=_credentials._session["active_source"],
-            state=_credentials._validation.get(key, "unverified"),
+            state=_credentials._validation.get(key, "unverified") if key else "unverified",
             masked_key=_credentials.mask(key),
             config_path=config,
         )
@@ -317,19 +319,21 @@ class MindatApi:
     # Failed attempts allowed at one position in the result set before giving up.
     MAX_FAILURES = 6
 
-    def __init__(self, ENDPOINT: str = None):
-        self._api_key = None
+    def __init__(self, ENDPOINT: str | None = None):
+        self._api_key: str | None = None
         self.endpoint = ENDPOINT or ""
         self._prepare_api_key()
         
-        self.MINDAT_API_URL = "https://api.mindat.org"
-        self._headers = {'Authorization': 'Token '+ self._api_key}
-        self.params = {'format': 'json'}
-        self.data_dir = './mindat_data/'
+        self.MINDAT_API_URL: str = "https://api.mindat.org"
+        if self._api_key is None:
+            raise TypeError("No Mindat API key was prepared.")
+        self._headers: dict[str, str] = {'Authorization': 'Token '+ self._api_key}
+        self.params: dict[str, Any] = {'format': 'json'}
+        self.data_dir: str = './mindat_data/'
         
         
 
-    def _prepare_api_key(self):
+    def _prepare_api_key(self) -> None:
         mam = MindatApiKeyManager(self.endpoint)
 
         if False == mam.inspect_stored_api_key():
@@ -337,19 +341,19 @@ class MindatApi:
 
         self._api_key = mam.load_api_key()
     
-    def set_params(self, PARAMS_DICT):
+    def set_params(self, PARAMS_DICT: dict[str, Any]) -> None:
         self.params = PARAMS_DICT
 
-    def set_endpoint(self, ENDPOINT):
+    def set_endpoint(self, ENDPOINT: str) -> None:
         self.endpoint = ENDPOINT
         
-    def get_params(self):
+    def get_params(self) -> dict[str, Any]:
         return self.params
 
-    def get_headers(self):
+    def get_headers(self) -> dict[str, str]:
         return self._headers
     
-    def get_file_path(self, OUTDIR, FILE_NAME):
+    def get_file_path(self, OUTDIR: str | os.PathLike[str], FILE_NAME: Any) -> Path:
         '''
             Reads an End_point
         '''
@@ -370,13 +374,13 @@ class MindatApi:
         return Path(out_dir, file_name.replace('/', '_') + '.json')
 
 
-    def get_datetime(self):
+    def get_datetime(self) -> str:
         # use datetime to get current date and time
-        now = datetime.now()
+        now = datetime.now()  # noqa: DTZ005  (local time is the documented output)
         dt_string = now.strftime("%m%d%Y%H%M%S")
         return dt_string
     
-    def get_results(self, URL, json_data, pbar, VERBOSE = 2):
+    def get_results(self, URL: str, json_data: dict[str, Any], pbar: Any, VERBOSE: int = 2) -> Any:
         url = URL        
         
         try:
@@ -395,7 +399,7 @@ class MindatApi:
         return response
     
         
-    def get_mindat_json(self, PARAM_DICT, END_POINT, VERBOSE = 2):
+    def get_mindat_json(self, PARAM_DICT: dict[str, Any], END_POINT: str, VERBOSE: int = 2) -> dict[str, Any]:
         '''
             get all items in a list
             Since this API has a limit of 1500 items per page,
@@ -452,7 +456,7 @@ class MindatApi:
 
         return json_data
 
-    def _fetch_json(self, url, params, partial_results, VERBOSE=2, pbar=None):
+    def _fetch_json(self, url: str, params: dict[str, Any] | None, partial_results: list[Any], VERBOSE: int = 2, pbar: Any = None) -> tuple[Any, str, dict[str, Any] | None]:
         '''
             Fetch one page and return (json, url, params) for the request that succeeded.
             Retries, waits and page splitting are bounded by MAX_FAILURES.
@@ -510,7 +514,7 @@ class MindatApi:
                 f"Mindat API could not answer in time ({detail}); retrying with page size "
                 f"{self._page_size_of(url, params)}.", VERBOSE, pbar)
 
-    def _send(self, url, params):
+    def _send(self, url: str, params: dict[str, Any] | None) -> tuple[str, Any, str]:
         '''Send one GET and classify the outcome: ok, client, wait, heavy, server or transient.'''
         connection_error = getattr(requests.exceptions, "ConnectionError", ())
         try:
@@ -540,33 +544,33 @@ class MindatApi:
         return "server", response, label
 
     @staticmethod
-    def _json_or_none(response):
+    def _json_or_none(response: Any) -> Any:
         try:
             return response.json()
         except ValueError:
             return None
 
-    def _retry_after(self, response, failures):
+    def _retry_after(self, response: Any, failures: int) -> float:
         value = getattr(response, "headers", {}).get("Retry-After")
         try:
-            wait = float(value)
-        except (TypeError, ValueError):
+            wait = float(value) if value is not None else float(2 ** failures)
+        except ValueError:
             wait = 2 ** failures
         return min(max(wait, 1), self.MAX_RETRY_WAIT)
 
     @staticmethod
-    def _query_of(url, params):
+    def _query_of(url: str, params: dict[str, Any] | None) -> dict[str, Any]:
         query = dict(parse_qsl(urlsplit(url).query))
         query.update(params or {})
         return query
 
-    def _page_size_of(self, url, params):
+    def _page_size_of(self, url: str, params: dict[str, Any] | None) -> int | None:
         try:
             return int(self._query_of(url, params)["page-size"])
         except (KeyError, TypeError, ValueError):
             return None
 
-    def _smaller_page(self, url, params):
+    def _smaller_page(self, url: str, params: dict[str, Any] | None) -> tuple[str, dict[str, Any]] | None:
         '''
             Return (url, params) asking for the records from the same offset with a smaller
             page-size, or None if the page cannot be split.
@@ -592,13 +596,13 @@ class MindatApi:
         parts = urlsplit(url)
         return urlunsplit((parts.scheme, parts.netloc, parts.path, "", "")), query
 
-    def _notice(self, message, VERBOSE, pbar=None):
+    def _notice(self, message: str, VERBOSE: int, pbar: Any = None) -> None:
         logger.info(message)
         if VERBOSE:
             write = getattr(pbar, "write", None) if pbar is not None else None
             (write or print)(message)
 
-    def _request_error(self, response, body, partial_results):
+    def _request_error(self, response: Any, body: Any, partial_results: list[Any]) -> MindatRequestError:
         status = response.status_code
         detail = ""
         if isinstance(body, dict):
@@ -616,7 +620,7 @@ class MindatApi:
         return MindatRequestError(message, status_code=status, url=response.url, payload=body,
                                   partial_results=list(partial_results))
 
-    def _server_error(self, url, params, last, attempts, partial_results, size_ruled_out=False):
+    def _server_error(self, url: str, params: dict[str, Any] | None, last: tuple[Any, str, Any], attempts: int, partial_results: list[Any], size_ruled_out: bool = False) -> MindatServerError:
         status, detail, response = last
         request_url = getattr(response, "url", None) or url
         if size_ruled_out:
@@ -633,19 +637,15 @@ class MindatApi:
                                  payload=self._json_or_none(response) if response is not None else None,
                                  partial_results=list(partial_results))
 
-    def _is_multipage_query(self, PARAM, RAW_JSON):
+    def _is_multipage_query(self, PARAM: dict[str, Any], RAW_JSON: Any) -> bool:
         if 'page' in PARAM:
             return False
         
         raw_json = RAW_JSON
-        try:
-            result_data = raw_json["results"]
-        except:
-            return False
+        # JSON values: only a dict with "results" can be paginated (a list/str/None cannot).
+        return isinstance(raw_json, dict) and "results" in raw_json
 
-        return True
-
-    def download_mindat_json(self, QUERY_DICT, END_POINT, OUTDIR = '', FILE_NAME = '', VERBOSE = 2):
+    def download_mindat_json(self, QUERY_DICT: dict[str, Any], END_POINT: str, OUTDIR: str | os.PathLike[str] = '', FILE_NAME: str = '', VERBOSE: int = 2) -> None:
         '''
             get all items in a list
             Since this API has a limit of 1000 items per page,

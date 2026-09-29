@@ -1,6 +1,9 @@
-from . import mindat_api
-from ._base import _as_int, _IdRetriever, _PagedRetriever
 from datetime import datetime
+
+from . import (
+    mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
+)
+from ._base import _R, _as_int, _IdRetriever, _PagedRetriever
 
 
 class LocalitiesRetriever(_PagedRetriever):
@@ -36,7 +39,7 @@ class LocalitiesRetriever(_PagedRetriever):
     BASE_ENDPOINT = "v1/localities"
 
     # Deprecated country method kept for backward compatibility
-    def _country(self, COUNTRY_STR):
+    def _country(self: _R, COUNTRY_STR: str | None) -> _R:
         """
         Sets the country or region for the query.
         For the list of available countries/regions, please check the API documentation:
@@ -428,7 +431,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def country(self, COUNTRY_STR):
+    def country(self: _R, COUNTRY_STR: str | None) -> _R:
         """
         Sets the country or region for the query.
 
@@ -450,7 +453,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def description(self, DESCRIPTION_STR):
+    def description(self: _R, DESCRIPTION_STR: str) -> _R:
         """
         Sets the description for the query.
 
@@ -469,7 +472,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def elements_exc(self, ELEMENTS_EXC):
+    def elements_exc(self: _R, ELEMENTS_EXC: str) -> _R:
         """
         Exclude chemical elements.
 
@@ -491,7 +494,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def elements_inc(self, ELEMENTS_INC):
+    def elements_inc(self: _R, ELEMENTS_INC: str) -> _R:
         """
         Include chemical elements.
 
@@ -513,7 +516,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def expand(self, EXPAND_FIELDS):
+    def expand(self: _R, EXPAND_FIELDS: str | list[str]) -> _R:
         """
         Expand the query to include related minerals and select specific fields to expand.
 
@@ -557,7 +560,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def fields(self, FIELDS):
+    def fields(self: _R, FIELDS: str) -> _R:
         """
         Specify the selected fields to be retrieved for each geomaterial.
         Please check the API documentation for the list of available fields.
@@ -580,7 +583,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def id_in(self, ID_IN_STR):
+    def id_in(self: _R, ID_IN_STR: str) -> _R:
         """
         Set the IDs for the query.
 
@@ -602,7 +605,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def omit(self, OMIT_FIELDS):
+    def omit(self: _R, OMIT_FIELDS: str) -> _R:
         """
         Set the fields to omit from the query.
 
@@ -625,7 +628,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def page(self, PAGE):
+    def page(self: _R, PAGE: int) -> _R:
         """
         Sets the page number within the paginated result set.
 
@@ -644,7 +647,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def txt(self, TXT_STR):
+    def txt(self: _R, TXT_STR: str) -> _R:
         """
         Sets the locality name filter.
 
@@ -663,7 +666,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def updated_at(self, DATE_STR):
+    def updated_at(self: _R, DATE_STR: str) -> _R:
         """
         Sets the last updated datetime for the geomaterial query.
 
@@ -682,7 +685,7 @@ class LocalitiesRetriever(_PagedRetriever):
             >>> retriever.save()
         """
         try:
-            datetime.strptime(DATE_STR, "%Y-%m-%d %H:%M:%S")
+            datetime.strptime(DATE_STR, "%Y-%m-%d %H:%M:%S")  # noqa: DTZ007  (format check only)
         except ValueError:
             raise ValueError(
                 "Invalid datetime format. Please provide the datetime in the format %Y-%m-%d %H:%M:%S."
@@ -692,7 +695,7 @@ class LocalitiesRetriever(_PagedRetriever):
 
         return self
 
-    def level_gte(self, LEVEL):
+    def level_gte(self: _R, LEVEL: int) -> _R:
         '''
         Returns localities whose hierarchy level is >= LEVEL (0 = country).
 
@@ -709,7 +712,7 @@ class LocalitiesRetriever(_PagedRetriever):
         self._params.update({"level_gte": _as_int(LEVEL, "LEVEL")})
         return self
 
-    def level_lte(self, LEVEL):
+    def level_lte(self: _R, LEVEL: int) -> _R:
         '''
         Returns localities whose hierarchy level is <= LEVEL (0 = country).
 
@@ -726,7 +729,7 @@ class LocalitiesRetriever(_PagedRetriever):
         self._params.update({"level_lte": _as_int(LEVEL, "LEVEL")})
         return self
 
-    def sublocs_gte(self, COUNT):
+    def sublocs_gte(self: _R, COUNT: int) -> _R:
         '''
         Returns localities with at least COUNT sub-localities.
 
@@ -743,7 +746,7 @@ class LocalitiesRetriever(_PagedRetriever):
         self._params.update({"sublocs_gte": _as_int(COUNT, "COUNT")})
         return self
 
-    def sublocs_lte(self, COUNT):
+    def sublocs_lte(self: _R, COUNT: int) -> _R:
         '''
         Returns localities with at most COUNT sub-localities.
 
@@ -760,7 +763,7 @@ class LocalitiesRetriever(_PagedRetriever):
         self._params.update({"sublocs_lte": _as_int(COUNT, "COUNT")})
         return self
 
-    def non_hierarchial(self, IS_NON_HIERARCHICAL):
+    def non_hierarchial(self: _R, IS_NON_HIERARCHICAL: bool) -> _R:
         '''
         Filters on the non-hierarchical locality flag. The spelling follows the Mindat API
         parameter; non_hierarchical() is an alias.
@@ -778,13 +781,13 @@ class LocalitiesRetriever(_PagedRetriever):
         self._params.update({"non_hierarchial": bool(IS_NON_HIERARCHICAL)})
         return self
 
-    def non_hierarchical(self, IS_NON_HIERARCHICAL):
+    def non_hierarchical(self, IS_NON_HIERARCHICAL: bool) -> "LocalitiesRetriever":
         '''
         Alias of non_hierarchial() with the usual spelling.
         '''
         return self.non_hierarchial(IS_NON_HIERARCHICAL)
 
-    def revtxtd_istartswith(self, PREFIX):
+    def revtxtd_istartswith(self: _R, PREFIX: str) -> _R:
         '''
         Returns localities whose reversed full name starts with PREFIX (case-insensitive).
         The reversed name lists the country first, e.g. "Norway, Agder, Åmli".

@@ -1,7 +1,7 @@
 from . import (
     mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
 )
-from ._base import _IdRetriever
+from ._base import _R, _IdRetriever
 
 #todo: Check back in when retrieve and id functions are implemented
 
@@ -32,7 +32,7 @@ class StrunzRetriever(_IdRetriever):
         "StrunzRetriever needs a sub-listing: the Mindat API has no plain list at /nickel-strunz-10/. Call .classes(), .subclasses(), .families() or .id(<id>) before get_dict()/save()."
     )
     
-    def retrieve(self):
+    def retrieve(self: _R) -> _R:
         '''
         Returns Nickel Strunz classification
         Not yet working
@@ -50,7 +50,7 @@ class StrunzRetriever(_IdRetriever):
         
         return self        
         
-    def classes(self):
+    def classes(self: _R) -> _R:
         '''
         Returns nickel strunz 10th edition classifications.
 
@@ -67,7 +67,7 @@ class StrunzRetriever(_IdRetriever):
         
         return self
     
-    def subclasses(self):
+    def subclasses(self: _R) -> _R:
         '''
         Returns nickel strunz 10th edition subgroup classifications.
 
@@ -84,7 +84,7 @@ class StrunzRetriever(_IdRetriever):
         
         return self
     
-    def families(self):
+    def families(self: _R) -> _R:
         '''
         Returns nickel strunz 10th edition family classifications.
 

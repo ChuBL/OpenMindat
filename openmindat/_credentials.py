@@ -25,7 +25,7 @@ ENV_VAR = "MINDAT_API_KEY"
 LEGACY_PATH = "./.apikey.yaml"
 
 # Per-process state: validation results (D4: once per session) and one-time notices.
-_session: dict[str, object] = {"explicit": None, "active": None, "active_source": None}
+_session: dict[str, str | None] = {"explicit": None, "active": None, "active_source": None}
 _validation: dict[str, str] = {}  # key -> "valid" | "invalid" | "unverified"
 _notices_shown: set[str] = set()
 

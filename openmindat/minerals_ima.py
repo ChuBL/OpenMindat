@@ -1,7 +1,10 @@
-from . import mindat_api
-from .geomaterials import GeomaterialRetriever as _GeomaterialRetriever
-from ._base import _IdRetriever, _PagedRetriever
 from datetime import datetime
+
+from . import (
+    mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
+)
+from ._base import _R, _IdRetriever, _PagedRetriever
+from .geomaterials import GeomaterialRetriever as _GeomaterialRetriever
 
 
 class MineralsIMARetriever(_PagedRetriever):
@@ -18,7 +21,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
     BASE_ENDPOINT = 'v1/minerals-ima'
 
-    def expand(self, EXPAND_FIELDS):
+    def expand(self: _R, EXPAND_FIELDS: str | list[str]) -> _R:
         '''
         Expand the query to include related minerals and select specific fields to expand.
 
@@ -58,7 +61,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
         return self
     
-    def fields(self, FIELDS):
+    def fields(self: _R, FIELDS: str) -> _R:
         '''
         Specify the selected fields to be retrieved for each geomaterial.
         Please check the API documentation for the list of available fields.
@@ -83,7 +86,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
         return self
     
-    def id_in(self, ID_IN_LIST):
+    def id_in(self: _R, ID_IN_LIST: str) -> _R:
         '''
         Set the IDs for the query.
 
@@ -107,7 +110,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
         return self
 
-    def ima(self, IS_IMA):
+    def ima(self: _R, IS_IMA: bool | int) -> _R:
         '''
             This filter is probably not working as intended. Just ignore it for now.
             Include IMA-approved names only (1) / to be determined(0)
@@ -139,7 +142,7 @@ class MineralsIMARetriever(_PagedRetriever):
         
         return self
     
-    def omit(self, OMIT_FIELDS):
+    def omit(self: _R, OMIT_FIELDS: str) -> _R:
         '''
         Set the fields to omit from the query.
 
@@ -166,7 +169,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
         return self
     
-    def q(self, SEARCHING_KEYWORDS):
+    def q(self: _R, SEARCHING_KEYWORDS: str) -> _R:
         '''
         Sets the keywords to search for.
 
@@ -187,7 +190,7 @@ class MineralsIMARetriever(_PagedRetriever):
 
         return self
     
-    def updated_at(self, DATE_STR):
+    def updated_at(self: _R, DATE_STR: str) -> _R:
         '''	
             Sets the last updated datetime for the geomaterial query.
 
@@ -206,7 +209,7 @@ class MineralsIMARetriever(_PagedRetriever):
                 >>> retriever.save()
         '''
         try:
-            datetime.strptime(DATE_STR, '%Y-%m-%d %H:%M:%S')
+            datetime.strptime(DATE_STR, '%Y-%m-%d %H:%M:%S')  # noqa: DTZ007  (format check only)
         except ValueError:
             raise ValueError("Invalid datetime format. Please provide the datetime in the format %Y-%m-%d %H:%M:%S.")
 
@@ -278,4 +281,4 @@ class MineralsIdRetriever(_IdRetriever):
 
 if __name__ == '__main__':
     mir = MineralsIMARetriever()
-    mir.ima('1').saveto()
+    mir.ima(1).saveto()

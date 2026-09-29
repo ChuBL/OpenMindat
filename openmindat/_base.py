@@ -9,11 +9,19 @@ module-level functions, so ``available_methods()`` and ``dir()`` list exactly wh
 listed before.
 """
 
+from __future__ import annotations
+
+import os
+from typing import TYPE_CHECKING, Any, TypeVar
+
 from . import mindat_api
 from .exceptions import MindatRequestError
 
+# The concrete retriever type, so chained calls keep their class for type checkers.
+_R = TypeVar("_R", bound="_BaseRetriever")
 
-def _as_int(value, name):
+
+def _as_int(value: Any, name: str) -> int:
     """Coerce an integer-like argument (bool, int, "3", 3.0) or raise ValueError."""
     if isinstance(value, bool):
         return int(value)
@@ -27,7 +35,7 @@ def _as_int(value, name):
         raise ValueError(f"{name} must be an integer, got {value!r}") from None
 
 
-def _with_sub_listing_hint(retriever, exc):
+def _with_sub_listing_hint(retriever: _BaseRetriever, exc: MindatRequestError) -> MindatRequestError | None:
     """Add the retriever's _SUB_LISTING_HINT to a 404 caused by querying without a sub-listing."""
     hint = retriever._SUB_LISTING_HINT
     if hint and exc.status_code == 404 and getattr(retriever, "sub_endpoint", None) == "":
@@ -38,7 +46,7 @@ def _with_sub_listing_hint(retriever, exc):
     return None
 
 
-def _request_endpoint(retriever):
+def _request_endpoint(retriever: Any) -> str:
     """The endpoint a query is sent to, following the retriever's _ENDPOINT_STYLE."""
     style = retriever._ENDPOINT_STYLE
     if style == "plain":
@@ -61,23 +69,23 @@ def _request_endpoint(retriever):
 class _BaseRetriever:
     """Base for all retrievers: query state, paging size, verbosity, execution."""
 
-    BASE_ENDPOINT = ""
+    BASE_ENDPOINT: str = ""
     # How the request endpoint is built: plain | join | join_if_sub | join_varieties
-    _ENDPOINT_STYLE = "plain"
+    _ENDPOINT_STYLE: str = "plain"
     # Whether the retriever keeps a `sub_endpoint` attribute (ids, sub-listings).
-    _HAS_SUB_ENDPOINT = False
+    _HAS_SUB_ENDPOINT: bool = False
     # Extra message for the 404 the Mindat API returns when no sub-listing/id was chosen.
-    _SUB_LISTING_HINT = None
+    _SUB_LISTING_HINT: str | None = None
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         if self._HAS_SUB_ENDPOINT:
             self.sub_endpoint = ''
-        self._params = {}
+        self._params: dict[str, Any] = {}
         self._init_params()
 
-    def _init_params(self):
+    def _init_params(self) -> None:
         self.end_point = self.BASE_ENDPOINT
         self.verbose_flag = 2
         if self._HAS_SUB_ENDPOINT:
@@ -86,7 +94,7 @@ class _BaseRetriever:
         self._params = {'format': 'json'}
         self.page_size(1500)
 
-    def page_size(self, PAGE_SIZE):
+    def page_size(self: _R, PAGE_SIZE: int) -> _R:  # noqa: PYI019  (typing.Self needs Python 3.11)
         '''
         Sets the number of results per page.
 
@@ -104,7 +112,7 @@ class _BaseRetriever:
         })
         return self
 
-    def verbose(self, FLAG):
+    def verbose(self: _R, FLAG: int) -> _R:  # noqa: PYI019  (typing.Self needs Python 3.11)
         '''
         Determines the verbose mode of the query.
 
@@ -126,7 +134,7 @@ class _BaseRetriever:
         self.verbose_flag = flag
         return self
 
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+    def saveto(self, OUTDIR: str | os.PathLike[str] = '', FILE_NAME: str = '') -> None:
         '''
         Executes the query and saves the results to a specified directory.
 
@@ -158,7 +166,7 @@ class _BaseRetriever:
         # Reset the query parameters in case the user wants to make another query.
         self._init_params()
 
-    def save(self, FILE_NAME = ''):
+    def save(self, FILE_NAME: str = '') -> None:
         '''
         Executes the query and saves the results to ./mindat_data/.
 
@@ -174,7 +182,7 @@ class _BaseRetriever:
         file_name = FILE_NAME
         self.saveto('', file_name)
 
-    def get_dict(self):
+    def get_dict(self) -> dict[str, Any]:
         '''
         Executes the query and returns the results as a dictionary.
 
@@ -200,7 +208,7 @@ class _BaseRetriever:
         self._init_params()
         return results
 
-    def available_methods(self):
+    def available_methods(self) -> None:
         '''
         Prints the available methods of the class.
 
@@ -210,20 +218,22 @@ class _BaseRetriever:
         methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
         print("Available methods:", methods)
 
-    def __getattr__(self, name):
-        '''
-        Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
-        return object.__getattribute__(self, name)
+    if not TYPE_CHECKING:  # hidden from type checkers so they still flag misspelled methods
+
+        def __getattr__(self, name):
+            '''
+            Custom attribute access method to handle mistyped method names.
+            '''
+            methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
+            if name not in methods:
+                raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
+            return object.__getattribute__(self, name)
 
 
 class _PagedRetriever(_BaseRetriever):
     """Retrievers over paginated list endpoints (adds page())."""
 
-    def page(self, PAGE):
+    def page(self: _R, PAGE: int) -> _R:  # noqa: PYI019  (typing.Self needs Python 3.11)
         '''
         Sets the page of results to return.
 
@@ -248,7 +258,7 @@ class _IdRetriever(_BaseRetriever):
     _ENDPOINT_STYLE = "join"
     _HAS_SUB_ENDPOINT = True
 
-    def id(self, ID):
+    def id(self: _R, ID: int | str) -> _R:  # noqa: PYI019  (typing.Self needs Python 3.11)
         '''
         Sets the id of the record to return.
 

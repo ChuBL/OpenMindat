@@ -1,7 +1,7 @@
 from . import (
     mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
 )
-from ._base import _IdRetriever
+from ._base import _R, _IdRetriever
 
 #todo: Check back in when retrieve and id functions are implemented
 
@@ -32,7 +32,7 @@ class DanaRetriever(_IdRetriever):
     )
     _ENDPOINT_STYLE = "join_if_sub"
 
-    def retrieve(self):
+    def retrieve(self: _R) -> _R:
         '''
         Returns dana-8 classification
         Not yet working
@@ -50,7 +50,7 @@ class DanaRetriever(_IdRetriever):
         
         return self        
         
-    def groups(self):
+    def groups(self: _R) -> _R:
         '''
         Returns Dana 8th edition group classifications.
 
@@ -67,7 +67,7 @@ class DanaRetriever(_IdRetriever):
         
         return self
     
-    def subgroups(self):
+    def subgroups(self: _R) -> _R:
         '''
         Returns Dana 8th edition subgroup classifications.
 

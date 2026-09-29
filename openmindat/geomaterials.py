@@ -1,8 +1,10 @@
 import warnings
-
-from . import mindat_api
-from ._base import _BaseRetriever, _IdRetriever, _PagedRetriever
 from datetime import datetime
+
+from . import (
+    mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
+)
+from ._base import _R, _BaseRetriever, _IdRetriever, _PagedRetriever
 
 
 class GeomaterialRetriever(_PagedRetriever):
@@ -26,7 +28,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         # Flag to indicate if the geomaterials have been retrieved
 
-    def bi_min(self, MIN):
+    def bi_min(self: _R, MIN: float | str) -> _R:
         """
         Sets the minimum value of birifrigence for filtering minerals.
 
@@ -46,7 +48,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def bi_max(self, MAX):
+    def bi_max(self: _R, MAX: float | str) -> _R:
         """
         Sets the maximum value of birifrigence for filtering minerals.
 
@@ -66,7 +68,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def cleavagetype(self, CLEAVAGETYPE):
+    def cleavagetype(self: _R, CLEAVAGETYPE: str | list[str]) -> _R:
         """
         Sets the cleavage type for filtering minerals.
 
@@ -119,7 +121,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def colour(self, COLOUR):
+    def colour(self: _R, COLOUR: str | None) -> _R:
         """
         Sets the colour for filtering minerals.
 
@@ -145,7 +147,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def color(self, COLOR):
+    def color(self: _R, COLOR: str | None) -> _R:
         """
         Sets the color for filtering minerals.
 
@@ -163,9 +165,10 @@ class GeomaterialRetriever(_PagedRetriever):
 
         """
 
-        return self.colour(COLOR)
+        # getattr: same lookup as self.colour(), and type-checks when reused by MineralsIMARetriever.
+        return getattr(self, "colour")(COLOR)  # noqa: B009
 
-    def crystal_system(self, CRYSTAL_SYSTEM):
+    def crystal_system(self: _R, CRYSTAL_SYSTEM: str | list[str]) -> _R:
         """
         Sets the crystal system for filtering minerals.
         Crystal system (csystem): multiple choice (OR)
@@ -215,7 +218,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def density_max(self, MAX):
+    def density_max(self: _R, MAX: float) -> _R:
         """
         Density measured, to (dmeas<=).
         Get all minerals with density less than or equal to MAX.
@@ -238,7 +241,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def density_min(self, MIN):
+    def density_min(self: _R, MIN: float) -> _R:
         """
         Density measured, from (dmeas2>=).
         Get all minerals with density greater than or equal to MIN.
@@ -262,7 +265,7 @@ class GeomaterialRetriever(_PagedRetriever):
         return self
 
     # --- Diapheny (Renamed from Diaphaneity) ---
-    def diapheny(self, DIAPHENY):
+    def diapheny(self: _R, DIAPHENY: str | list[str]) -> _R:
         """
         Diapheny (transparency): multiple choice (AND)
 
@@ -298,14 +301,15 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def diaphaneity(self, diapheny_options):
+    def diaphaneity(self: _R, diapheny_options: str | list[str]) -> _R:
         """
         Sets the diaphaneity.
         (Maintained for backward compatibility).
         """
-        return self.diapheny(diapheny_options)
+        # getattr: same lookup as self.diapheny(), and type-checks when reused by MineralsIMARetriever.
+        return getattr(self, "diapheny")(diapheny_options)  # noqa: B009
 
-    def el_exc(self, ELEMENTS_EXC):
+    def el_exc(self: _R, ELEMENTS_EXC: str) -> _R:
         """
         Exclude chemical elements.
 
@@ -328,15 +332,16 @@ class GeomaterialRetriever(_PagedRetriever):
         return self
 
     # --- Old Style Method (Alias) ---
-    def elements_exc(self, elements_string):
+    def elements_exc(self: _R, elements_string: str) -> _R:
         """
         Exclude minerals containing these elements.
         (Maintained for backward compatibility).
         """
         # We simply route this to the new logic
-        return self.el_exc(elements_string)
+        # getattr: same lookup as self.el_exc(), and type-checks when reused by MineralsIMARetriever.
+        return getattr(self, "el_exc")(elements_string)  # noqa: B009
 
-    def el_inc(self, ELEMENTS_INC):
+    def el_inc(self: _R, ELEMENTS_INC: str) -> _R:
         """
         Include chemical elements.
 
@@ -359,14 +364,15 @@ class GeomaterialRetriever(_PagedRetriever):
         return self
 
     # --- Old Style Method (Alias) ---
-    def elements_inc(self, elements_string):
+    def elements_inc(self: _R, elements_string: str) -> _R:
         """
         Include minerals containing these elements.
         (Maintained for backward compatibility).
         """
-        return self.el_inc(elements_string)
+        # getattr: same lookup as self.el_inc(), and type-checks when reused by MineralsIMARetriever.
+        return getattr(self, "el_inc")(elements_string)  # noqa: B009
 
-    def el_essential(self, is_essential):
+    def el_essential(self: _R, is_essential: bool) -> _R:
         """
         Chemsearch: include essential elements only?
 
@@ -379,7 +385,7 @@ class GeomaterialRetriever(_PagedRetriever):
         self._params.update({"el_essential": bool(is_essential)})
         return self
 
-    def entrytype(self, ENTRYTYPE):
+    def entrytype(self: _R, ENTRYTYPE: int | list[int]) -> _R:
         """
         Set the entry type for the query.
 
@@ -424,14 +430,14 @@ class GeomaterialRetriever(_PagedRetriever):
                 "8 - commodity",
             ]
             raise ValueError(
-                f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                f"Possible Invalid ENTRYTYPE: {ENTRYTYPE}\nValid options: {', '.join(valid_options)}\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
             )
 
         self._params.update({"entrytype": entry_type})
 
         return self
 
-    def expand(self, EXPAND_FIELDS):
+    def expand(self: _R, EXPAND_FIELDS: str | list[str]) -> _R:
         """
         Expand the query to include related minerals and select specific fields to expand.
 
@@ -460,7 +466,8 @@ class GeomaterialRetriever(_PagedRetriever):
         elif isinstance(EXPAND_FIELDS, list):
             expand_fields = EXPAND_FIELDS
         else:
-            raise ValueError(
+            # ValueError for invalid arguments, as everywhere in openmindat (D9).
+            raise ValueError(  # noqa: TRY004
                 "Invalid EXPAND_FIELDS: must be a string or a list of strings"
             )
 
@@ -490,7 +497,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def fields(self, FIELDS):
+    def fields(self: _R, FIELDS: str) -> _R:
         """
         Specify the selected fields to be retrieved for each geomaterial.
         Please check the API documentation for the list of available fields.
@@ -515,7 +522,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def fracturetype(self, FRACTURETYPE):
+    def fracturetype(self: _R, FRACTURETYPE: str | list[str]) -> _R:
         """
         Fracture type: multiple choice (AND)
 
@@ -563,7 +570,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def groupid(self, GROUPID):
+    def groupid(self: _R, GROUPID: int) -> _R:
         """
         Set the group ID for the query.
 
@@ -581,14 +588,14 @@ class GeomaterialRetriever(_PagedRetriever):
         """
 
         if not isinstance(GROUPID, int):
-            raise ValueError(f"Invalid GROUPID: {GROUPID}\nGROUPID must be an integer.")
+            raise ValueError(f"Invalid GROUPID: {GROUPID}\nGROUPID must be an integer.")  # noqa: TRY004  (D9)
 
         groupid = GROUPID
         self._params.update({"groupid": groupid})
 
         return self
 
-    def hardness_max(self, MAX):
+    def hardness_max(self: _R, MAX: float) -> _R:
         """
         Hardness.
         get all minerals with hardness less than MAX
@@ -611,7 +618,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def hardness_min(self, MIN):
+    def hardness_min(self: _R, MIN: float) -> _R:
         """
         Hardness.
         get all minerals with hardness greater than MIN
@@ -634,7 +641,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def id_in(self, ID_IN_STRING):
+    def id_in(self: _R, ID_IN_STRING: str) -> _R:
         """
         Set the IDs for the query.
 
@@ -657,7 +664,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def id_min(self, min_id):
+    def id_min(self: _R, min_id: int) -> _R:
         """
         Set the minimum ID for the query range.
 
@@ -675,7 +682,7 @@ class GeomaterialRetriever(_PagedRetriever):
         self._params.update({"id_min": val})
         return self
 
-    def id_max(self, max_id):
+    def id_max(self: _R, max_id: int) -> _R:
         """
         Set the maximum ID for the query range.
 
@@ -693,7 +700,7 @@ class GeomaterialRetriever(_PagedRetriever):
         self._params.update({"id_max": val})
         return self
 
-    def ima(self, IS_IMA):
+    def ima(self: _R, IS_IMA: bool | int) -> _R:
         """
         This filter is probably not working as intended. Just ignore it for now.
         Include IMA-approved names only (1) / to be determined(0)
@@ -725,7 +732,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def ima_notes(self, IMA_NOTES):
+    def ima_notes(self: _R, IMA_NOTES: str | list[str]) -> _R:
         """
         Set the IMA notes for the query.
 
@@ -777,7 +784,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def ima_status(self, IMA_STATUS):
+    def ima_status(self: _R, IMA_STATUS: str | list[str]) -> _R:
         """
         Set the IMA status for the query.
 
@@ -824,7 +831,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def lustretype(self, LUSTRETYPE):
+    def lustretype(self: _R, LUSTRETYPE: str | list[str]) -> _R:
         """
         Set the lustre type for the query.
 
@@ -879,7 +886,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def meteoritical_code(self, METEORITICAL_CODE):
+    def meteoritical_code(self: _R, METEORITICAL_CODE: str) -> _R:
         """
         Set the meteoritical code for the query.
 
@@ -900,7 +907,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def meteoritical_code_exists(self, IS_METEORITICAL_CODE_EXISTS):
+    def meteoritical_code_exists(self: _R, IS_METEORITICAL_CODE_EXISTS: bool) -> _R:
         """
         Set whether to include geomaterials with meteoritical code or only include empty meteoritical codes.
 
@@ -919,7 +926,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def name(self, NAME):
+    def name(self: _R, NAME: str) -> _R:
         """
         Set the name for the query.
 
@@ -940,7 +947,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def non_utf(self, IS_NON_UTF):
+    def non_utf(self: _R, IS_NON_UTF: bool) -> _R:
         """
         Set whether to include non-UTF mineral names in the query.
 
@@ -960,7 +967,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def omit(self, OMIT_FIELDS):
+    def omit(self: _R, OMIT_FIELDS: str) -> _R:
         """
         Set the fields to omit from the query.
 
@@ -983,7 +990,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def optical2v_max(self, MAX):
+    def optical2v_max(self: _R, MAX: float | str) -> _R:
         """
         Optical 2V.
         get all minerals with optical 2V less than MAX
@@ -1014,7 +1021,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def optical2v_min(self, MIN):
+    def optical2v_min(self: _R, MIN: float | str) -> _R:
         """
         Optical 2V.
         get all minerals with optical 2V greater than MIN
@@ -1045,7 +1052,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def opticalsign(self, OPTICALSIGN):
+    def opticalsign(self: _R, OPTICALSIGN: str | None) -> _R:
         """
         Optical sign: single choice
 
@@ -1065,14 +1072,14 @@ class GeomaterialRetriever(_PagedRetriever):
 
         if OPTICALSIGN not in valid_options:
             print(
-                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                "Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
             )
 
         self._params.update({"opticalsign": OPTICALSIGN})
 
         return self
 
-    def opticaltype(self, OPTICALTYPE):
+    def opticaltype(self: _R, OPTICALTYPE: str | list[str]) -> _R:
         """
         Sets the optical type of the geomaterial.
 
@@ -1100,14 +1107,14 @@ class GeomaterialRetriever(_PagedRetriever):
 
         if not all(opt in valid_options for opt in OPTICALTYPE):
             print(
-                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                "Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
             )
 
         self._params.update({"opticaltype": OPTICALTYPE})
 
         return self
 
-    def ordering(self, ORDERING):
+    def ordering(self: _R, ORDERING: str) -> _R:
         """
         Order the response by a field. Prepend "-" to the field name for descending order.
 
@@ -1142,14 +1149,14 @@ class GeomaterialRetriever(_PagedRetriever):
 
         if ORDERING not in valid_options:
             print(
-                f"Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
+                "Possible Invalid input.\nYou can find valid inputs at https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_list"
             )
 
         self._params.update({"ordering": ORDERING})
 
         return self
 
-    def polytypeof(self, POLYTYPEOF):
+    def polytypeof(self: _R, POLYTYPEOF: int) -> _R:
         """
         Sets the polytype of the geomaterial.
 
@@ -1169,7 +1176,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def q(self, SEARCHING_KEYWORDS):
+    def q(self: _R, SEARCHING_KEYWORDS: str) -> _R:
         """
         Sets the keywords to search for.
 
@@ -1189,7 +1196,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def ri_max(self, MAX):
+    def ri_max(self: _R, MAX: float) -> _R:
         """
         Sets the maximum refractive index for the geomaterial.
 
@@ -1209,7 +1216,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def ri_min(self, MIN):
+    def ri_min(self: _R, MIN: float) -> _R:
         """
         Sets the minimum refractive index for the geomaterial.
 
@@ -1229,7 +1236,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def streak(self, STREAK):
+    def streak(self: _R, STREAK: str) -> _R:
         """
         Sets the streak for the geomaterial query.
 
@@ -1249,7 +1256,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def synid(self, SYNID):
+    def synid(self: _R, SYNID: int) -> _R:
         """
         Sets the synonym ID for the geomaterial query.
 
@@ -1269,7 +1276,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def tenacity(self, TENACITY):
+    def tenacity(self: _R, TENACITY: str | list[str]) -> _R:
         """
         Sets the tenacity for the geomaterial query.
 
@@ -1328,7 +1335,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def updated_at(self, DATE_STR):
+    def updated_at(self: _R, DATE_STR: str) -> _R:
         """
         Sets the last updated datetime for the geomaterial query.
 
@@ -1347,7 +1354,7 @@ class GeomaterialRetriever(_PagedRetriever):
             >>> retriever.save()
         """
         try:
-            datetime.strptime(DATE_STR, "%Y-%m-%d %H:%M:%S")
+            datetime.strptime(DATE_STR, "%Y-%m-%d %H:%M:%S")  # noqa: DTZ007  (format check only)
         except ValueError:
             raise ValueError(
                 "Invalid datetime format. Please provide the datetime in the format %Y-%m-%d %H:%M:%S."
@@ -1357,7 +1364,7 @@ class GeomaterialRetriever(_PagedRetriever):
 
         return self
 
-    def varietyof(self, VARIETYOF):
+    def varietyof(self: _R, VARIETYOF: int) -> _R:
         """
         Sets the variety of the geomaterial query.
 
@@ -1394,7 +1401,7 @@ class GeomaterialIdRetriever(_IdRetriever):
     BASE_ENDPOINT = "v1/geomaterials"
     _ENDPOINT_STYLE = "join_varieties"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.end_point = self.BASE_ENDPOINT
         self.sub_endpoint = ""
         self.variety = False
@@ -1403,7 +1410,7 @@ class GeomaterialIdRetriever(_IdRetriever):
         self._params = {}
         self._init_params()
 
-    def _init_params(self):
+    def _init_params(self) -> None:
         self._params.clear()
         self._params = {"format": "json"}
         self.end_point = self.BASE_ENDPOINT
@@ -1412,7 +1419,7 @@ class GeomaterialIdRetriever(_IdRetriever):
         self.verbose_flag = 2
         self.page_size(1500)
 
-    def varieties(self, VARIETIES):
+    def varieties(self, VARIETIES: bool) -> "GeomaterialIdRetriever":
         """
         Toggles varieties for the id
 
@@ -1461,12 +1468,12 @@ class GeomaterialDictRetriever(_BaseRetriever):
     BASE_ENDPOINT = "v1/geomaterials/dict"
     _HAS_SUB_ENDPOINT = True
 
-    _FIELD_OPTIONS = (
+    _FIELD_OPTIONS: tuple[str, ...] = (
         "cleavagetype", "csystem", "diapheny", "fracturetype", "lustretype", "magnetism",
         "opticalpleochroism", "opticalsign", "opticaltropic", "opticaltype", "relationship", "tenacity",
     )
 
-    def field(self, FIELD):
+    def field(self, FIELD: str) -> "GeomaterialDictRetriever":
         '''
         Selects the field whose dictionary of values is returned. The Mindat API requires it.
 

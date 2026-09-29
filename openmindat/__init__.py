@@ -58,40 +58,46 @@ Examples:
 Press q to quit.
 """
 
-from .exceptions import (
-    MindatError,
-    MindatApiError,
-    MindatServerError,
-    MindatRequestError,
-    EndpointUnavailableError,
-    MindatApiKeyError,
-    MindatKeyWarning,
+from .dana8 import DanaRetriever as DanaRetriever
+from .exceptions import EndpointUnavailableError as EndpointUnavailableError
+from .exceptions import MindatApiError as MindatApiError
+from .exceptions import MindatApiKeyError as MindatApiKeyError
+from .exceptions import MindatError as MindatError
+from .exceptions import MindatKeyWarning as MindatKeyWarning
+from .exceptions import MindatRequestError as MindatRequestError
+from .exceptions import MindatServerError as MindatServerError
+from .geomaterials import GeomaterialDictRetriever as GeomaterialDictRetriever
+from .geomaterials import GeomaterialIdRetriever as GeomaterialIdRetriever
+from .geomaterials import GeomaterialRetriever as GeomaterialRetriever
+from .geomaterials_search import (
+    GeomaterialSearchRetriever as GeomaterialSearchRetriever,
 )
-from .mindat_api import MindatApi, MindatApiKeyManager, set_api_key, api_key_status
-from .minerals_ima import MineralsIMARetriever
-from .minerals_ima import MineralsIdRetriever
-from .geomaterials_search import GeomaterialSearchRetriever
-from .geomaterials import GeomaterialRetriever
-from .geomaterials import GeomaterialIdRetriever
-from .geomaterials import GeomaterialDictRetriever
-from .localities import LocalitiesRetriever
-from .localities import LocalitiesIdRetriever
-from .localities_age import LocalitiesAgeRetriever
-from .localities_age import LocalitiesAgeIdRetriever
-from .localities_status import LocalitiesStatusRetriever
-from .localities_status import LocalitiesStatusIdRetriever
-from .localities_type import LocalitiesTypeRetriever
-from .localities_type import LocalitiesTypeIdRetriever
-from .locality_translations import LocalityTranslationsRetriever
-from .locality_translations import LocalityTranslationsIdRetriever
+from .localities import LocalitiesIdRetriever as LocalitiesIdRetriever
+from .localities import LocalitiesRetriever as LocalitiesRetriever
+from .localities_age import LocalitiesAgeIdRetriever as LocalitiesAgeIdRetriever
+from .localities_age import LocalitiesAgeRetriever as LocalitiesAgeRetriever
+from .localities_status import (
+    LocalitiesStatusIdRetriever as LocalitiesStatusIdRetriever,
+)
+from .localities_status import LocalitiesStatusRetriever as LocalitiesStatusRetriever
+from .localities_type import LocalitiesTypeIdRetriever as LocalitiesTypeIdRetriever
+from .localities_type import LocalitiesTypeRetriever as LocalitiesTypeRetriever
+from .locality_translations import (
+    LocalityTranslationsIdRetriever as LocalityTranslationsIdRetriever,
+)
+from .locality_translations import (
+    LocalityTranslationsRetriever as LocalityTranslationsRetriever,
+)
+from .mindat_api import MindatApi as MindatApi
+from .mindat_api import MindatApiKeyManager as MindatApiKeyManager
+from .mindat_api import api_key_status as api_key_status
+from .mindat_api import set_api_key as set_api_key
+from .minerals_ima import MineralsIdRetriever as MineralsIdRetriever
+from .minerals_ima import MineralsIMARetriever as MineralsIMARetriever
+from .nickel_strunz import StrunzRetriever as StrunzRetriever
 
-# from .locgeoregion2 import GeoRegionRetriever
-# from .locobject import LocobjectRetriever
-# from .countries import CountriesListRetriever
-# from .countries import CountriesIdRetriever
-from .dana8 import DanaRetriever
-from .nickel_strunz import StrunzRetriever
-# from .photo_count import PhotoCountRetriever
+# Retired endpoints stay importable from their old modules (openmindat._countries etc.);
+# see openmindat/_retired.py.
 
 if __name__ == "__main__":
     # --------------------------------------------
