@@ -1,7 +1,10 @@
 from . import mindat_api
+from .geomaterials import GeomaterialRetriever as _GeomaterialRetriever
+from ._base import _IdRetriever, _PagedRetriever
 from datetime import datetime
 
-class MineralsIMARetriever:
+
+class MineralsIMARetriever(_PagedRetriever):
     '''
     A class for querying mineral data from the Mindat API. It supports various query parameters such as mineral IDs, IMA status, fields selection, and pagination. The class enables method chaining for building complex queries and provides functionalities to save the queried data either to a specified directory or the current directory.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/minerals_ima
@@ -14,19 +17,6 @@ class MineralsIMARetriever:
     '''
 
     BASE_ENDPOINT = 'v1/minerals-ima'
-
-    def __init__(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self._params = {}
-        self._init_params()
-
-    def _init_params(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self._params.clear()
-        self._params = {'format': 'json'}
-        self.page_size(1500)
 
     def expand(self, EXPAND_FIELDS):
         '''
@@ -176,48 +166,6 @@ class MineralsIMARetriever:
 
         return self
     
-    def page(self, PAGE):
-        '''
-        Sets the page number within the paginated result set.
-
-        Args:
-            PAGE (int): The page number.
-
-        Returns:
-            self: The MineralsIMARetriever object.
-        
-        Example:
-            >>> mir = MineralsIMARetriever()
-            >>> mir.page(2)
-            >>> mir.saveto()
-        '''
-        self._params.update({
-            'page': PAGE
-        })
-
-        return self
-
-    def page_size(self, PAGE_SIZE):
-        '''
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The MineralsIMARetriever object.
-            
-        Example:
-            >>> mir = MineralsIMARetriever()
-            >>> mir.page_size(50)
-            >>> mir.saveto()
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
-
-        return self
-    
     def q(self, SEARCHING_KEYWORDS):
         '''
         Sets the keywords to search for.
@@ -267,122 +215,52 @@ class MineralsIMARetriever:
         })
 
         return self
-    
-    def verbose(self, FLAG):
-        '''
-        Determinse the verbose mode of the query.
 
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+    # Filters shared with /geomaterials/: the Mindat OpenAPI schema defines them identically on
+    # /minerals-ima/, so the GeomaterialRetriever implementations are reused as-is.
+    bi_max = _GeomaterialRetriever.bi_max
+    bi_min = _GeomaterialRetriever.bi_min
+    cleavagetype = _GeomaterialRetriever.cleavagetype
+    colour = _GeomaterialRetriever.colour
+    crystal_system = _GeomaterialRetriever.crystal_system
+    density_max = _GeomaterialRetriever.density_max
+    density_min = _GeomaterialRetriever.density_min
+    diapheny = _GeomaterialRetriever.diapheny
+    el_essential = _GeomaterialRetriever.el_essential
+    el_exc = _GeomaterialRetriever.el_exc
+    el_inc = _GeomaterialRetriever.el_inc
+    entrytype = _GeomaterialRetriever.entrytype
+    fracturetype = _GeomaterialRetriever.fracturetype
+    groupid = _GeomaterialRetriever.groupid
+    hardness_max = _GeomaterialRetriever.hardness_max
+    hardness_min = _GeomaterialRetriever.hardness_min
+    id_max = _GeomaterialRetriever.id_max
+    id_min = _GeomaterialRetriever.id_min
+    ima_notes = _GeomaterialRetriever.ima_notes
+    ima_status = _GeomaterialRetriever.ima_status
+    lustretype = _GeomaterialRetriever.lustretype
+    meteoritical_code = _GeomaterialRetriever.meteoritical_code
+    meteoritical_code_exists = _GeomaterialRetriever.meteoritical_code_exists
+    name = _GeomaterialRetriever.name
+    non_utf = _GeomaterialRetriever.non_utf
+    optical2v_max = _GeomaterialRetriever.optical2v_max
+    optical2v_min = _GeomaterialRetriever.optical2v_min
+    opticalsign = _GeomaterialRetriever.opticalsign
+    opticaltype = _GeomaterialRetriever.opticaltype
+    polytypeof = _GeomaterialRetriever.polytypeof
+    ri_max = _GeomaterialRetriever.ri_max
+    ri_min = _GeomaterialRetriever.ri_min
+    streak = _GeomaterialRetriever.streak
+    synid = _GeomaterialRetriever.synid
+    tenacity = _GeomaterialRetriever.tenacity
+    varietyof = _GeomaterialRetriever.varietyof
+    color = _GeomaterialRetriever.color
+    diaphaneity = _GeomaterialRetriever.diaphaneity
+    elements_exc = _GeomaterialRetriever.elements_exc
+    elements_inc = _GeomaterialRetriever.elements_inc
 
-        Returns:
-            None
 
-        Example:
-            >>> mimar = MineralsIMARetriever()
-            >>> mimar.verbose(0).saveto("/path/to/directory")
-
-        '''
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
-        self.verbose_flag = flag
-        
-        return self
-    
-    def saveto(self, OUTDIR='', FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
-
-            Args:
-                OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-            Returns:
-                None
-
-            Example:
-                >>> mir = MineralsIMARetriever()
-                >>> mir.saveto("/path/to/directory")
-        '''
-
-        params = self._params
-        end_point = self.end_point
-        outdir = OUTDIR
-        verbose = self.verbose_flag
-        file_name = FILE_NAME
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-    
-    def save(self, FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
-
-            Args:
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-                
-            Returns:
-                None
-
-            Example:
-                >>> mir = MineralsIMARetriever()
-                >>> mir.save()
-        '''
-        file_name = FILE_NAME
-        
-        self.saveto('', file_name)
-        
-    def get_dict(self):
-        '''
-        Executes the query to retrieve the list of mineral data and returns the json object.
-
-        Returns:
-            list of dictionaries.
-
-        Example:
-                >>> mir = MineralsIMARetriever()
-                >>> quartsIMA = mir.q('quartz').get_dict()
-
-        '''
-       
-        params = self._params
-        verbose = self.verbose_flag
-        end_point = self.end_point
-        
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-        
-        self._init_params()
-        return results
-    
-    def available_methods(self):
-        '''
-        Prints the available methods of the class.
-
-        Example:
-            >>> mr = MineralsIMARetriever()
-            >>> mr.available_methods()
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        '''
-        Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
-        return object.__getattribute__(self, name)
-        
-        
-class MineralsIdRetriever:
+class MineralsIdRetriever(_IdRetriever):
     """
     This module provides the MineralsIdRetriever class for returning Minerals by id
     For more information visit: https://api.mindat.org/schema/redoc/#tag/minerals_ima/operation/minerals_ima_retrieve
@@ -396,184 +274,6 @@ class MineralsIdRetriever:
     """
     
     BASE_ENDPOINT = 'v1/minerals-ima'
-
-    def __init__(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self.sub_endpoint = ''
-        
-        self._params = {}
-        self._init_params()
-
-    def _init_params(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self.sub_endpoint = ''
-        self._params.clear()
-        self._params = {'format': 'json'}
-        self.page_size(1500)
-        
-    def page_size(self, PAGE_SIZE):
-        '''
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The MineralsIdRetriever object.
-
-        Example:
-            >>> Midr = MineralsIdRetriever()
-            >>> Midr.page_size(50)
-            >>> Midr.save()
-
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
-
-        return self
-
-    def id(self, ID):
-        '''
-        Returns locality with matching id
-
-        Args:
-            id (INT): The locality id.
-
-        Returns:
-            self: The MineralsIdRetriever() object.
-
-        Example:
-            >>> midr = MineralsIdRetriever()
-            >>> midr.id(2)
-            >>> midr.save()
-        '''
-        
-        try:
-            ID = int(ID)
-        except ValueError:
-            raise ValueError("Invalid input. ID must be a valid integer.")
-        
-        id = str(ID)
-        
-        self.sub_endpoint = id
-        
-        return self
-    
-    def verbose(self, FLAG):
-        '''
-        Determinse the verbose mode of the query.
-
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
-
-        Returns:
-            None
-
-        Example:
-            >>> midr = MineralsIdRetriever()
-            >>> midr.id(3).verbose(0).saveto("/path/to/directory")
-
-        '''
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
-        self.verbose_flag = flag
-        
-        return self
-    
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the Minerals with keywords and saves the results to a specified directory.
-
-            Args:
-                OUTDIR (str): The directory path where the retrieved Minerals will be saved. If not provided, the current directory will be used.
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-            Returns:
-                None
-
-            Example:
-                >>> midr = MineralsIdRetriever()
-                >>> midr.id(3).saveto("/path/to/directory", "Mineral_ima_id")
-        '''
-
-        params = self._params
-        end_point = '/'.join([self.end_point, self.sub_endpoint])
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-    
-    def save(self, FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the list of minerals and saves the results to the current directory.
-
-            Args:
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-            
-            Returns:
-                None
-
-            Example:
-                >>> midr = MineralsIdRetriever()
-                >>> midr.id(3).save()
-        '''
-        file_name = FILE_NAME
-        
-        self.saveto('', file_name)
-        
-    def get_dict(self):
-        '''
-        Executes the query to retrieve mineral IMA status with a corresponding id and returns a dictionary.
-
-        Returns:
-            List of Dictionaries.
-
-        Example:
-                >>> midr = MineralsIdRetriever()
-                >>> ima9 = midr.id(9).get_dict()
-
-        '''
-       
-        params = self._params
-        verbose = self.verbose_flag
-        end_point = '/'.join([self.end_point, self.sub_endpoint])
-        
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-        
-        self._init_params()
-        return results
-    
-    def available_methods(self):
-        '''
-        Prints the available methods of the class.
-
-        Example:
-            >>> midr = MineralsIdRetriever()
-            >>> midr.available_methods()
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        '''
-        Custom attribute access method to handle mistyped method names.
-        '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
-        return object.__getattribute__(self, name)
 
 
 if __name__ == '__main__':

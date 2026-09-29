@@ -1,8 +1,9 @@
 from . import mindat_api
+from ._base import _as_int, _IdRetriever, _PagedRetriever
 from datetime import datetime
 
 
-class LocalitiesRetriever:
+class LocalitiesRetriever(_PagedRetriever):
     """
     This module provides the LocalitiesRetriever class for querying locality data from the Mindat API. The class enables users to construct queries based on various parameters such as country, description, included/excluded elements, and more. It supports method chaining for the flexible combination of query parameters and offers functionality to save the queried data either to a specified directory or the current directory.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/localities
@@ -33,19 +34,6 @@ class LocalitiesRetriever:
     """
 
     BASE_ENDPOINT = "v1/localities"
-
-    def __init__(self):
-        self._params = {}
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self._init_params()
-
-    def _init_params(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self._params.clear()
-        self._params = {"format": "json"}
-        self.page_size(1500)
 
     # Deprecated country method kept for backward compatibility
     def _country(self, COUNTRY_STR):
@@ -544,12 +532,13 @@ class LocalitiesRetriever:
             >>> lr.saveto()
         """
 
-        expand_fields = EXPAND_FIELDS
-
         valid_options = ["geomaterials", "~all", "*"]
 
         if isinstance(EXPAND_FIELDS, str):
             EXPAND_FIELDS = [EXPAND_FIELDS]
+
+        # Taken after the str -> list step: before 0.1.4 a string was split into letters.
+        expand_fields = EXPAND_FIELDS
 
         invalid_options = [
             field for field in EXPAND_FIELDS if field not in valid_options
@@ -655,25 +644,6 @@ class LocalitiesRetriever:
 
         return self
 
-    def page_size(self, PAGE_SIZE):
-        """
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The LocalitiesRetriever object.
-
-        Example:
-            >>> lr = LocalitiesRetriever()
-            >>> lr.page_size(50)
-            >>> lr.saveto()
-        """
-        self._params.update({"page-size": PAGE_SIZE})
-
-        return self
-
     def txt(self, TXT_STR):
         """
         Sets the locality name filter.
@@ -722,131 +692,118 @@ class LocalitiesRetriever:
 
         return self
 
-    def verbose(self, FLAG):
-        """
-        Determinse the verbose mode of the query.
+    def level_gte(self, LEVEL):
+        '''
+        Returns localities whose hierarchy level is >= LEVEL (0 = country).
 
         Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+            LEVEL (int): The value.
 
         Returns:
-            None
+            self: The LocalitiesRetriever object.
 
         Example:
-            >>> Lr = LocalitiesRetriever()
-            >>> Lr.country("spain").verbose(0).saveto("/path/to/directory")
-
-        """
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-
-        self.verbose_flag = flag
-
+            >>> lr = LocalitiesRetriever()
+            >>> lr.country("Norway").level_gte(3).get_dict()
+        '''
+        self._params.update({"level_gte": _as_int(LEVEL, "LEVEL")})
         return self
 
-    def saveto(self, OUTDIR="", FILE_NAME=""):
-        """
-        Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
+    def level_lte(self, LEVEL):
+        '''
+        Returns localities whose hierarchy level is <= LEVEL (0 = country).
 
         Args:
-            OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            LEVEL (int): The value.
 
         Returns:
-            None
+            self: The LocalitiesRetriever object.
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> lr.saveto("/path/to/directory", "france")
-        """
+            >>> lr.country("Norway").level_lte(1).get_dict()
+        '''
+        self._params.update({"level_lte": _as_int(LEVEL, "LEVEL")})
+        return self
 
-        params = self._params
-        end_point = self.end_point
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of localities and saves the results to the current directory.
+    def sublocs_gte(self, COUNT):
+        '''
+        Returns localities with at least COUNT sub-localities.
 
         Args:
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
+            COUNT (int): The value.
 
         Returns:
-            None
+            self: The LocalitiesRetriever object.
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> lr.save()
-        """
-        file_name = FILE_NAME
+            >>> lr.country("Norway").sublocs_gte(10).get_dict()
+        '''
+        self._params.update({"sublocs_gte": _as_int(COUNT, "COUNT")})
+        return self
 
-        self.saveto("", file_name)
+    def sublocs_lte(self, COUNT):
+        '''
+        Returns localities with at most COUNT sub-localities.
 
-    def get_dict(self):
-        """
-        Executes the query to retrieve the list of localities and returns the json object.
+        Args:
+            COUNT (int): The value.
 
         Returns:
-            list of dictionaries.
+            self: The LocalitiesRetriever object.
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> france = lr.country('France').get_dict()
+            >>> lr.country("Norway").sublocs_lte(0).get_dict()
+        '''
+        self._params.update({"sublocs_lte": _as_int(COUNT, "COUNT")})
+        return self
 
-        """
+    def non_hierarchial(self, IS_NON_HIERARCHICAL):
+        '''
+        Filters on the non-hierarchical locality flag. The spelling follows the Mindat API
+        parameter; non_hierarchical() is an alias.
 
-        params = self._params
-        end_point = self.end_point
-        verbose = self.verbose_flag
+        Args:
+            IS_NON_HIERARCHICAL (bool): True for non-hierarchical localities only.
 
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-
-        self._init_params()
-        return results
-
-    def available_methods(self):
-        """
-        Prints the available methods of the class.
+        Returns:
+            self: The LocalitiesRetriever object.
 
         Example:
             >>> lr = LocalitiesRetriever()
-            >>> lr.available_methods()
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        print("Available methods:", methods)
+            >>> lr.country("Norway").non_hierarchial(True).get_dict()
+        '''
+        self._params.update({"non_hierarchial": bool(IS_NON_HIERARCHICAL)})
+        return self
 
-    def __getattr__(self, name):
-        """
-        Custom attribute access method to handle mistyped method names.
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        if name not in methods:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
-            )
-        return object.__getattribute__(self, name)
+    def non_hierarchical(self, IS_NON_HIERARCHICAL):
+        '''
+        Alias of non_hierarchial() with the usual spelling.
+        '''
+        return self.non_hierarchial(IS_NON_HIERARCHICAL)
+
+    def revtxtd_istartswith(self, PREFIX):
+        '''
+        Returns localities whose reversed full name starts with PREFIX (case-insensitive).
+        The reversed name lists the country first, e.g. "Norway, Agder, Åmli".
+
+        Args:
+            PREFIX (str): The start of the reversed locality name.
+
+        Returns:
+            self: The LocalitiesRetriever object.
+
+        Example:
+            >>> lr = LocalitiesRetriever()
+            >>> lr.revtxtd_istartswith("Norway, Agder").get_dict()
+        '''
+        self._params.update({"revtxtd_istartswith": PREFIX})
+        return self
 
 
-class LocalitiesIdRetriever:
+class LocalitiesIdRetriever(_IdRetriever):
     """
     This module provides the LocalitiesIdRetriever class for returning localities by id
     For more information visit: https://api.mindat.org/schema/redoc/#tag/localities/operation/localities_retrieve
@@ -861,190 +818,9 @@ class LocalitiesIdRetriever:
 
     BASE_ENDPOINT = "v1/localities"
 
-    def __init__(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self.sub_endpoint = ""
-
-        self._params = {}
-        self._init_params()
-
-    def _init_params(self):
-        self._params.clear()
-        self._params = {"format": "json"}
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self.sub_endpoint = ""
-        self.page_size(1500)
-
-    def page_size(self, PAGE_SIZE):
-        """
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The LocalitiesIdRetriever object.
-
-        Example:
-            >>> lidr = LocalitiesRetriever()
-            >>> lidr.page_size(50)
-            >>> lidr.saveto()
-        """
-        self._params.update({"page-size": PAGE_SIZE})
-
-        return self
-
-    def id(self, ID):
-        """
-        Returns locality with matching id
-
-        Args:
-            id (INT): The locality id.
-
-        Returns:
-            self: The LocalitiesIdRetriever() object.
-
-        Example:
-            >>> lir = LocalitiesIdRetriever()
-            >>> lir.id(2)
-            >>> lir.save()
-        """
-
-        try:
-            ID = int(ID)
-        except ValueError:
-            raise ValueError("Invalid input. ID must be a valid integer.")
-
-        id = str(ID)
-
-        self.sub_endpoint = id
-
-        return self
-
-    def verbose(self, FLAG):
-        """
-        Determinse the verbose mode of the query.
-
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
-
-        Returns:
-            None
-
-        Example:
-            >>> Lidr = LocalitiesIdRetriever()
-            >>> Lidr.id(9).verbose(0).saveto("/path/to/directory")
-
-        """
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-
-        self.verbose_flag = flag
-
-        return self
-
-    def saveto(self, OUTDIR="", FILE_NAME=""):
-        """
-        Executes the query to retrieve the localities with keywords and saves the results to a specified directory.
-
-        Args:
-            OUTDIR (str): The directory path where the retrieved localities will be saved. If not provided, the current directory will be used.
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> lir = LocalitiesIdRetriever()
-            >>> lir.saveto("/path/to/directory", "france")
-        """
-
-        params = self._params
-        end_point = "/".join([self.end_point, self.sub_endpoint])
-        outdir = OUTDIR
-        verbose = self.verbose_flag
-        file_name = FILE_NAME
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of localities and saves the results to the current directory.
-
-        Args:
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> lir = LocalitiesIdRetriever()
-            >>> lir.save()
-        """
-        file_name = FILE_NAME
-
-        self.saveto("", file_name)
-
-    def get_dict(self):
-        """
-        Executes the query to retrieve locality with a corresponding id and returns a dictionary.
-
-        Returns:
-            List of Dictionaries.
-
-        Example:
-                >>> lir = localitiesIdRetriever()
-                >>> locality5 = lir.id(5).get_dict()
-
-        """
-
-        params = self._params
-        verbose = self.verbose_flag
-        end_point = "/".join([self.end_point, self.sub_endpoint])
-
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-
-        self._init_params()
-        return results
-
-    def available_methods(self):
-        """
-        Prints the available methods of the class.
-
-        Example:
-            >>> lidr = LocalitiesIdRetriever()
-            >>> lidr.available_methods()
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        """
-        Custom attribute access method to handle mistyped method names.
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        if name not in methods:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
-            )
-        return object.__getattribute__(self, name)
+    # Same check as LocalitiesRetriever.country(): on a single locality the Mindat API
+    # returns 404 when the locality is not in that country.
+    country = LocalitiesRetriever.country
 
 
 if __name__ == "__main__":

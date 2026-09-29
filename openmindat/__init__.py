@@ -17,6 +17,8 @@ Attributes:
     LocalitiesStatusIdRetriever (class): A class for querying locality status based on id.
     LocalitiesTypeRetriever (class): A class for querying locality type data.
     LocalitiesTypeIdRetriever (class): A class for querying locality type based on id.
+    LocalityTranslationsRetriever (class): A class for querying locality name translations.
+    LocalityTranslationsIdRetriever (class): A class for querying one locality name translation by id.
     GeoRegionRetriever (class): A class for querying locality georegion data.
     LocObjectRetriever (class): A class for querying locality object data based on id.
     CountriesListRetriever (class): A class for querying country data from OpenMindat.
@@ -56,7 +58,16 @@ Examples:
 Press q to quit.
 """
 
-from .mindat_api import MindatApi, MindatApiKeyManager
+from .exceptions import (
+    MindatError,
+    MindatApiError,
+    MindatServerError,
+    MindatRequestError,
+    EndpointUnavailableError,
+    MindatApiKeyError,
+    MindatKeyWarning,
+)
+from .mindat_api import MindatApi, MindatApiKeyManager, set_api_key, api_key_status
 from .minerals_ima import MineralsIMARetriever
 from .minerals_ima import MineralsIdRetriever
 from .geomaterials_search import GeomaterialSearchRetriever
@@ -71,6 +82,8 @@ from .localities_status import LocalitiesStatusRetriever
 from .localities_status import LocalitiesStatusIdRetriever
 from .localities_type import LocalitiesTypeRetriever
 from .localities_type import LocalitiesTypeIdRetriever
+from .locality_translations import LocalityTranslationsRetriever
+from .locality_translations import LocalityTranslationsIdRetriever
 
 # from .locgeoregion2 import GeoRegionRetriever
 # from .locobject import LocobjectRetriever

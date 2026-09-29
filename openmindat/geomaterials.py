@@ -1,8 +1,11 @@
+import warnings
+
 from . import mindat_api
+from ._base import _BaseRetriever, _IdRetriever, _PagedRetriever
 from datetime import datetime
 
 
-class GeomaterialRetriever:
+class GeomaterialRetriever(_PagedRetriever):
     """
     This module provides the GeomaterialRetriever class for retrieving geomaterial data from the Mindat API. This class offers various methods to specify query parameters for filtering and retrieving detailed information about geomaterials, such as minerals and rocks.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials
@@ -21,19 +24,7 @@ class GeomaterialRetriever:
 
     BASE_ENDPOINT = "v1/geomaterials"
 
-    def __init__(self) -> None:
-        self.verbose_flag = 2
-        self.end_point = self.BASE_ENDPOINT
-        self._params = {}
-        self._init_params()
         # Flag to indicate if the geomaterials have been retrieved
-
-    def _init_params(self):
-        self.verbose_flag = 2
-        self.end_point = self.BASE_ENDPOINT
-        self._params.clear()
-        self._params.update({"format": "json"})
-        self.page_size(1500)
 
     def bi_min(self, MIN):
         """
@@ -1158,46 +1149,6 @@ class GeomaterialRetriever:
 
         return self
 
-    def page(self, PAGE):
-        """
-        Sets the page number within the paginated result set.
-
-        Args:
-            PAGE (int): The page number.
-
-        Returns:
-            self: The GeomaterialRetriever object.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.page(2)
-            >>> gr.save()
-
-        """
-        self._params.update({"page": PAGE})
-
-        return self
-
-    def page_size(self, PAGE_SIZE):
-        """
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The GeomaterialRetriever object.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.page_size(50)
-            >>> gr.save()
-
-        """
-        self._params.update({"page-size": PAGE_SIZE})
-
-        return self
-
     def polytypeof(self, POLYTYPEOF):
         """
         Sets the polytype of the geomaterial.
@@ -1426,134 +1377,8 @@ class GeomaterialRetriever:
 
         return self
 
-    def verbose(self, FLAG):
-        """
-        Determinse the verbose mode of the query.
 
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
-
-        Returns:
-            None
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.density_min(3.25).verbose(0).saveto("/path/to/directory")
-
-        """
-
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-
-        self.verbose_flag = flag
-
-        return self
-
-    def saveto(self, OUTDIR="", FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of geomaterials and saves the results to a specified directory.
-
-        Args:
-            OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.density_min(3.25).saveto("/path/to/directory")
-
-        """
-
-        params = self._params
-        end_point = self.end_point
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
-
-        Args:
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.density_min(3.25).save()
-
-        """
-        file_name = FILE_NAME
-
-        self.saveto("", file_name)
-
-    def get_dict(self):
-        """
-        Executes the query to retrieve the list of geomaterials and returns the json object.
-
-        Returns:
-            list of dictionaries.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> geoObject = gr.density_min(3.25).get_dict()
-
-        """
-
-        params = self._params
-        end_point = self.end_point
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-
-        self._init_params()
-        return results
-
-    def available_methods(self):
-        """
-        Prints the available methods of the class.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.available_methods()
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        """
-        Custom attribute access method to handle mistyped method names.
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        if name not in methods:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
-            )
-        return object.__getattribute__(self, name)
-
-
-class GeomaterialIdRetriever:
+class GeomaterialIdRetriever(_IdRetriever):
     """
     This module provides the GeomaterialIdRetriever class for returning geomaterial by id
     For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_retrieve
@@ -1567,6 +1392,7 @@ class GeomaterialIdRetriever:
     """
 
     BASE_ENDPOINT = "v1/geomaterials"
+    _ENDPOINT_STYLE = "join_varieties"
 
     def __init__(self):
         self.end_point = self.BASE_ENDPOINT
@@ -1585,54 +1411,6 @@ class GeomaterialIdRetriever:
         self.variety = False
         self.verbose_flag = 2
         self.page_size(1500)
-
-    def page_size(self, PAGE_SIZE):
-        """
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The GeomaterialRetriever object.
-
-        Example:
-            >>> gr = GeomaterialRetriever()
-            >>> gr.page_size(50)
-            >>> gr.save()
-
-        """
-        self._params.update({"page-size": PAGE_SIZE})
-
-        return self
-
-    def id(self, ID):
-        """
-        Returns locality with matching id
-
-        Args:
-            id (INT): The locality id.
-            variety: optional toggle returning varieties with 'y', leave empty if varieties aren't wanted
-
-        Returns:
-            self: The GeomaterialIdRetriever() object.
-
-        Example:
-            >>> gir = GeomaterialIdRetriever()
-            >>> gir.id(2)
-            >>> gir.save()
-        """
-
-        try:
-            ID = int(ID)
-        except ValueError:
-            raise ValueError("Invalid input. ID must be a valid integer.")
-
-        id = str(ID)
-
-        self.sub_endpoint = id
-
-        return self
 
     def varieties(self, VARIETIES):
         """
@@ -1664,138 +1442,10 @@ class GeomaterialIdRetriever:
 
         return self
 
-    def verbose(self, FLAG):
-        """
-        Determinse the verbose mode of the query.
-
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
-
-        Returns:
-            None
-
-        Example:
-            >>> gidr = GeomaterialIdRetriever()
-            >>> gidr.id(3).verbose(0).saveto("/path/to/directory")
-
-        """
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-
-        self.verbose_flag = flag
-
-        return self
-
-    def saveto(self, OUTDIR="", FILE_NAME=""):
-        """
-        Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
-
-        Args:
-            OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gir = GeomaterialIdRetriever()
-            >>> gir.id(5).saveto("/path/to/directory", "geo5")
-        """
-
-        if self.variety:
-            sub_endpoint = "/".join([self.sub_endpoint, "varieties"])
-        else:
-            sub_endpoint = self.sub_endpoint
-
-        end_point = "/".join([self.end_point, sub_endpoint])
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        params = self._params
-        sub_endpoint = self.sub_endpoint
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
-
-        Args:
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gir = GeomaterialIdRetriever()
-            >>> gir.id(5).save()
-        """
-        file_name = FILE_NAME
-
-        self.saveto("", file_name)
-
-    def get_dict(self):
-        """
-        Executes the query to retrieve geomaterial with a corresponding id and returns a dictionary.
-
-        Returns:
-            List of Dictionaries.
-
-        Example:
-            >>> gir = GeomaterialIdRetriever()
-            >>> geo5 = gir.id(5).get_dict()
-
-        """
-
-        params = self._params
-        verbose = self.verbose_flag
-        end_point = "/".join([self.end_point, self.sub_endpoint])
-
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-
-        self._init_params()
-        return results
-
-    def available_methods(self):
-        """
-        Prints the available methods of the class.
-
-        Example:
-            >>> gidr = GeomaterialIdRetriever()
-            >>> gidr.available_methods()
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        """
-        Custom attribute access method to handle mistyped method names.
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        if name not in methods:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
-            )
-        return object.__getattribute__(self, name)
-
-
 # NOT YET WORKING, check in to see if it returns list vs item
-class GeomaterialDictRetriever:
+
+
+class GeomaterialDictRetriever(_BaseRetriever):
     """
     This module provides the GeomaterialDictRetriever class for returning geomaterial Dictionaries
     For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials/operation/geomaterials_dict_retrieve
@@ -1809,165 +1459,37 @@ class GeomaterialDictRetriever:
     """
 
     BASE_ENDPOINT = "v1/geomaterials/dict"
+    _HAS_SUB_ENDPOINT = True
 
-    def __init__(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.sub_endpoint = ""
-        self.verbose_flag = 2
+    _FIELD_OPTIONS = (
+        "cleavagetype", "csystem", "diapheny", "fracturetype", "lustretype", "magnetism",
+        "opticalpleochroism", "opticalsign", "opticaltropic", "opticaltype", "relationship", "tenacity",
+    )
 
-        self._params = {}
-        self._init_params()
-
-    def _init_params(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self.sub_endpoint = ""
-        self._params.clear()
-        self._params = {"format": "json"}
-        self.page_size(1500)
-
-    def page_size(self, PAGE_SIZE):
-        """
-        Sets the number of results per page.
+    def field(self, FIELD):
+        '''
+        Selects the field whose dictionary of values is returned. The Mindat API requires it.
 
         Args:
-            PAGE_SIZE (int): The number of results per page.
+            FIELD (str): One of cleavagetype, csystem, diapheny, fracturetype, lustretype,
+                magnetism, opticalpleochroism, opticalsign, opticaltropic, opticaltype,
+                relationship, tenacity.
 
         Returns:
             self: The GeomaterialDictRetriever object.
 
         Example:
             >>> gdr = GeomaterialDictRetriever()
-            >>> gdr.page_size(50)
-            >>> gdr.save()
-
-        """
-        self._params.update({"page-size": PAGE_SIZE})
-
-        return self
-
-    def verbose(self, FLAG):
-        """
-        Determinse the verbose mode of the query.
-
-        Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
-
-        Returns:
-            None
-
-        Example:
-            >>> gdr = GeomaterialDictRetriever()
-            >>> gdr.verbose(0).saveto("/path/to/directory")
-
-        """
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-
-        self.verbose_flag = flag
-
-        return self
-
-    def saveto(self, OUTDIR="", FILE_NAME=""):
-        """
-        Executes the query to retrieve the Geomaterials with keywords and saves the results to a specified directory.
-
-        Args:
-            OUTDIR (str): The directory path where the retrieved Geomaterials will be saved. If not provided, the current directory will be used.
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gdr = GeomaterialDictRetriever()
-            >>> gdr.saveto("/path/to/directory", "geoDict")
-        """
-
-        params = self._params
-        end_point = self.end_point
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME=""):
-        """
-        Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
-
-        Args:
-            FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-        Returns:
-            None
-
-        Example:
-            >>> gdr = GeomaterialDictRetriever()
-            >>> gdr.save()
-        """
-        file_name = FILE_NAME
-
-        self.saveto("", file_name)
-
-    def get_dict(self):
-        """
-        Executes the query to retrieve the dictionary of geomaterials.
-
-        Returns:
-            dictionary.
-
-        Example:
-            >>> gdr = GeomaterialDictRetriever()
-            >>> geoDict = gdr.get_dict()
-
-        """
-
-        params = self._params
-        end_point = self.end_point
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-
-        self._init_params()
-        return results
-
-    def available_methods(self):
-        """
-        Prints the available methods of the class.
-
-        Example:
-            >>> gdr = GeomaterialDictRetriever()
-            >>> gdr.available_methods()
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        print("Available methods:", methods)
-
-    def __getattr__(self, name):
-        """
-        Custom attribute access method to handle mistyped method names.
-        """
-        methods = [
-            func
-            for func in dir(self)
-            if callable(getattr(self, func)) and not func.startswith("__")
-        ]
-        if name not in methods:
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}"
+            >>> gdr.field("csystem").get_dict()
+        '''
+        if FIELD not in self._FIELD_OPTIONS:
+            warnings.warn(
+                f"Possible invalid FIELD {FIELD!r}; valid options: {', '.join(self._FIELD_OPTIONS)}",
+                UserWarning,
+                stacklevel=2,
             )
-        return object.__getattribute__(self, name)
+        self._params.update({"field": FIELD})
+        return self
 
 
 if __name__ == "__main__":

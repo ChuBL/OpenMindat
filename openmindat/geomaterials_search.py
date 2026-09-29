@@ -1,6 +1,10 @@
-from . import mindat_api
+from . import (
+    mindat_api,  # noqa: F401  (kept: code patches <module>.mindat_api.MindatApi)
+)
+from ._base import _as_int, _BaseRetriever
 
-class GeomaterialSearchRetriever:
+
+class GeomaterialSearchRetriever(_BaseRetriever):
     """
     A class to facilitate the retrieval of geomaterial data from the Mindat API using search keywords. It enables users to construct queries based on specific keywords and offers functionality to save the retrieved data.
     For more information visit: https://api.mindat.org/schema/redoc/#tag/geomaterials_search
@@ -19,40 +23,6 @@ class GeomaterialSearchRetriever:
 
     BASE_ENDPOINT = 'v1/geomaterials-search'
     
-    def __init__(self):
-        self._params = {}
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-    
-    def _init_params(self):
-        self.end_point = self.BASE_ENDPOINT
-        self.verbose_flag = 2
-        self._params.clear()
-        self._params = {'format': 'json'}
-        self.page_size(1500)
-
-    def page_size(self, PAGE_SIZE):
-        '''
-        Sets the number of results per page.
-
-        Args:
-            PAGE_SIZE (int): The number of results per page.
-
-        Returns:
-            self: The GeomaterialSearchRetriever object.
-
-        Example:
-            >>> gsr = GeomaterialSearchRetriever()
-            >>> gsr.page_size(500)
-            >>> gsr.save()
-
-        '''
-        self._params.update({
-            'page-size': PAGE_SIZE
-        })
-
-        return self
-
     def geomaterials_search(self, KEYWORDS):
         '''
         Updates the query parameters to search for geomaterials based on specified keywords.
@@ -71,111 +41,57 @@ class GeomaterialSearchRetriever:
         keywords = KEYWORDS
         self._params.update({'q': keywords})
         return self
-    
-    def verbose(self, FLAG):
+
+    def e(self, EXACT):
         '''
-        Determinse the verbose mode of the query.
+        Returns only exact name matches when set to 1 (or True).
 
         Args:
-            FLAG (int): Determines the verbose mode: 0 = silent, 1 = save notifications, 2(default) = progress bar
+            EXACT (int or bool): 1/True for exact matches only, 0/False for all matches.
 
         Returns:
-            None
+            self: The GeomaterialSearchRetriever object.
 
         Example:
             >>> gsr = GeomaterialSearchRetriever()
-            >>> gsr.geomaterials_Search("mica").verbose(0).saveto("/path/to/directory")
-
+            >>> gsr.geomaterials_search("quartz").e(1).get_dict()
         '''
-        if isinstance(FLAG, int):
-            flag = FLAG
-        else:
-            raise ValueError(f"Possible Invalid ENTRYTYPE: {FLAG}\nPlease retry.")
-        
-        self.verbose_flag = flag
-        
+        self._params.update({"e": _as_int(EXACT, "EXACT")})
         return self
-    
-    def saveto(self, OUTDIR = '', FILE_NAME = ''):
+
+    def ima(self, IMA):
         '''
-            Executes the query to retrieve the geomaterials with keywords and saves the results to a specified directory.
+        Returns only IMA-approved minerals when set to 1 (or True).
 
-            Args:
-                OUTDIR (str): The directory path where the retrieved geomaterials will be saved. If not provided, the current directory will be used.
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-            Returns:
-                None
-        '''
-        
-        params = self._params
-        end_point = self.end_point
-        outdir = OUTDIR
-        file_name = FILE_NAME
-        verbose = self.verbose_flag
-
-        ma = mindat_api.MindatApi()
-        ma.download_mindat_json(params, end_point, outdir, file_name, verbose)
-
-        # reset the query parameters in case the user wants to make another query
-        self._init_params()
-
-    def save(self, FILE_NAME = ''):
-        '''
-            Executes the query to retrieve the list of geomaterials and saves the results to the current directory.
-
-            Args:
-                FILE_NAME (str): An optional file name, if no input is given it uses the end point as a name
-
-            Returns:
-                None
-        '''
-        file_name = FILE_NAME
-        
-        self.saveto('', file_name)
-        
-    def get_dict(self):
-        '''
-        Executes the query to retrieve the geomaterial search data as a dictionary.
+        Args:
+            IMA (int or bool): 1/True for IMA-approved minerals only.
 
         Returns:
-            List of dictionaries.
-
-        Example:
-            >>> gsr = geomaterialSeachRetriever()
-            >>> greenQuarts = gsr.geomaterial_search("quartz, green").get_dict()
-
-        '''
-       
-        params = self._params
-        end_point = self.end_point
-        verbose = self.verbose_flag
-        
-        ma = mindat_api.MindatApi()
-        results = ma.get_mindat_json(params, end_point, verbose)
-        
-        self._init_params()
-        return results
-    
-    def available_methods(self):
-        '''
-        Prints the available methods of the class.
+            self: The GeomaterialSearchRetriever object.
 
         Example:
             >>> gsr = GeomaterialSearchRetriever()
-            >>> gsr.available_methods()
+            >>> gsr.geomaterials_search("quartz").ima(1).get_dict()
         '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        print("Available methods:", methods)
+        self._params.update({"ima": _as_int(IMA, "IMA")})
+        return self
 
-    def __getattr__(self, name):
+    def size(self, SIZE):
         '''
-        Custom attribute access method to handle mistyped method names.
+        Limits the number of records when a fuzzy search applies (Mindat API default: 12).
+
+        Args:
+            SIZE (int): Maximum number of fuzzy-search records.
+
+        Returns:
+            self: The GeomaterialSearchRetriever object.
+
+        Example:
+            >>> gsr = GeomaterialSearchRetriever()
+            >>> gsr.geomaterials_search("quarz").size(5).get_dict()
         '''
-        methods = [func for func in dir(self) if callable(getattr(self, func)) and not func.startswith("__")]
-        if name not in methods:
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}', \nAvailable methods: {methods}")
-        return object.__getattribute__(self, name)
+        self._params.update({"size": _as_int(SIZE, "SIZE")})
+        return self
 
 
 if __name__ == '__main__':
