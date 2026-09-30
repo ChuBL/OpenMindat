@@ -6,7 +6,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
-Here is the changelog for version 0.1.2 based on the modifications we discussed for `GeomaterialRetriever` and `LocalitiesRetriever`.
+
+## [0.1.4] - 2026-09-30
+
+Backward compatible with 0.1.3: existing code keeps working. The behaviour changes that users may notice are listed under "Changed".
+
+### Added
+
+- **LocalityTranslationsRetriever** and **LocalityTranslationsIdRetriever** for the new `/locality-translations/` endpoint, with `lt_loc()`, `lt_iso()`, `lt_text()`, `lt_important()`, `lt_datetime_gte()`, `ordering()` and `page()`.
+- **GeomaterialDictRetriever**: `field()`. The API requires it, e.g. `field("csystem")`.
+- **GeomaterialSearchRetriever**: `e()` (exact matches only), `ima()` (IMA-approved only) and `size()`.
+- **LocalitiesRetriever**: `level_gte()`, `level_lte()`, `sublocs_gte()`, `sublocs_lte()`, `revtxtd_istartswith()` and `non_hierarchial()`. The last one is spelled as in the Mindat API; `non_hierarchical()` is an alias.
+- **LocalitiesIdRetriever**: `country()`.
+- **MineralsIMARetriever**: the 36 geomaterial filters the endpoint supports, such as `crystal_system()`, `hardness_min()`, `el_inc()` and `ima_status()`, plus the aliases `color()`, `diaphaneity()`, `elements_inc()` and `elements_exc()`.
+- Exceptions, all importable from `openmindat`: `MindatError`, `MindatApiError`, `MindatServerError`, `MindatRequestError`, `EndpointUnavailableError` and `MindatApiKeyError`. Each one is also a `ValueError`, so existing `except ValueError:` code keeps working.
+- `openmindat.set_api_key(key, persist=False)` and `openmindat.api_key_status()`.
+- Settings on `MindatApi`: `REQUEST_TIMEOUT`, `RAISE_HTTP_ERRORS`, `MIN_PAGE_SIZE`, `MAX_RETRY_WAIT` and `MAX_FAILURES`.
+- Type hints on all public methods. IDE completion now works along chained calls.
+
+### Changed
+
+- **HTTP errors now raise an exception instead of returning the error as data.**
+  - A 4xx response used to come back as `{"results": [{"detail": ...}]}`. It now raises `MindatRequestError` with the server's message.
+  - 5xx responses, gateway timeouts, rate limits and network failures raise `MindatServerError`. Its message says the problem is on the Mindat server side.
+  - To restore the old behaviour, set `openmindat.MindatApi.RAISE_HTTP_ERRORS = False`.
+- **Heavy queries recover automatically.**
+  - Requests now have a timeout (10 s to connect, 60 s to read); previously there was none.
+  - A page that times out (HTTP 504/524 or a read timeout) is requested again as smaller pages.
+  - Rate limits (HTTP 429/503) wait for the server's `Retry-After`, capped at 30 s.
+  - Retries are limited, and records downloaded before a failure are kept on the exception as `.partial_results`.
+- **API key handling.**
+  - The key is checked once per session instead of before every query, so each query sends one request instead of two.
+  - A key typed at the prompt is saved to `~/.config/openmindat/credentials.yaml` (`%APPDATA%\openmindat\credentials.yaml` on Windows), readable only by you, instead of `./.apikey.yaml` in the current folder.
+  - An existing `./.apikey.yaml` is still read, and is copied once to the new location. The old file is left in place.
+  - A key set through `MINDAT_API_KEY` is no longer written to disk.
+  - A temporary server problem during the key check no longer triggers the key prompt. The key is used, and a warning is shown.
+  - With no key and no console (scripts, cron, CI), you now get `MindatApiKeyError` with setup instructions instead of a bare `EOFError`. The new error is still an `EOFError`, so existing handlers keep working.
+- `DanaRetriever` and `StrunzRetriever` used without `.groups()`, `.classes()` or similar now say which method to call. The Mindat API has no plain list for these endpoints.
+- Retry messages go to the `openmindat` logger, and are also printed when `verbose` is above 0.
+
+### Deprecated
+
+- `CountriesListRetriever`, `CountriesIdRetriever`, `GeoRegionRetriever`, `LocobjectRetriever` and `PhotoCountRetriever` (in `openmindat._countries`, `._locgeoregion2`, `._locobject` and `._photo_count`). Their Mindat endpoints no longer exist.
+  - They can still be imported. Creating one shows a `DeprecationWarning`.
+  - Querying one raises `EndpointUnavailableError`, a `ValueError`, without sending a request.
+  - They will be removed in 0.2.0.
+
+### Fixed
+
+- `LocalitiesRetriever.expand("geomaterials")` with a string split the value into letters (`g,e,o,…`), so no geomaterials were returned. A string now works like a one-item list.
+- `GeomaterialIdRetriever.varieties(True).get_dict()` now requests `/geomaterials/{id}/varieties/`, as `saveto()` already did.
+- The first query of a `GeomaterialSearchRetriever` now sends the same default parameters as later ones. A failed first query no longer raises `KeyError`.
+- A page requested with `.page(n)` could return the wrong records when the server timed out and the page size was reduced. The requested page is now returned in full.
+- A failure part-way through a multi-page download no longer discards the records already downloaded.
+- A corrupted `./.apikey.yaml` is skipped with a warning instead of crashing with `TypeError` or `KeyError`.
+- The `entrytype()` error message now lists the valid options.
+
+### Known Issues (Mindat API server)
+
+- `MineralsIMARetriever.fields()` fails with HTTP 500 when the field list includes `name`. This has been reported to Mindat.
+- `GeomaterialDictRetriever.field()` with an unknown field name gets HTTP 200 with an error message instead of an error status, so `field()` warns about unknown names itself.
+- `GeomaterialSearchRetriever.size()` currently has no visible effect on the server.
 
 ## [0.1.3] - 2026-01-29
 

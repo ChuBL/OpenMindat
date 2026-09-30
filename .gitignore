@@ -129,6 +129,8 @@ env.bak/
 venv.bak/
 .testenv
 testenv/
+doc/
+.doc/
 
 # Spyder project settings
 .spyderproject
@@ -161,8 +163,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Apple Desktop Services Store 
+# Apple Desktop Services Store
 .DS_Store
+
+# Claude working files
+.claude/
+CLAUDE.md
 
 # Miscellaneous Package Files
 cached_api_key
